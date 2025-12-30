@@ -1,0 +1,4552 @@
+[
+  {
+    "id": "358c157d-1ef8-49d3-a3b7-e6219e874bcb",
+    "name": "Qwen3-32B-COT-eval",
+    "originalName": "Qwen3-32B-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-COT-eval_scored_013edefb.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T07:33:16.647Z",
+    "taskId": "1ca4cd02-7ab1-4ec4-b6e3-776f85d068a1",
+    "type": "base",
+    "size": 1347021,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "768cd26f-614c-4e83-92c2-1cc04d066eb7",
+    "name": "Baichuan-COT-eval",
+    "originalName": "Baichuan-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-COT-eval_scored_007427b5.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T07:33:18.577Z",
+    "taskId": "1ca4cd02-7ab1-4ec4-b6e3-776f85d068a1",
+    "type": "compare",
+    "size": 2124065,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.89,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "1d1feafb-f22d-438d-bb6a-07d24f0907db",
+    "name": "HXK-med-model-0814-COT-eval",
+    "originalName": "HXK-med-model-0814-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\HXK-med-model-0814-COT-eval_scored_a42746a7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T08:18:36.271Z",
+    "taskId": "096feef9-615f-444e-ba9a-8c1c273adf6e",
+    "type": "compare",
+    "size": 1384196,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "411b9970-cd55-42cb-8764-6e694a0314f6",
+    "name": "Qwen3-32B-HXK-0820-v1-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v1-COT-eval_scored_2dd6c644.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T08:28:52.677Z",
+    "taskId": "fb724a70-f2d5-48d1-b10b-4d394f1812cb",
+    "type": "compare",
+    "size": 1410592,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "8449f902-6697-4ad1-8268-b1be5f23d0c8",
+    "name": "Qwen3-32B-HXK-0820-v2-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v2-COT-eval_scored_9734278a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T08:31:44.251Z",
+    "taskId": "b3f003b6-1de2-467e-bb55-1e479d7f86cc",
+    "type": "compare",
+    "size": 1279793,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "650d9fe6-2637-4c07-b9b1-77ea39af0f40",
+    "name": "qwen-32B-0818-dpo-no-merge-COT-eval",
+    "originalName": "qwen-32B-0818-dpo-no-merge-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\qwen-32B-0818-dpo-no-merge-COT-eval_scored_40770044.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T10:27:23.120Z",
+    "taskId": "a8e6ca00-26df-4f19-866a-a96937122e9f",
+    "type": "compare",
+    "size": 1413203,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0e74d87c-a837-4d2c-ad6a-dee5e871a0f0",
+    "name": "Qwen3-32B-HXK-0820-v4-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v4-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v4-COT-eval_scored_25f280af.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T10:28:26.477Z",
+    "taskId": "99afba61-7406-4115-9128-2209072991ec",
+    "type": "compare",
+    "size": 1219123,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b993d3d2-5cf3-40bd-b77a-1186feeab1cd",
+    "name": "Qwen3-32B-COT-gpt-eval",
+    "originalName": "Qwen3-32B-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-COT-gpt-eval_scored_b8e1de0c.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T11:10:47.306Z",
+    "taskId": "ed2fd3a7-919e-4b1a-bc99-cfb305b44e87",
+    "type": "base",
+    "size": 1302892,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "28a9b3d3-a99c-4b6e-986c-1f7517a7bd1f",
+    "name": "Baichuan-COT-gpt-eval",
+    "originalName": "Baichuan-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-COT-gpt-eval_scored_bda84c1f.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T11:10:49.062Z",
+    "taskId": "ed2fd3a7-919e-4b1a-bc99-cfb305b44e87",
+    "type": "compare",
+    "size": 1474356,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "02018e16-63dd-440d-a74b-247a1ab60dbc",
+    "name": "gpt-oss-120B-COT-eval",
+    "originalName": "gpt-oss-120B-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\gpt-oss-120B-COT-eval_scored_b8780b73.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T12:57:31.024Z",
+    "taskId": "76fbda3d-f8c6-413c-af14-c40439072934",
+    "type": "compare",
+    "size": 1765157,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.89,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ef0977dc-9e30-41ea-bea5-63c33eee09f9",
+    "name": "Baichuan-COT-eval2",
+    "originalName": "Baichuan-COT-eval2",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-COT-eval2_scored_d49d6275.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-20T12:59:38.201Z",
+    "taskId": "84b5a008-0169-41cc-85ec-b8d055e07116",
+    "type": "compare",
+    "size": 2121060,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.89,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "5b36e65b-1414-45d9-83bf-f35493755846",
+    "name": "Qwen3-32B-HXK-0820-v3-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v3-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v3-COT-eval_scored_3bab54b5.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T01:30:34.323Z",
+    "taskId": "24c3f16c-978d-4c09-a18a-2e32ac5c5973",
+    "type": "compare",
+    "size": 1288206,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9fb9c2f4-5267-4f5c-b174-0dd8947df7c3",
+    "name": "Qwen3-32B-HXK-0820-v2-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v2-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v2-COT-gpt-eval_scored_c1d70c3e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T01:42:20.685Z",
+    "taskId": "a83451f0-0e9e-4b76-aa5b-de7f1019bc42",
+    "type": "compare",
+    "size": 1237937,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.8,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "94326c1f-1d59-4e46-9cb1-07da69d71332",
+    "name": "Qwen3-32B-HXK-0820-v5-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v5-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v5-COT-eval_scored_4d12ffdd.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T01:54:35.473Z",
+    "taskId": "8a95c269-2d28-4f84-969f-0e59a262f6ae",
+    "type": "compare",
+    "size": 1674701,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "fa6bab4c-0589-4a73-8a33-2c7c67fb1681",
+    "name": "Qwen3-32B-HXK-0820-v3-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v3-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v3-COT-gpt-eval_scored_67dda028.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T02:10:15.791Z",
+    "taskId": "93a7e713-9aab-4e02-851e-4313aa61f180",
+    "type": "compare",
+    "size": 1275862,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "5e0a3086-36d1-4060-be9b-fffd22754608",
+    "name": "qwen-32B-0818-oft-v1-COT-eval",
+    "originalName": "qwen-32B-0818-oft-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\qwen-32B-0818-oft-v1-COT-eval_scored_c9fcef42.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T03:28:23.373Z",
+    "taskId": "a91fba5b-e1f0-459c-8ad9-ffd40ca8dd62",
+    "type": "compare",
+    "size": 1204288,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b876c17f-aee1-48ab-a424-c9d7d912b8d5",
+    "name": "qwen-32B-0818-oft-v2-COT-eval",
+    "originalName": "qwen-32B-0818-oft-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\qwen-32B-0818-oft-v2-COT-eval_scored_14fb3c72.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T03:34:48.371Z",
+    "taskId": "6d7eadfd-f3f7-4850-9709-aa7421fb6abc",
+    "type": "compare",
+    "size": 1024875,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "6389f533-836d-4f42-9487-9aaebf67e221",
+    "name": "HXK-med-0806-COT-eval",
+    "originalName": "HXK-med-0806-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\HXK-med-0806-COT-eval_scored_bc6b0c1b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T03:46:37.526Z",
+    "taskId": "d8899a37-4268-424d-92f7-18e2d23cfde2",
+    "type": "compare",
+    "size": 1289009,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "7245ca42-03b9-4346-8892-3f21437ea477",
+    "name": "HXK-med-0806-COT-gpt-eval",
+    "originalName": "HXK-med-0806-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\HXK-med-0806-COT-gpt-eval_scored_b4f4d23c.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T04:39:51.076Z",
+    "taskId": "29bd2509-1701-4c81-b21d-258414305b4b",
+    "type": "compare",
+    "size": 1277262,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "50de0491-4493-4b7f-9e63-34e376dcb532",
+    "name": "qwen-32B-0818-oft-v1-COT-gpt-eval",
+    "originalName": "qwen-32B-0818-oft-v1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\qwen-32B-0818-oft-v1-COT-gpt-eval_scored_12bc8ffa.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T04:40:14.144Z",
+    "taskId": "fb479781-a2b1-43ee-8529-1171693fc17b",
+    "type": "compare",
+    "size": 1193725,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.78,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "4ec2857e-08bc-45a6-9b6c-42223d56939b",
+    "name": "Qwen3-32B-HXK-0821-v2-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v2-COT-eval_scored_bbccda10.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T05:01:38.021Z",
+    "taskId": "cd6e5089-11ef-46e8-81db-59f5a7698148",
+    "type": "compare",
+    "size": 1356056,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "4e1011eb-d216-4d40-9fd7-33a268bb44db",
+    "name": "Qwen3-32B-HXK-0821-v1-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v1-COT-eval_scored_ba7c57d1.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T05:03:37.316Z",
+    "taskId": "ad214445-0bf9-4d3a-bec9-bc4afe1312bd",
+    "type": "compare",
+    "size": 1310407,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "3ae3cd00-b88c-4ca5-b2f1-c9efb2178d7d",
+    "name": "deepseek-r1-COT-gpt-eval",
+    "originalName": "deepseek-r1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\deepseek-r1-COT-gpt-eval_scored_b9977fa2.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T06:09:48.473Z",
+    "taskId": "04345990-2986-441c-8dd1-7b02ee198f28",
+    "type": "compare",
+    "size": 1382117,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "a290e025-faa9-41fc-b17c-0cd27a483460",
+    "name": "qwen3-32B-DPO-0814-COT-eval",
+    "originalName": "qwen3-32B-DPO-0814-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\qwen3-32B-DPO-0814-COT-eval_scored_10182cb9.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T07:10:56.407Z",
+    "taskId": "d82181b4-8228-4a81-ba2f-0909b2d68e85",
+    "type": "compare",
+    "size": 1379475,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9d732fb4-43c3-48e4-a436-26586a7a2844",
+    "name": "hxk-med-0718-alpha-COT-eval",
+    "originalName": "hxk-med-0718-alpha-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\hxk-med-0718-alpha-COT-eval_scored_6f531e2a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T07:12:41.050Z",
+    "taskId": "c23411e5-2ff6-4ad7-986d-c8a06510ce85",
+    "type": "compare",
+    "size": 1321038,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "552bc4b1-b692-4ac3-9d59-2f163b94d877",
+    "name": "Qwen3-32B-HXK-0821-v4-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v4-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v4-COT-eval_scored_494e90be.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T10:17:02.474Z",
+    "taskId": "af36ef99-82c5-4278-aa16-6d4ac3fc313a",
+    "type": "compare",
+    "size": 1388432,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "7a537a36-c729-4e7e-bbe7-329acfd284e5",
+    "name": "Qwen3-32B-HXK-0821-v3-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v3-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v3-COT-eval_scored_2562233d.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T10:19:03.736Z",
+    "taskId": "ec187ac1-cd45-4316-bf87-90cb8598e095",
+    "type": "compare",
+    "size": 1344666,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "82712169-63f9-43e5-bff7-e0523f0d00ea",
+    "name": "Qwen3-32B-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-extraction-gpt-eval_scored_d7bdb523.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T15:35:08.812Z",
+    "taskId": "910fc788-be57-488b-a03d-9c4ca9a53804",
+    "type": "base",
+    "size": 1092773,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.71,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "61a37fe9-0f3e-4833-a245-bc76893f01eb",
+    "name": "DeepSeek-R1-extraction-gpt-eval",
+    "originalName": "DeepSeek-R1-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\DeepSeek-R1-extraction-gpt-eval_scored_dce3b687.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T15:35:09.838Z",
+    "taskId": "910fc788-be57-488b-a03d-9c4ca9a53804",
+    "type": "compare",
+    "size": 1093441,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.8,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "6c038eef-dac1-412e-814d-716386b2137d",
+    "name": "Qwen3-32B-extraction-eval",
+    "originalName": "Qwen3-32B-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-extraction-eval_scored_4122d5a7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T19:01:02.969Z",
+    "taskId": "578e4dfd-07d2-479b-a316-6d613d812004",
+    "type": "base",
+    "size": 1074670,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.93,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "f084e60e-fcb4-4787-88f9-67053f4c15ad",
+    "name": "gpt-oss-120B-extraction-eval",
+    "originalName": "gpt-oss-120B-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\gpt-oss-120B-extraction-eval_scored_b7c5ee46.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-21T19:01:03.720Z",
+    "taskId": "578e4dfd-07d2-479b-a316-6d613d812004",
+    "type": "compare",
+    "size": 985050,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "163032ff-e59f-4cd5-a3bd-ffcced90417e",
+    "name": "Qwen3-32B-HXK-0821-v5-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v5-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v5-COT-eval_scored_ccbcd169.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T01:44:25.336Z",
+    "taskId": "155b67a1-3a6e-440c-9f43-fb9c10a4eb67",
+    "type": "compare",
+    "size": 1347531,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b9a8bbd5-f7d4-4a5d-97b6-5adabc42c248",
+    "name": "Qwen3-32B-HXK-0821-v6-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v6-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v6-COT-eval_scored_bb580208.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T01:45:04.289Z",
+    "taskId": "9bf2fb0f-6b9a-4f7d-8596-03351ea6f848",
+    "type": "compare",
+    "size": 1297834,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9c94093a-2b69-4897-9941-3bf2a2e737e9",
+    "name": "Qwen3-32B-HXK-0821-v5-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v5-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v5-COT-gpt-eval_scored_42756815.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T02:27:00.179Z",
+    "taskId": "fb24c9db-db55-4fc7-8267-1858bb5ddc35",
+    "type": "compare",
+    "size": 1308658,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "44672e95-5833-45a5-9d9c-d20e251cf52f",
+    "name": "Qwen3-32B-HXK-0821-v6-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0821-v6-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0821-v6-COT-gpt-eval_scored_24a0ddbe.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T02:27:50.036Z",
+    "taskId": "17b7e32f-8870-46f4-a6fb-fa34d15d68dd",
+    "type": "compare",
+    "size": 1256319,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "956b492f-f7c5-4cde-a25a-46a727070af4",
+    "name": "Qwen3-32B-HXK-0820-v3-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0820-v3-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0820-v3-extraction-eval_scored_fdc9c01a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T02:45:03.789Z",
+    "taskId": "1bb729f7-0bda-4459-bde6-3d158a71088e",
+    "type": "compare",
+    "size": 1075601,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.94,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "65c55cba-5ece-4b55-9ae0-ff7d9cf250a6",
+    "name": "Qwen3-32-consult-gpt-eval",
+    "originalName": "Qwen3-32-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32-consult-gpt-eval_scored_5034ffa6.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T04:03:04.292Z",
+    "taskId": "5863639b-7fa9-4838-81ea-1af7093d2cec",
+    "type": "base",
+    "size": 1260550,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c5d91af3-6035-4151-b76d-ec9c527919f3",
+    "name": "DeepSeek-R1-consult-gpt-eval",
+    "originalName": "DeepSeek-R1-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\DeepSeek-R1-consult-gpt-eval_scored_4f0507cd.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T04:03:04.997Z",
+    "taskId": "5863639b-7fa9-4838-81ea-1af7093d2cec",
+    "type": "compare",
+    "size": 2063923,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.95,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "82599ce6-6fd8-45b5-ae06-5c92bdd5ea6b",
+    "name": "Qwen3-32B-HXK-0822-v2-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-COT-eval_scored_3fbffeb3.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T04:07:04.378Z",
+    "taskId": "07dba6ca-7ae2-40e3-8874-3b7c822c7e1b",
+    "type": "compare",
+    "size": 1381994,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c38b036c-3153-4bf7-b585-bbd8645d84d4",
+    "name": "Qwen3-32B-risk-gpt-eval",
+    "originalName": "Qwen3-32B-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-risk-gpt-eval_scored_53c738d1.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T04:28:28.841Z",
+    "taskId": "bd585072-f284-4f57-953d-9aac8e3e8d07",
+    "type": "base",
+    "size": 458667,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.75,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "94c05b00-98dc-4f4f-a368-93bb8676edb5",
+    "name": "DeepSeek-R1-risk-gpt-eval",
+    "originalName": "DeepSeek-R1-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\DeepSeek-R1-risk-gpt-eval_scored_7f2a568a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T04:28:29.611Z",
+    "taskId": "bd585072-f284-4f57-953d-9aac8e3e8d07",
+    "type": "compare",
+    "size": 429840,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.57,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "44b8d869-4231-4aaf-b942-2d72b7016135",
+    "name": "Qwen3-32B-HXK-0822-v2-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-COT-gpt-eval_scored_59d96a7b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T05:40:18.947Z",
+    "taskId": "f50b40f3-76f5-4043-83e3-7e40b1302ac1",
+    "type": "compare",
+    "size": 1360736,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "33000b40-8c03-46ce-950f-5ca01aa983ad",
+    "name": "Qwen3-32B-HXK-0822-v1-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-COT-eval_scored_313c452a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T05:50:49.930Z",
+    "taskId": "1df70613-14c1-4fda-a521-8b1f3c0a3b10",
+    "type": "compare",
+    "size": 1353035,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.88,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b7ca1678-2dac-45a7-9434-10d42158c200",
+    "name": "Baichuan-extraction-gpt-eval",
+    "originalName": "Baichuan-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-extraction-gpt-eval_scored_f5a925b5.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T01:48:54.852Z",
+    "taskId": "457612d3-da85-4585-ad30-9dd446063822",
+    "type": "compare",
+    "size": 1594558,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.59,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0a5360da-774a-4605-bcd1-5d09fd5eb8a5",
+    "name": "Qwen-32B-efficacy-gpt-eval",
+    "originalName": "Qwen-32B-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen-32B-efficacy-gpt-eval_scored_19fede60.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T06:09:19.562Z",
+    "taskId": "ff216848-4ada-49b5-a482-8734e2a1f233",
+    "type": "base",
+    "size": 194422,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "dbfa1a8b-ee61-4410-8cc6-4cb67578f952",
+    "name": "DeepSeek-R1-efficacy-gpt-eval",
+    "originalName": "DeepSeek-R1-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\DeepSeek-R1-efficacy-gpt-eval_scored_611b1b26.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T06:09:19.828Z",
+    "taskId": "ff216848-4ada-49b5-a482-8734e2a1f233",
+    "type": "compare",
+    "size": 244241,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.86,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "3dfc2f3a-4b66-48a2-adba-707596ffd4fb",
+    "name": "Qwen3-32B-HXK-0822-v1-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-COT-gpt-eval_scored_19c2d332.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T06:30:25.690Z",
+    "taskId": "6feca0f9-b30e-476a-9839-4211736f0991",
+    "type": "compare",
+    "size": 1334523,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "286aa2fa-c32c-466d-b5c8-47c7cfb28b31",
+    "name": "Baichuan-consult-gpt-eval",
+    "originalName": "Baichuan-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-consult-gpt-eval_scored_89e5157f.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T06:49:21.774Z",
+    "taskId": "407e7827-d1d5-4248-ad66-7f5ce370568c",
+    "type": "compare",
+    "size": 1514459,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.97,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "10acaea6-77a3-4f3c-8c92-492a73537698",
+    "name": "Qwen3-32-consult-eval",
+    "originalName": "Qwen3-32-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32-consult-eval_scored_5678985d.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T06:51:02.628Z",
+    "taskId": "ce483039-e7ab-42f8-ba2b-db66394ab27b",
+    "type": "base",
+    "size": 1270705,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "394790f6-91b4-41ae-951c-134d92b135e7",
+    "name": "gpt-oss-consult-eval",
+    "originalName": "gpt-oss-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\gpt-oss-consult-eval_scored_7cd1ffa1.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T06:51:03.271Z",
+    "taskId": "ce483039-e7ab-42f8-ba2b-db66394ab27b",
+    "type": "compare",
+    "size": 2361864,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.96,
+      "minScore": 0.4,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "05c84379-c4ca-453e-90ca-7381826be9cd",
+    "name": "Qwen3-32B-HXK-0822-v2-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-extraction-gpt-eval_scored_19c7995b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T09:12:41.749Z",
+    "taskId": "10009fe0-1950-4397-829d-0b4ebcd16e85",
+    "type": "compare",
+    "size": 1070215,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.72,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "5a4aecd6-fd4c-40ed-9231-cd52c0a8839f",
+    "name": "Qwen3-32B-HXK-0822-v1-efficacy-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-efficacy-gpt-eval_scored_19b40585.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T07:37:15.132Z",
+    "taskId": "94c919a8-883a-4fed-87be-241804b4966a",
+    "type": "compare",
+    "size": 188668,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "6054539b-b3df-4fc1-83eb-37bb682ceb34",
+    "name": "Qwen3-32B-HXK-0822-v1-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-extraction-gpt-eval_scored_bd72771e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:00:02.843Z",
+    "taskId": "67fceee7-3264-4a4e-bb7b-751966800cbc",
+    "type": "compare",
+    "size": 1016392,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.74,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "6c2fd128-47da-4cc1-8030-19fa4c79d46e",
+    "name": "Qwen3-32B-HXK-0822-v1-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-extraction-eval_scored_49f977d3.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:08:42.254Z",
+    "taskId": "7f3349f5-732b-49f2-af6b-17f7d9de7073",
+    "type": "compare",
+    "size": 994088,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.95,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "94b47277-a0ba-45e0-bf5c-c093aaa827b7",
+    "name": "Qwen3-32B-HXK-0822-v2-consult-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-consult-gpt-eval_scored_f046e34d.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:09:19.512Z",
+    "taskId": "e2cf6837-2daa-4ef2-90d5-f5f9f1437822",
+    "type": "compare",
+    "size": 1197415,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.94,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "83389dab-4b1c-4263-8752-9f8f932f4ee4",
+    "name": "Qwen3-32B-HXK-0822-v2-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-extraction-eval_scored_5cd2961c.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:12:42.373Z",
+    "taskId": "fd3b5d62-8ec5-4d10-8faf-bc996d918e96",
+    "type": "compare",
+    "size": 1049532,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.94,
+      "minScore": 0.3,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "63fe1edb-59b2-44a8-9349-e5c1a977467e",
+    "name": "Baichuan-risk-gpt-eval",
+    "originalName": "Baichuan-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-risk-gpt-eval_scored_f3fc62bc.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:21:14.355Z",
+    "taskId": "0d6a100c-a4a9-4dd8-afb1-a76cc9cb2724",
+    "type": "compare",
+    "size": 483043,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.39,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "8d77c615-69bb-4aeb-8899-bd4a4b910537",
+    "name": "Qwen3-32B-HXK-0822-v1-consult-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-consult-gpt-eval_scored_cecc42b0.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:32:49.902Z",
+    "taskId": "f6c13d60-d792-4c40-827d-25a824223831",
+    "type": "compare",
+    "size": 1181225,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.91,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "dc5620a2-e0c0-46e9-9253-b8f940a060b9",
+    "name": "Qwen3-32B-HXK-0822-v2-efficacy-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-efficacy-gpt-eval_scored_8254b174.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:47:14.139Z",
+    "taskId": "10a67860-33eb-4c2d-96ea-e3d38ffa48dc",
+    "type": "compare",
+    "size": 192180,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.92,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e949ebf6-a52b-4c52-9864-4c19beebfa27",
+    "name": "Baichuan-efficacy-gpt-eval",
+    "originalName": "Baichuan-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-efficacy-gpt-eval_scored_ac52e4ed.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T08:52:10.127Z",
+    "taskId": "80043ce2-92c3-4831-8bdb-ba20141d28bf",
+    "type": "compare",
+    "size": 85408,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d93688d8-cefc-44d3-9792-1fb830aaef57",
+    "name": "Qwen-32B-efficacy-eval",
+    "originalName": "Qwen-32B-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen-32B-efficacy-eval_scored_0d1705d2.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T03:10:47.914Z",
+    "taskId": "bed42754-711b-465c-b6b1-9426b4c7a214",
+    "type": "base",
+    "size": 207986,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.98,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "1706402c-32e6-4a3e-8a74-abae1e516d9d",
+    "name": "gpt-oss-efficacy-eval",
+    "originalName": "gpt-oss-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\gpt-oss-efficacy-eval_scored_2fe29590.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T03:10:48.137Z",
+    "taskId": "bed42754-711b-465c-b6b1-9426b4c7a214",
+    "type": "compare",
+    "size": 192495,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.95,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c48ca373-e681-46ac-bb94-6c8b3a54df2a",
+    "name": "Qwen3-32B-HXK-0822-v2-risk-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-risk-gpt-eval_scored_f0528657.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T09:00:34.882Z",
+    "taskId": "0f3ec423-356b-494f-9f95-60458e5bb9e0",
+    "type": "compare",
+    "size": 448623,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.75,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "759d80f4-5201-4df7-87ae-cb1e8f59652a",
+    "name": "Qwen3-32B-HXK-0822-v1-risk-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-risk-gpt-eval_scored_5a7ebea5.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T09:03:10.893Z",
+    "taskId": "ba3f0f15-76a1-4bad-a4f6-54b6b29ec997",
+    "type": "compare",
+    "size": 424869,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.78,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "14c5970b-0f81-4db9-880c-edab2a112818",
+    "name": "Qwen3-32B-risk-eval",
+    "originalName": "Qwen3-32B-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-risk-eval_scored_75f6721c.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T13:15:23.628Z",
+    "taskId": "9adfca3b-44f0-4fb6-b17f-d30150b802d4",
+    "type": "base",
+    "size": 534113,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "dfd0e240-3575-41e7-9826-b8fd42ad596d",
+    "name": "gpt-oss-risk-eval",
+    "originalName": "gpt-oss-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\gpt-oss-risk-eval_scored_db2552f8.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-22T13:15:24.243Z",
+    "taskId": "9adfca3b-44f0-4fb6-b17f-d30150b802d4",
+    "type": "compare",
+    "size": 465538,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b432f4bd-f6ca-40a2-8813-ad5f1aa2cf1d",
+    "name": "Baichuan-risk-eval",
+    "originalName": "Baichuan-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-risk-eval_scored_33b542ff.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T03:22:28.011Z",
+    "taskId": "699c9181-25bb-4c18-a8ba-534c01aa1c17",
+    "type": "compare",
+    "size": 681432,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.78,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c7f32034-a511-4290-aa9d-1c9def257a1a",
+    "name": "Baichuan-consult-eval",
+    "originalName": "Baichuan-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-consult-eval_scored_a96bab8e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T03:59:21.890Z",
+    "taskId": "09ed3592-09ff-48fd-9595-afef38f1693b",
+    "type": "compare",
+    "size": 1920433,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.97,
+      "minScore": 0.7,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "431c1880-b1c4-4af1-a83c-b0bab96aa19d",
+    "name": "Qwen3-32B-HXK-0822-v1-consult-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-consult-eval_scored_44a8abd2.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T04:36:57.058Z",
+    "taskId": "d10db555-2797-44af-ae99-ff22c1473fe0",
+    "type": "compare",
+    "size": 1201219,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.83,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "18d1ed85-8b88-43d9-8f68-68db5e106a29",
+    "name": "Qwen3-32B-HXK-0822-v2-consult-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-consult-eval_scored_773bacda.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T04:38:18.638Z",
+    "taskId": "456c7f59-af2a-47a9-8f8b-f86615d865ce",
+    "type": "compare",
+    "size": 1217636,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d18bec6c-3feb-42d0-8a3e-43b1a16652a0",
+    "name": "Baichuan-extraction-eval",
+    "originalName": "Baichuan-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-extraction-eval_scored_6768a861.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T04:58:27.701Z",
+    "taskId": "44c07056-bebd-467d-afec-8d46d6b64be2",
+    "type": "compare",
+    "size": 2101730,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.64,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "7c824199-53d9-4853-addb-5afd58786b56",
+    "name": "Baichuan-efficacy-eval",
+    "originalName": "Baichuan-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Baichuan-efficacy-eval_scored_0e03002e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T05:16:04.833Z",
+    "taskId": "70d5d15a-5ac8-4279-b6e6-2b10a1a2541c",
+    "type": "compare",
+    "size": 195569,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.95,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "2669952f-089e-4421-9c76-bb157628a37e",
+    "name": "Qwen3-32B-HXK-0822-v1-efficacy-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-efficacy-eval_scored_d7450f24.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T06:00:36.686Z",
+    "taskId": "bc251494-4b02-4dbf-8329-0cdd71f03b5b",
+    "type": "compare",
+    "size": 200981,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.98,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ac258a48-d843-4ff7-858e-77f17b4195a5",
+    "name": "Qwen3-32B-HXK-0822-v2-efficacy-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-efficacy-eval_scored_b52f9c04.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T06:00:49.671Z",
+    "taskId": "b65e7496-784f-47c1-9520-e5934ee38d35",
+    "type": "compare",
+    "size": 202879,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.99,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "677ac9ea-68d1-4339-9185-39fafdddbc92",
+    "name": "Qwen3-32B-HXK-0822-v1-risk-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v1-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v1-risk-eval_scored_00c09bb9.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T06:34:39.987Z",
+    "taskId": "9ba7ea9d-6134-4d32-9fae-99d75b19391e",
+    "type": "compare",
+    "size": 492721,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "1cce3781-c640-4238-b8b9-1497f7ac05ad",
+    "name": "Qwen3-32B-HXK-0822-v2-risk-eval",
+    "originalName": "Qwen3-32B-HXK-0822-v2-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0822-v2-risk-eval_scored_b7619ae5.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T06:35:56.004Z",
+    "taskId": "57a8ffa4-13d4-4b6d-957a-c0de27d1fbca",
+    "type": "compare",
+    "size": 520617,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.86,
+      "minScore": 0.3,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "008c1bfb-15b3-4700-b7f1-ae344978e76d",
+    "name": "Qwen3-32B-HXK-0825-v1-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v1-COT-gpt-eval_scored_fe18a1e7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T09:44:14.469Z",
+    "taskId": "16c515aa-6db6-40ff-9f1e-985cfd998e75",
+    "type": "compare",
+    "size": 1339942,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "09bcd799-2fdf-4096-a374-cea47e8c69b6",
+    "name": "Qwen3-32B-HXK-0825-v2-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-COT-gpt-eval_scored_27444f9f.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-25T10:22:07.474Z",
+    "taskId": "2c86e473-d185-4a2f-86aa-1e053e6f8b50",
+    "type": "compare",
+    "size": 1352167,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "490df8d1-3214-4149-a1c0-7a97f391b1c8",
+    "name": "Qwen3-32B-HXK-0825-v2-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-COT-eval_scored_ff81f5f7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T08:39:05.606Z",
+    "taskId": "13eb7ebb-5a8c-4ada-bd6b-09174b650f8e",
+    "type": "compare",
+    "size": 1350253,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "71ae0882-1e4d-4752-b4b5-fcff8f69bf3f",
+    "name": "Qwen3-32B-HXK-0825-v2-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-extraction-gpt-eval_scored_3f96cadd.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T06:46:47.795Z",
+    "taskId": "e82f0db3-b980-4543-9dd2-ec9c72334f3e",
+    "type": "compare",
+    "size": 1049847,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.71,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9f53c2c6-46d3-442a-87db-ac0c0da0343f",
+    "name": "Qwen3-32B-HXK-0825-v2-risk-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-risk-gpt-eval_scored_bf9ff823.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T02:16:22.698Z",
+    "taskId": "2df6cc63-27e6-40eb-9ccc-212a87d22f27",
+    "type": "compare",
+    "size": 446825,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.78,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0778d7a2-b515-4178-990b-c39f4723dd57",
+    "name": "Qwen3-32B-HXK-0825-v2-consult-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-consult-gpt-eval_scored_e8bd6268.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T02:42:11.019Z",
+    "taskId": "19f775c0-74d6-470e-aeb8-2983c960a606",
+    "type": "compare",
+    "size": 1191528,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "20f46456-9d06-475d-b88e-badeb30275c9",
+    "name": "Qwen3-32B-HXK-0825-v2-efficacy-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-efficacy-gpt-eval_scored_1e8d4566.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T02:44:01.243Z",
+    "taskId": "54d85f82-38f9-44a5-852d-5ee5b09082ae",
+    "type": "compare",
+    "size": 190001,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "4950d204-ee4e-4fa3-8cdd-994a5559438e",
+    "name": "Qwen3-32B-HXK-0825-v2-risk-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-risk-eval_scored_e2b0573f.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T02:47:25.295Z",
+    "taskId": "a0e8500c-649b-4144-8271-f78ec60e097f",
+    "type": "compare",
+    "size": 517380,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "1d2fc8e4-93d8-4c57-a843-bfb3bb7bdeef",
+    "name": "Qwen3-32B-HXK-0825-v2-efficacy-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-efficacy-eval_scored_732e5f78.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T02:48:48.848Z",
+    "taskId": "890a1b1f-76d8-46f5-be10-106966fc937c",
+    "type": "compare",
+    "size": 201960,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.99,
+      "minScore": 0.7,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "abe4a8c0-a160-4a1a-ad13-b195120def72",
+    "name": "Qwen3-32B-HXK-0825-v2-consult-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-consult-eval_scored_baa9976d.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T02:51:58.863Z",
+    "taskId": "b77917f9-92dc-4999-a070-592d4d4855d3",
+    "type": "compare",
+    "size": 1202689,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "2bfdc85b-667a-4f42-b265-721331aaa40e",
+    "name": "Qwen3-32B-HXK-0826-v2-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v2-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v2-COT-gpt-eval_scored_ba8624f7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T04:56:05.990Z",
+    "taskId": "3925a6e3-38e5-4500-a705-1c4d238f7691",
+    "type": "compare",
+    "size": 1330907,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "13d093f3-a1e5-4777-b9d3-d865d4bb5530",
+    "name": "Qwen3-32B-HXK-0825-v2-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0825-v2-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0825-v2-extraction-eval_scored_3a7c50c7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T06:58:20.592Z",
+    "taskId": "91abe2a8-a012-4752-9e11-4469d7f6d5c4",
+    "type": "compare",
+    "size": 1018984,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.94,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "63dd907c-0976-4da6-a12e-4f6632daec69",
+    "name": "Qwen3-32B-HXK-0826-risk-eval.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-risk-eval.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-risk-eval_scored_39a58da0.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-26T07:25:15.773Z",
+    "taskId": "efbc37ae-e560-499c-a156-0ee16194db73",
+    "type": "compare",
+    "size": 775127,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "f83a35bd-23b4-4b36-8ede-faf1bfa7df50",
+    "name": "Qwen3-32B-HXK-0826-v4-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v4-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v4-COT-gpt-eval_scored_514dc00b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T07:45:21.280Z",
+    "taskId": "0cb6b715-3594-41b7-8ff6-6a5a55f04ffd",
+    "type": "compare",
+    "size": 1322805,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.81,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "f32163a6-ef8a-4f67-8b4f-db2ce67751e6",
+    "name": "Qwen3-32B-HXK-0826-v3-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v3-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v3-COT-gpt-eval_scored_84d03663.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T08:10:03.192Z",
+    "taskId": "9bd5c0e3-b92a-42ad-9ed8-9886f2f128cc",
+    "type": "compare",
+    "size": 1331681,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0bef6f9f-48ba-4d68-8f55-ef51e6968fc2",
+    "name": "Qwen3-32B-HXK-0826-v5-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v5-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v5-COT-gpt-eval_scored_b06af091.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T09:14:31.796Z",
+    "taskId": "9ed5094b-471f-45d7-8ea7-e7f7063a6dd8",
+    "type": "compare",
+    "size": 951414,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.78,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "3a7be5e7-ef88-4b36-bc4f-ce250bf2f846",
+    "name": "Qwen3-32B-HXK-0826-v6-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v6-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v6-COT-gpt-eval_scored_f210515e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-26T10:39:59.281Z",
+    "taskId": "c65f249b-3399-4d2e-a443-4c14168c7719",
+    "type": "compare",
+    "size": 1565262,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "caf9f69b-3446-467c-96cf-1f99585195f1",
+    "name": "Qwen3-32B-HXK-0826-v6-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v6-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v6-COT-eval_scored_e7c5f7b2.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T02:05:04.207Z",
+    "taskId": "a2d510cc-fcdb-4355-8105-44c793f86838",
+    "type": "compare",
+    "size": 1551936,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "007d0d2c-c867-4c5c-8f79-5d20f31dd46c",
+    "name": "Qwen3-32B-HXK-0826-v7-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v7-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v7-COT-gpt-eval_scored_d8b83510.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T02:31:37.335Z",
+    "taskId": "67cbffcd-5b64-4374-b6e5-40b12fb231f2",
+    "type": "compare",
+    "size": 1346885,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "f1f1e146-a113-4eab-bbdb-5795e7d101db",
+    "name": "Qwen3-32B-HXK-0826-v7-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v7-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v7-COT-eval_scored_c3e25602.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T03:08:54.931Z",
+    "taskId": "abda71f1-8d8f-4544-b0d7-6c2d4a20ebe4",
+    "type": "compare",
+    "size": 1360898,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "09e1da26-9e5e-4b2c-a074-00bd623a99b1",
+    "name": "Qwen3-32B-HXK-0826-v8-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0826-v8-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-v8-COT-gpt-eval_scored_eb14c70a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T03:56:55.924Z",
+    "taskId": "f62e4657-f41e-47f6-b356-b77dba5f7437",
+    "type": "compare",
+    "size": 3287212,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.6,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "715ff1f2-3f8b-460c-b92b-41a865e5dec1",
+    "name": "Qwen3-32B-HXK-0826-risk-eval_sft.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-risk-eval_sft.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-risk-eval_sft_scored_25443eab.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-27T04:55:04.917Z",
+    "taskId": "3bd5987f-a98c-410f-82de-6384c5640dc9",
+    "type": "compare",
+    "size": 490420,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0bccca60-e0ea-4079-9fae-84e299b2a454",
+    "name": "Qwen3-32B-HXK-0827-v1-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v1-COT-gpt-eval_scored_a287b56b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T05:36:10.320Z",
+    "taskId": "8cc2a4bb-50e6-49da-a30d-0660fab69376",
+    "type": "compare",
+    "size": 1379178,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0e88df29-e2ae-47d6-a0bb-b1923ba7c6e1",
+    "name": "Qwen3-32B-HXK-0827-v1-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v1-COT-eval_scored_909d2ba2.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T05:36:42.285Z",
+    "taskId": "d597ed4a-966b-45db-9834-cc9232f6c7a0",
+    "type": "compare",
+    "size": 1394395,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "6374c87d-fa5c-4052-95af-1b3b1cf354e2",
+    "name": "Qwen3-32B-HXK-0826-ä¾æ®æå-eval_sft.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-ä¾æ®æå-eval_sft.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-ä¾æ®æå-eval_sft_scored_3945a05f.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-27T07:41:27.601Z",
+    "taskId": "1bae6181-4c75-4184-91f2-4119e0bf088e",
+    "type": "compare",
+    "size": 1465936,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.96,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9102f5cb-b85d-4fef-8f10-6ad9f1570327",
+    "name": "Qwen3-32B-HXK-0827-v2-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v2-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v2-COT-gpt-eval_scored_d18ef49d.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T08:12:21.854Z",
+    "taskId": "e2bff593-0440-432d-a809-901fc2c6cc49",
+    "type": "compare",
+    "size": 1221453,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.8,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "885c6100-dd2f-40d4-a17c-1aaa429efa95",
+    "name": "Qwen3-32B-HXK-0827-v2-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v2-COT-eval_scored_ca46d790.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T08:15:21.973Z",
+    "taskId": "3706ad91-22d0-4123-8fed-4e99b81ab929",
+    "type": "compare",
+    "size": 1239156,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9fa4f465-7e7b-43d4-b67f-dbafc1a03cc5",
+    "name": "Qwen3-32B-HXK-0827-v3-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v3-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v3-COT-gpt-eval_scored_65727565.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T08:19:55.871Z",
+    "taskId": "a9e42203-cb77-4108-9153-6cd7cf4ea32f",
+    "type": "compare",
+    "size": 1551187,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "59c645c5-5649-402e-9830-60147160863e",
+    "name": "Qwen3-32B-HXK-0827-v3-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v3-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v3-COT-eval_scored_0ec3360a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T08:22:27.892Z",
+    "taskId": "7ec9fae8-cd4d-441b-ab6a-47658d5ba55f",
+    "type": "compare",
+    "size": 1576531,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d7d1ffe0-3a55-4753-9e25-2990f854d69d",
+    "name": "Qwen3-32B-HXK-0827-v5-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT-eval_scored_63ca6070.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T09:07:15.771Z",
+    "taskId": "df13b612-022f-4b52-8aac-ada88eecc535",
+    "type": "compare",
+    "size": 1351794,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ed6d4ad4-7bae-4838-a995-54c3c060e607",
+    "name": "Qwen3-32B-HXK-0827-v5-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT-gpt-eval_scored_7991c80f.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T09:07:37.155Z",
+    "taskId": "e9d40e2b-6f47-41a5-8fc3-8faef267c3ef",
+    "type": "compare",
+    "size": 1353402,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d3c50da5-a5a5-4bc1-b996-7da9023ee0ec",
+    "name": "Qwen3-32B-HXK-0827-v4-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v4-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v4-COT-gpt-eval_scored_a52ad9c2.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T09:12:16.896Z",
+    "taskId": "61a7c889-0cb9-4bab-8104-d02bbe786f38",
+    "type": "compare",
+    "size": 1317582,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e44a9d7c-07ea-4c82-b42f-7d6c70a9a55c",
+    "name": "Qwen3-32B-HXK-0827-v4-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v4-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v4-COT-eval_scored_de657869.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-27T09:16:16.211Z",
+    "taskId": "32cc5ec2-9f58-462d-983a-13dd701f7639",
+    "type": "compare",
+    "size": 1343960,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c5cdcabb-c031-458c-9890-a48c54908ffb",
+    "name": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-disease_consult-eval_dpo_scored_3432366e.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T03:55:08.975Z",
+    "taskId": "376e26b1-0c43-4c6b-9272-ac7acf7e2018",
+    "type": "compare",
+    "size": 1675527,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c12cc11f-18fc-4b1f-a40d-7e2f4901f855",
+    "name": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_scored_d99b5325.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-27T09:52:05.801Z",
+    "taskId": "94389fe8-b210-47ab-97b7-4972365bfc10",
+    "type": "compare",
+    "size": 392094,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.97,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e5b85830-3b72-4c1e-9f79-0fd94152a8c2",
+    "name": "Qwen3-32B-HXK-0826-diagnose_criteria_eval_dpo.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-diagnose_criteria_eval_dpo.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-diagnose_criteria_eval_dpo_scored_f97c5988.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-27T10:02:35.282Z",
+    "taskId": "a5530353-1ed1-4900-918f-3f41ffb1de52",
+    "type": "compare",
+    "size": 1651212,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "cffbdb27-3070-4d77-bdbe-c01ecdfd550f",
+    "name": "Qwen3-32B-HXK-0826-disease_infer-eval_dpo.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-disease_infer-eval_dpo.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-disease_infer-eval_dpo_scored_116f2629.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-27T10:10:36.994Z",
+    "taskId": "1f7274a5-051c-430a-a171-544b615105b0",
+    "type": "compare",
+    "size": 1355386,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "4e1c1b13-ccf7-4145-bcc3-ef512862fe99",
+    "name": "Qwen3-32B-HXK-0827-v5-consult-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-consult-gpt-eval_scored_69336585.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T01:34:52.560Z",
+    "taskId": "115d47f2-15fd-40d6-a451-2610a9333394",
+    "type": "compare",
+    "size": 1191597,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "3b11c09f-3a0b-4d6d-8070-d51dd049bc2a",
+    "name": "Qwen3-32B-HXK-0827-v5-consult-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-consult-eval_scored_b804ea4e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T01:38:17.915Z",
+    "taskId": "3f519b29-d2d7-422d-948f-0c21ca892f76",
+    "type": "compare",
+    "size": 1207665,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.83,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0445bc3b-854e-49f1-8f77-b7618958d0cd",
+    "name": "Qwen3-32B-HXK-0827-v5-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-extraction-eval_scored_abb7ce62.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T01:52:53.063Z",
+    "taskId": "75d17bf8-e310-4ce0-8ba9-acbf808979f6",
+    "type": "compare",
+    "size": 1013799,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.94,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "feee6cc0-57aa-412b-99f6-2a0fccaf8b63",
+    "name": "Qwen3-32B-HXK-0827-v5-efficacy-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-efficacy-eval_scored_2e078a91.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T02:06:11.729Z",
+    "taskId": "2b92d368-9fce-49d8-a788-4a1f068fe1f0",
+    "type": "compare",
+    "size": 206157,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.99,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "fc54e0e7-6b14-43a0-bcaf-03d6f0880d18",
+    "name": "Qwen3-32B-HXK-0827-v5-efficacy-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-efficacy-gpt-eval_scored_649194cd.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T02:07:20.159Z",
+    "taskId": "ad732348-4e45-494f-8c06-bd9ff9262b95",
+    "type": "compare",
+    "size": 188794,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "70fd5b1a-c9b7-44bd-994a-ef4e62bfa275",
+    "name": "Qwen3-32B-HXK-0827-v5-risk-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-risk-gpt-eval_scored_26d33cba.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T02:34:15.415Z",
+    "taskId": "8bffd4b1-a08f-4859-85d4-5322ceb86b86",
+    "type": "compare",
+    "size": 433045,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.77,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "61973a02-3d8c-49c7-a1bc-157aa6a7c20b",
+    "name": "Qwen3-32B-HXK-0827-v5-risk-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-risk-eval_scored_8ea06cc0.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T02:34:50.758Z",
+    "taskId": "ed3dbfc2-2ab9-4f94-97c8-10335af00791",
+    "type": "compare",
+    "size": 494057,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "64192363-7116-4d3f-86bb-c10cbe88ca76",
+    "name": "Qwen3-32B-HXK-0827-v5-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-extraction-gpt-eval_scored_67bdca46.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T02:57:01.068Z",
+    "taskId": "f1ff2637-3cc3-4b6a-869b-84f737935596",
+    "type": "compare",
+    "size": 1037582,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.72,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "7a11a420-140e-4eaa-965c-c18d8d6661ed",
+    "name": "Qwen3-32B-HXK-0827-v5-COT2-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT2-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT2-eval_scored_73335296.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T04:51:08.706Z",
+    "taskId": "1ccb9455-2366-4212-9401-f508ecfd9881",
+    "type": "compare",
+    "size": 1353070,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d845dbe4-f68b-4a08-beea-b932c274160e",
+    "name": "Qwen3-32B-HXK-0827-v5-COT2-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT2-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT2-gpt-eval_scored_2e149e4f.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T04:53:19.616Z",
+    "taskId": "d902d3d3-8eac-4292-9dad-001020af0160",
+    "type": "compare",
+    "size": 1336618,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b4b454fe-42ac-4b92-9f9b-011747508ac7",
+    "name": "Qwen3-32B-HXK-0828-v1-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v1-COT-gpt-eval_scored_fc75b7e1.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T04:56:09.413Z",
+    "taskId": "c6979aaf-4af7-4b46-aa7e-5e5747e8d18b",
+    "type": "compare",
+    "size": 1339422,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "390b0d83-8812-4a45-ac97-7efcea954db2",
+    "name": "Qwen3-32B-HXK-0828-v1-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v1-COT-eval_scored_69857dee.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T04:56:22.665Z",
+    "taskId": "ced90317-97bb-4a03-94bf-ebd251236c45",
+    "type": "compare",
+    "size": 1357141,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d2508e12-a1c9-4651-8fa2-f4d210328803",
+    "name": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_merge_qwen3__202508281215_scored_1e208ab9.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T05:13:49.431Z",
+    "taskId": "68d08a8c-3611-4ffd-aa80-35bd741ab661",
+    "type": "compare",
+    "size": 394766,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.99,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e9a6a4b7-f9b5-42d8-ae00-5628e3ef36a7",
+    "name": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo__dpo_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo__dpo_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-disease_consult-eval_dpo__dpo_merge_qwen3__202508281215_scored_54c176b6.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T05:17:11.759Z",
+    "taskId": "816be4ee-9da7-4220-b1b0-4cce7f1c28ec",
+    "type": "compare",
+    "size": 1680667,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "4ae67ca6-e809-4b9e-af5a-dc7af47f483c",
+    "name": "Qwen3-32B-HXK-0826-criteria_dpo_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-criteria_dpo_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-criteria_dpo_merge_qwen3__202508281215_scored_58ae7ef6.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T05:53:04.237Z",
+    "taskId": "d756affc-e77d-44b2-96f3-eac77e65ab7d",
+    "type": "compare",
+    "size": 1654772,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "8cecbe74-17dc-4578-ab90-91ec9694c152",
+    "name": "Qwen3-32B-HXK-0826-disease_infer-eval_dpo__dpo_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-disease_infer-eval_dpo__dpo_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-disease_infer-eval_dpo__dpo_merge_qwen3__202508281215_scored_ec16e4b2.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T06:02:49.076Z",
+    "taskId": "472d4bae-00a9-4ce7-bf54-373205dd496e",
+    "type": "compare",
+    "size": 1336854,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "98baf128-2428-4a09-9c30-33b107ce692b",
+    "name": "Qwen3-32B-HXK-0826-risk-eval__dpo_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-risk-eval__dpo_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-risk-eval__dpo_merge_qwen3__202508281215_scored_290e4ffd.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T06:03:15.220Z",
+    "taskId": "374e39f1-09b3-4558-9792-e23c87e59ae6",
+    "type": "compare",
+    "size": 779549,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d9fa69f0-f361-495d-9185-af2bd9981cd8",
+    "name": "Qwen3-32B-HXK-0828-v2-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v2-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v2-COT-gpt-eval_scored_f40ccc09.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T06:09:43.388Z",
+    "taskId": "15861af8-01f0-4b2e-b29d-2729810d28c1",
+    "type": "compare",
+    "size": 1469192,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "4596e0aa-2d31-4869-a4a7-1b9fe902173f",
+    "name": "Qwen3-32B-HXK-0828-v2-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v2-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v2-COT-eval_scored_4ee398af.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T06:09:46.428Z",
+    "taskId": "ccc1eaec-f088-4570-8487-ea26c3aedbc4",
+    "type": "compare",
+    "size": 1481479,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "366e8d3b-86df-4bf1-9232-a032c99f6599",
+    "name": "Qwen3-32B-HXK-0827-v5-COT3-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT3-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT3-eval_scored_ba948918.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T07:09:02.993Z",
+    "taskId": "4c8ff8b8-776a-4ec3-936a-f8da7bd978a0",
+    "type": "compare",
+    "size": 1357477,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "9b6bd8f8-d3d5-4078-882d-c5b17911f279",
+    "name": "Qwen3-32B-HXK-0827-v5-COT3-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT3-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT3-gpt-eval_scored_3e1c6a36.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T07:12:18.374Z",
+    "taskId": "881fe4d4-0b37-4f9e-bb4a-042729998af9",
+    "type": "compare",
+    "size": 1335950,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "220a6961-0bf5-4399-8da0-66b40e38af79",
+    "name": "Qwen3-32B-HXK-0828-v3-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v3-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v3-COT-gpt-eval_scored_5a843318.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T07:57:50.292Z",
+    "taskId": "51121057-f9b8-4972-908b-27199d9babca",
+    "type": "compare",
+    "size": 1332449,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "cb20d96d-53ff-47cc-a05a-15d800f6d742",
+    "name": "Qwen3-32B-HXK-0828-v3-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v3-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v3-COT-eval_scored_62a71c3a.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T07:59:38.906Z",
+    "taskId": "c08e9b3c-3ada-4a12-858d-ddd2f0e7d36f",
+    "type": "compare",
+    "size": 1353322,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ec7437da-b599-48c6-9148-a3662fe935da",
+    "name": "Qwen3-32B-HXK-0826-å»å­¦æ¨ç-eval_dpo__dpo_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-å»å­¦æ¨ç-eval_dpo__dpo_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-å»å­¦æ¨ç-eval_dpo__dpo_merge_qwen3__202508281215_scored_cee18fac.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-28T08:20:24.602Z",
+    "taskId": "472d4bae-00a9-4ce7-bf54-373205dd496e",
+    "type": "compare",
+    "size": 1347484,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "89975bfc-17bf-4302-befb-7104e67c834c",
+    "name": "Qwen3-32B-HXK-0828-v4-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v4-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v4-COT-gpt-eval_scored_6eb96546.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T08:25:03.263Z",
+    "taskId": "dbbaedd8-c520-40dc-8238-b9c93e1ac7fb",
+    "type": "compare",
+    "size": 1367448,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "a5312cee-ed4d-4a68-830c-5f6e11e2a859",
+    "name": "Qwen3-32B-HXK-0828-v4-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v4-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v4-COT-eval_scored_a14a65d9.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T08:27:48.580Z",
+    "taskId": "eb07ef92-a87f-4bc5-9846-33860b87a9ef",
+    "type": "compare",
+    "size": 1390857,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "cb5834a2-3b2e-4f8f-98f3-4abff260cdbe",
+    "name": "Qwen3-32B-HXK-0828-v5-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v5-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v5-COT-gpt-eval_scored_aacf9da4.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T08:30:40.287Z",
+    "taskId": "8e6d0fbd-6628-4df6-98f8-503470536ed9",
+    "type": "compare",
+    "size": 1328878,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "3fd26393-a7ed-4bf3-9865-9168259013a5",
+    "name": "Qwen3-32B-HXK-0828-v5-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v5-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v5-COT-eval_scored_3622a7d0.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T08:36:17.264Z",
+    "taskId": "d07db1cd-9ed6-45ac-b4ff-7392003caaf4",
+    "type": "compare",
+    "size": 1345545,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "7791a88c-abd7-48f4-8936-d9eb040b9594",
+    "name": "Qwen3-32B-HXK-0828-v6-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-COT-gpt-eval_scored_127933cb.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T09:00:00.699Z",
+    "taskId": "616d591f-4a35-4892-8f0f-5be442cdf5ca",
+    "type": "compare",
+    "size": 1370424,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "21414ee1-2f78-4b8c-a0c8-75ab0b61edf8",
+    "name": "Qwen3-32B-HXK-0828-v6-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-COT-eval_scored_314ff844.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T09:06:48.598Z",
+    "taskId": "06aaae4d-ff39-483d-94a9-d28235f35b3d",
+    "type": "compare",
+    "size": 1363835,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "73074699-78c6-49b4-b573-83476a2e4a2e",
+    "name": "Qwen3-32B-HXK-0827-v5-COT4-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT4-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT4-eval_scored_18d11815.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T10:08:21.793Z",
+    "taskId": "4999aec8-4c99-4975-a529-937ca782d9b3",
+    "type": "compare",
+    "size": 1359153,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "cec893d7-4b12-4e86-b36e-80bab446ecf0",
+    "name": "Qwen3-32B-HXK-0827-v5-COT4-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0827-v5-COT4-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0827-v5-COT4-gpt-eval_scored_8300fa6e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T10:08:33.440Z",
+    "taskId": "572f7e46-a873-4a74-a031-39b31cbb38ea",
+    "type": "compare",
+    "size": 1340709,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "97d0038c-07eb-4709-9e3d-5d1f7ad9613f",
+    "name": "Qwen3-32B-HXK-0828-v7-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v7-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v7-COT-eval_scored_4cd2ef96.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T10:14:26.780Z",
+    "taskId": "eb8290df-c41f-4f83-b859-7e7fc1a867c1",
+    "type": "compare",
+    "size": 1370069,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ca73a202-f064-48d9-805d-9c5e1e01f7f9",
+    "name": "Qwen3-32B-HXK-0828-v7-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v7-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v7-COT-gpt-eval_scored_a46b2ce7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-28T10:14:29.451Z",
+    "taskId": "abb8b01b-0f23-422c-b927-507d8b91aa02",
+    "type": "compare",
+    "size": 1344923,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "308da06a-1586-497d-9078-ffaa5697c4a5",
+    "name": "Qwen3-32B-HXK-0828-v8-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v8-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v8-COT-eval_scored_b1988fad.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T01:33:53.058Z",
+    "taskId": "39cbc720-cd01-4bf6-a2c7-a2817f547150",
+    "type": "compare",
+    "size": 1357400,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "6b267ec7-8b9e-4dda-8f1f-8231cfb6bbf3",
+    "name": "Qwen3-32B-HXK-0828-v9-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v9-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v9-COT-eval_scored_f5077d69.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T01:34:58.798Z",
+    "taskId": "9ff275a9-3703-4f8c-bfa2-37f8a6d39546",
+    "type": "compare",
+    "size": 1363879,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ac2fdfa5-c116-4121-8667-7c4b71524f1e",
+    "name": "Qwen3-32B-HXK-0828-v8-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v8-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v8-COT-gpt-eval_scored_ec2bb66b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T01:40:07.264Z",
+    "taskId": "8ca38183-bc5c-4813-968e-00410f9018a8",
+    "type": "compare",
+    "size": 1341305,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "5b8b9398-3929-4bf8-9880-d20163065cf9",
+    "name": "Qwen3-32B-HXK-0828-v9-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v9-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v9-COT-gpt-eval_scored_4b9a1952.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T01:41:06.307Z",
+    "taskId": "39b15cd2-5623-49b9-aefb-41677b827ea8",
+    "type": "compare",
+    "size": 1345895,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.83,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "2022016b-adc3-4b25-a602-094854fa9070",
+    "name": "Qwen3-32B-HXK-0828-v6-consult-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-consult-gpt-eval_scored_9658eeeb.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:06:20.453Z",
+    "taskId": "7b83c16a-1002-443c-a678-19e1575648bc",
+    "type": "compare",
+    "size": 1202758,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.91,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "8d4206ef-1579-4816-9e33-e1d92a400d11",
+    "name": "Qwen3-32B-HXK-0828-v6-consult-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-consult-eval_scored_7c1ea23e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:10:14.195Z",
+    "taskId": "75d3d410-2c6a-47d3-b06b-04f77dd9651f",
+    "type": "compare",
+    "size": 1218243,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.84,
+      "minScore": 0.3,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "0453d989-89ed-4b36-82fb-93a356b63730",
+    "name": "Qwen3-32B-HXK-0828-v6-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-extraction-eval_scored_0bf10743.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:18:29.136Z",
+    "taskId": "15ec77ce-822c-4baa-8382-3e6a5656d4ff",
+    "type": "compare",
+    "size": 1026662,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.95,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c66d0d7d-88da-4f14-aa0d-eaaa54336602",
+    "name": "Qwen3-32B-HXK-0828-v6-efficacy-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-efficacy-eval_scored_a1050013.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:41:41.348Z",
+    "taskId": "5a8fe502-afd1-4083-ae9c-f36c9f8f0ecc",
+    "type": "compare",
+    "size": 202389,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.99,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "aca13475-6b46-4693-8f31-c429c49c1a0f",
+    "name": "Qwen3-32B-HXK-0828-v6-efficacy-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-efficacy-gpt-eval_scored_aa779736.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:43:47.133Z",
+    "taskId": "7d4d90e7-eb0c-4ec8-8240-d1d8e13ebcf5",
+    "type": "compare",
+    "size": 191214,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "c619533c-b068-4cf0-9d45-55c723cf8041",
+    "name": "Qwen3-32B-HXK-0828-v6-risk-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-risk-gpt-eval_scored_620b08e5.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:58:09.939Z",
+    "taskId": "fac383d4-4199-48bd-80dd-32f4b5840290",
+    "type": "compare",
+    "size": 447460,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.78,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "cbc3bb26-d1c2-495a-8719-b962b47ad1a8",
+    "name": "Qwen3-32B-HXK-0828-v6-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-extraction-gpt-eval_scored_bce81d98.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T02:58:45.109Z",
+    "taskId": "573bb4e1-9165-4c0a-b15e-74669e0afcf1",
+    "type": "compare",
+    "size": 1055248,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.72,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "16f6cf04-1b37-4e5b-8f51-aa2b82d65670",
+    "name": "Qwen3-32B-HXK-0828-v6-risk-eval",
+    "originalName": "Qwen3-32B-HXK-0828-v6-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0828-v6-risk-eval_scored_6b123902.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T03:02:52.859Z",
+    "taskId": "fc38d2d8-5ebc-40aa-8616-2de07ae5aafe",
+    "type": "compare",
+    "size": 513228,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.86,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e16950ec-449c-49fd-a607-a7d2dc0194a4",
+    "name": "Qwen3-32B-HXK-0829-v1-extraction-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-extraction-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-extraction-eval_scored_4fc87588.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T03:52:46.220Z",
+    "taskId": "f06084a4-42b6-4465-b727-0b6f841d2a09",
+    "type": "compare",
+    "size": 1098664,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.93,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b77d9382-545f-4d50-9c25-e45372572e00",
+    "name": "Qwen3-32B-HXK-0829-v1-COT-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-COT-eval_scored_fe87d775.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T03:54:03.907Z",
+    "taskId": "8108a5c2-7d40-4efe-b572-f5d5aba3b30b",
+    "type": "compare",
+    "size": 1479429,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.87,
+      "minScore": 0.5,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "cfc8580d-0dad-474a-8653-237cac4b1c67",
+    "name": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_v2_merge_qwen3__202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_v2_merge_qwen3__202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-validity_criteria-eval_dpo_v2_merge_qwen3__202508281215_scored_66d8eccb.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T04:01:15.306Z",
+    "taskId": "0f80d0b4-0df7-4228-b906-eac8bfc7721a",
+    "type": "compare",
+    "size": 387879,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.98,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ba0890f8-cc90-404a-a964-0191e3beecaa",
+    "name": "Qwen3-32B-HXK-0829-v1-consult-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-consult-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-consult-gpt-eval_scored_22999f38.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:02:40.425Z",
+    "taskId": "1f969763-4a93-4f34-9079-394fedb6c471",
+    "type": "compare",
+    "size": 1215474,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.91,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "f7c6a5a6-9031-4d44-a8ab-65b4244fa686",
+    "name": "Qwen3-32B-HXK-0829-v1-efficacy-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-efficacy-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-efficacy-gpt-eval_scored_29307fe7.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:02:42.059Z",
+    "taskId": "e2fab0f6-530b-4f60-bb1d-147b62e12961",
+    "type": "compare",
+    "size": 196142,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.94,
+      "minScore": 0.3,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e3e7ec81-543d-4097-aa31-4b19f492a5c3",
+    "name": "Qwen3-32B-HXK-0829-v1-efficacy-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-efficacy-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-efficacy-eval_scored_0e6422ff.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:04:07.874Z",
+    "taskId": "974c98ff-d599-411d-862a-08d04d63d639",
+    "type": "compare",
+    "size": 206153,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.98,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "17c482a9-58b5-4342-888d-97f2a840cd49",
+    "name": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo_v2_202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo_v2_202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-disease_consult-eval_dpo_v2_202508281215_scored_7898946a.xlsx",
+    "submitter": "lwC",
+    "uploadTime": "2025-08-29T04:04:51.458Z",
+    "taskId": "425c74fd-f691-4389-9a39-27fd960d62f4",
+    "type": "compare",
+    "size": 1685603,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "d81847a6-7438-4d4d-ad90-fe8657e41d8f",
+    "name": "Qwen3-32B-HXK-0829-v1-COT-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-COT-gpt-eval_scored_f5f7f51e.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:07:43.879Z",
+    "taskId": "235f8280-d5ca-4a53-b868-d2209ab841d1",
+    "type": "compare",
+    "size": 1477009,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.84,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "bc7a7ece-0851-4250-bcee-c2714e7bbba7",
+    "name": "Qwen3-32B-HXK-0829-v1-consult-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-consult-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-consult-eval_scored_340987fd.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:08:01.356Z",
+    "taskId": "9e1d28fe-3b71-46e9-8246-a94a82cfdcce",
+    "type": "compare",
+    "size": 1227200,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0.2,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "bb8b9efe-5797-4319-8460-f3364b2a95d4",
+    "name": "Qwen3-32B-HXK-0826-eval_dpo_v2_criteria_202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-eval_dpo_v2_criteria_202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-eval_dpo_v2_criteria_202508281215_scored_6f148290.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T04:14:38.325Z",
+    "taskId": "3d77cae3-2c59-489b-9fce-7e5acd83ef75",
+    "type": "compare",
+    "size": 1657526,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.94,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e158e109-b7ce-4cfb-8dfd-0cf573598b3b",
+    "name": "Qwen3-32B-HXK-0826-dpo_V2_ill_infer_202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-dpo_V2_ill_infer_202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-dpo_V2_ill_infer_202508281215_scored_51f96a08.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T04:17:43.012Z",
+    "taskId": "459cf6b7-edb3-4607-96d5-b75c2ecc80e1",
+    "type": "compare",
+    "size": 1330886,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e9de4b81-b6cd-47bc-970e-ef3abe6c626c",
+    "name": "Qwen3-32B-HXK-0829-v1-risk-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-risk-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-risk-gpt-eval_scored_154e6758.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:28:57.159Z",
+    "taskId": "ea0684b3-b60f-4069-a836-2fbae9ec1c65",
+    "type": "compare",
+    "size": 473457,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.76,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "83c7aeb6-9eb7-4a29-b62d-647f2d8e2b4b",
+    "name": "Qwen3-32B-HXK-0829-v1-extraction-gpt-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-extraction-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-extraction-gpt-eval_scored_66450da0.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:32:16.913Z",
+    "taskId": "17d9000a-48a0-4a5a-8e1f-ac71e9e4954b",
+    "type": "compare",
+    "size": 1125915,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.73,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "b3cd53ae-3d0e-4a92-86b0-d85c68b9ecc5",
+    "name": "Qwen3-32B-HXK-0826-risk-eval__dpo_v2_202508281215.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-risk-eval__dpo_v2_202508281215.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-risk-eval__dpo_v2_202508281215_scored_68a0c947.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T04:35:41.840Z",
+    "taskId": "4499d666-4161-49cb-b2aa-95bc1a0a27c3",
+    "type": "compare",
+    "size": 779478,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.86,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "41b942e2-8659-4a6b-bc86-15f6504b9d7e",
+    "name": "Qwen3-32B-HXK-0829-v1-risk-eval",
+    "originalName": "Qwen3-32B-HXK-0829-v1-risk-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0829-v1-risk-eval_scored_a2147c15.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-08-29T04:39:35.243Z",
+    "taskId": "8e68447e-6234-4de8-b5a6-8599d0185f9a",
+    "type": "compare",
+    "size": 537930,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.86,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e19aa85f-daf1-46f6-b123-d9f194f2d078",
+    "name": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-validity_criteria-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-validity_criteria-eval_dpo__dpov2_merge_qwen3_202508291202_scored_98fd401e.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T04:59:53.574Z",
+    "taskId": "f2fcdf72-82ca-4477-8d5f-1fda425ebb13",
+    "type": "compare",
+    "size": 384344,
+    "scoreStats": {
+      "totalQuestions": 220,
+      "scoredQuestions": 220,
+      "averageScore": 0.98,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 220,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "fbc2da56-806b-4c7b-97e3-1ef26d14ad4e",
+    "name": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-disease_consult-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-disease_consult-eval_dpo__dpov2_merge_qwen3_202508291202_scored_7a481619.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T05:01:51.616Z",
+    "taskId": "accc890b-d9a9-4074-a7f8-b967a6f13fb6",
+    "type": "compare",
+    "size": 1650566,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.82,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "af5949d7-4390-46a5-b417-72b02d389eec",
+    "name": "Qwen3-32B-HXK-0826-ill_infer-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-ill_infer-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-ill_infer-eval_dpo__dpov2_merge_qwen3_202508291202_scored_ad40d222.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T05:18:37.703Z",
+    "taskId": "a8012fc1-f399-4fa9-87cf-d7d8db0127ff",
+    "type": "compare",
+    "size": 1282872,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.86,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "3fc1eec6-52c9-48f4-8dc3-061deaa4c77d",
+    "name": "Qwen3-32B-HXK-0826-ä¾æ®æå-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-ä¾æ®æå-eval_dpo__dpov2_merge_qwen3_202508291202.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-ä¾æ®æå-eval_dpo__dpov2_merge_qwen3_202508291202_scored_f2df4ac2.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T05:25:10.039Z",
+    "taskId": "02101bbe-1a18-4e05-8abc-46b684d464de",
+    "type": "compare",
+    "size": 1644469,
+    "scoreStats": {
+      "totalQuestions": 1000,
+      "scoredQuestions": 1000,
+      "averageScore": 0.94,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 1000,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "8a41db6b-e8aa-4441-b5bc-81c3a0a60e3c",
+    "name": "Qwen3-32B-HXK-0826-risk-eval__dpov2_merge_qwen3_202508291202.xlsx",
+    "originalName": "Qwen3-32B-HXK-0826-risk-eval__dpov2_merge_qwen3_202508291202.xlsx",
+    "filePath": "D:\\自动评测系统2\\completed-files\\Qwen3-32B-HXK-0826-risk-eval__dpov2_merge_qwen3_202508291202_scored_5c55baab.xlsx",
+    "submitter": "lwc",
+    "uploadTime": "2025-08-29T05:28:20.261Z",
+    "taskId": "bf1589b8-ffde-4b3d-b9df-41ae28bde90f",
+    "type": "compare",
+    "size": 761847,
+    "scoreStats": {
+      "totalQuestions": 500,
+      "scoredQuestions": 500,
+      "averageScore": 0.85,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 500,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "ae535ccf-e158-4893-a9ab-910e9893d6b1",
+    "name": "deepseek-r1-COT-eval",
+    "originalName": "deepseek-r1-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\deepseek-r1-COT-eval_scored_7768d3d0.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-09-11T10:27:43.276Z",
+    "taskId": "d8b92f01-f2a4-4677-85be-ea0f11b18f5b",
+    "type": "compare",
+    "size": 1466532,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.89,
+      "minScore": 0.6,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "bd5ea91e-58aa-4b86-87dd-71d93f5c36b7",
+    "name": "YiLing-COT-gpt-eval",
+    "originalName": "YiLing-COT-gpt-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\YiLing-COT-gpt-eval_scored_469ab965.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-09-12T03:19:56.488Z",
+    "taskId": "9c1ff5e0-b28c-48e6-8d39-1fb94a4fe015",
+    "type": "compare",
+    "size": 409191,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.22,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  },
+  {
+    "id": "e745d155-5097-40f7-bf9d-8ad5639b8e46",
+    "name": "YiLing-COT-eval",
+    "originalName": "YiLing-COT-eval",
+    "filePath": "D:\\自动评测系统2\\completed-files\\YiLing-COT-eval_scored_aca3134b.xlsx",
+    "submitter": "wz",
+    "uploadTime": "2025-09-12T05:27:54.380Z",
+    "taskId": "352ebb0d-9aaf-4b28-ad69-fb6cd0391a2c",
+    "type": "compare",
+    "size": 1031647,
+    "scoreStats": {
+      "totalQuestions": 967,
+      "scoredQuestions": 967,
+      "averageScore": 0.7,
+      "minScore": 0,
+      "maxScore": 1,
+      "scoreDistribution": {
+        "0-20": 967,
+        "20-40": 0,
+        "40-60": 0,
+        "60-80": 0,
+        "80-100": 0
+      }
+    }
+  }
+]

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动评估系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            min-height: 200px;
+        }
+        .upload-area:hover {
+            border-color: #0056b3;
+            background-color: #e3f2fd;
+        }
+        .upload-area.dragover {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .file-info {
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .task-card {
+            transition: transform 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            font-size: 0.8em;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        .model-section {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .base-model {
+            border-color: #28a745;
+            background-color: #f8fff9;
+        }
+        .compare-model {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+        .selected-file {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0"><i class="fas fa-chart-line me-2"></i>自动评估系统</h1>
+                    <p class="mb-0 mt-2">多人在线协作的智能评测平台</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-light me-2" onclick="showCompletedFiles()">
+                        <i class="fas fa-folder-open me-1"></i>已完成评估文件
+                    </button>
+                    <button class="btn btn-light" onclick="refreshTasks()">
+                        <i class="fas fa-sync-alt me-1"></i>刷新任务
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- 文件选择区域 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-upload me-2"></i>创建新的评测任务</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="uploadForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">任务名称 *</label>
+                                    <input type="text" class="form-control" id="taskName" placeholder="请输入评测任务名称" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">提交人 *</label>
+                                    <input type="text" class="form-control" id="submitter" placeholder="请输入提交人姓名" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <!-- Base模型 -->
+                                <div class="col-md-6">
+                                    <div class="model-section base-model">
+                                        <h5 class="text-success mb-3">
+                                            <i class="fas fa-star me-2"></i>Base模型 (可选)
+                                        </h5>
+                                        <p class="text-muted small mb-3">Base模型用作对比基准，可以为空</p>
+                                        
+                                        <div class="mb-3">
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="baseSource" id="baseUpload" value="upload" checked>
+                                                <label class="btn btn-outline-success" for="baseUpload">
+                                                    <i class="fas fa-upload me-1"></i>直接上传
+                                                </label>
+                                                <input type="radio" class="btn-check" name="baseSource" id="baseSelect" value="select">
+                                                <label class="btn btn-outline-success" for="baseSelect">
+                                                    <i class="fas fa-folder-open me-1"></i>从已完成文件选择
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div id="baseUploadArea" class="upload-area">
+                                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
+                                            <p class="mb-2">点击选择文件或拖拽文件到此处</p>
+                                            <input type="file" class="form-control" id="baseFile" accept=".xlsx" style="display: none;">
+                                            <button type="button" class="btn btn-outline-success" onclick="document.getElementById('baseFile').click()">
+                                                选择文件
+                                            </button>
+                                            <div id="baseFileInfo" class="file-info" style="display: none;"></div>
+                                        </div>
+                                        
+                                        <div id="baseSelectArea" class="selected-file" style="display: none;">
+                                            <p class="mb-2">已选择的文件：</p>
+                                            <div id="baseSelectedFile" class="text-muted">未选择</div>
+                                            <button type="button" class="btn btn-sm btn-outline-success mt-2" onclick="selectCompletedFile('base')">
+                                                <i class="fas fa-search me-1"></i>选择文件
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 对比模型 -->
+                                <div class="col-md-6">
+                                    <div class="model-section compare-model">
+                                        <h5 class="text-primary mb-3">
+                                            <i class="fas fa-balance-scale me-2"></i>对比模型 *
+                                        </h5>
+                                        <p class="text-muted small mb-3">对比模型是必须的，用于评测和对比</p>
+                                        
+                                        <div class="mb-3">
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="compareSource" id="compareUpload" value="upload" checked>
+                                                <label class="btn btn-outline-primary" for="compareUpload">
+                                                    <i class="fas fa-upload me-1"></i>直接上传
+                                                </label>
+                                                <input type="radio" class="btn-check" name="compareSource" id="compareSelect" value="select">
+                                                <label class="btn btn-outline-primary" for="compareSelect">
+                                                    <i class="fas fa-folder-open me-1"></i>从已完成文件选择
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div id="compareUploadArea" class="upload-area">
+                                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
+                                            <p class="mb-2">点击选择文件或拖拽文件到此处</p>
+                                            <input type="file" class="form-control" id="compareFile" accept=".xlsx" style="display: none;">
+                                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('compareFile').click()">
+                                                选择文件
+                                            </button>
+                                            <div id="compareFileInfo" class="file-info" style="display: none;"></div>
+                                        </div>
+                                        
+                                        <div id="compareSelectArea" class="selected-file" style="display: none;">
+                                            <p class="mb-2">已选择的文件：</p>
+                                            <div id="compareSelectedFile" class="text-muted">未选择</div>
+                                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="selectCompletedFile('compare')">
+                                                <i class="fas fa-search me-1"></i>选择文件
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-success btn-lg" id="submitBtn" disabled>
+                                    <i class="fas fa-rocket me-2"></i>创建评测任务
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 评测任务列表 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="fas fa-list me-2"></i>评测任务列表</h4>
+                        <span class="badge bg-light text-dark" id="taskCount">0 个任务</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="tasksList">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>任务ID</th>
+                                            <th>任务名称</th>
+                                            <th>提交人</th>
+                                            <th>提交时间</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tasksTableBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">
+                                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                <br>暂无评测任务
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示模态框 -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>任务创建成功</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="successMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

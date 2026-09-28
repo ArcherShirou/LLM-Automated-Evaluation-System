@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.py[cod]
+.idea/
+.env
+.env.*
+!.env.example
+uploads/
+completed-files/
+completed-files-data.json
+*_scored.xlsx

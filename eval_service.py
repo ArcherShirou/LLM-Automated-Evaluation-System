@@ -1,12 +1,12 @@
 import pandas as pd
 import asyncio
 import os
-import re
 import json
 import sys
 import uuid
 import shutil
 import time
+import math
 from openai import OpenAI
 from tqdm import tqdm
 
@@ -34,8 +34,7 @@ def validate_excel(file_path):
 def build_prompt(row):
     question = str(row['instruction'])
     answer = str(row['model_ans'])
-    # reference = str(row['reference']) if pd.notna(row['reference']) else ''
-    reference = ''
+    reference = str(row['reference']) if pd.notna(row['reference']) else ''
 
     if reference.strip():
         return f"""
@@ -99,72 +98,55 @@ Student's answer: {answer}
 
 
 def extract_score_and_reason(output: str):
-    score = 0.0
-    reason = ""
-
+    decoder = json.JSONDecoder()
     try:
-        # 先防御性截取第一组 {"student": ...}
-        student_blocks = re.findall(r'\{\s*"student"\s*:\s*(0(?:\.\d)?|1(?:\.0)?)\s*\}', output)
-        if student_blocks:
-            score = float(student_blocks[0])  # 只取第一组
+        score_data, offset = decoder.raw_decode(output.lstrip())
+        reason_data, end = decoder.raw_decode(output.lstrip()[offset:].lstrip())
+        if output.lstrip()[offset:].lstrip()[end:].strip():
+            raise ValueError("模型输出包含多余内容")
+        score = score_data['student']
+        reason = reason_data['reason']
+    except (TypeError, KeyError, json.JSONDecodeError) as exc:
+        raise ValueError("教师模型未返回有效评分和理由") from exc
 
-        # 再防御性截取第一组 {"reason": "..."}
-        reason_blocks = re.findall(r'\{\s*"reason"\s*:\s*"([^"]*)"\s*\}', output, re.DOTALL)
-        if reason_blocks:
-            reason = reason_blocks[0]
-
-        # 清理 reason：去掉多余空格和换行
-        reason = re.sub(r'\s+', ' ', reason).strip()
-        # 处理转义字符
-        reason = reason.replace('\\"', '"').replace("\\'", "'")
-
-        # 限制 reason 长度（150字符）
-        if len(reason) > 150:
-            reason = reason[:150].rstrip() + "…"
-
-    except Exception:
-        pass  # 出错就保持默认值
-
-    return score, reason
+    if isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score) or not 0 <= score <= 1:
+        raise ValueError("教师模型评分必须是 0 到 1 之间的数字")
+    if not isinstance(reason, str) or not reason.strip():
+        raise ValueError("教师模型未返回评分理由")
+    return float(score), ' '.join(reason.split())[:150]
 
 
 def call_teacher_model(prompt, api_base=TEACHER_MODEL_URL, teacher_model_name=TEACHER_MODEL_NAME):
-    os.environ.pop("HTTP_PROXY", None)
-    os.environ.pop("HTTPS_PROXY", None)
-    try:
-        if teacher_model_name == 'Deepseek':
-            client = OpenAI(api_key="EMPTY", base_url=api_base)
-            response = client.chat.completions.create(
-                model='/disk2/liweichao/DeepSeek/DeepSeek-R1',
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.6,
-                top_p=0.8,
-                max_tokens=8192
-            )
-            return response.choices[-1].message.content.strip()
-        elif teacher_model_name == 'GPT-oss':
-            client = OpenAI(api_key="EMPTY", base_url=api_base)
-            response = client.responses.create(
-                model="Open-Model/openai-120B",
-                instructions="You are a helfpul assistant.",
-                input=prompt
-            )
-            return response.output_text
-    except Exception as e:
-        print(f"调用教师模型出错: {e}")
-        return '{"student": 0.0, "reason": "调用失败"}'
+    client = OpenAI(
+        api_key=os.environ.get('TEACHER_MODEL_API_KEY', 'EMPTY'),
+        base_url=api_base,
+        timeout=30.0,
+        max_retries=2,
+    )
+    if teacher_model_name == 'Deepseek':
+        response = client.chat.completions.create(
+            model=os.environ.get('DEEPSEEK_MODEL', '/disk2/liweichao/DeepSeek/DeepSeek-R1'),
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.6,
+            top_p=0.8,
+            max_tokens=8192,
+        )
+        return response.choices[0].message.content.strip()
+    if teacher_model_name == 'GPT-oss':
+        response = client.responses.create(
+            model=os.environ.get('GPT_OSS_MODEL', 'Open-Model/openai-120B'),
+            instructions="You are a helpful assistant.",
+            input=prompt,
+        )
+        return response.output_text
+    raise ValueError(f"不支持的教师模型: {teacher_model_name}")
 
 
 async def evaluate_single_question(row, api_base, teacher_model_name=TEACHER_MODEL_NAME):
-    try:
-        prompt = build_prompt(row)
-        output = call_teacher_model(prompt.strip(), api_base, teacher_model_name)
-        print("Output", output)
-        score, reason = extract_score_and_reason(output)
-        return score, reason, output
-    except Exception as e:
-        print(f"评估问题出错: {e}")
-        return 0.0, "评估失败", ""
+    prompt = build_prompt(row)
+    output = await asyncio.to_thread(call_teacher_model, prompt.strip(), api_base, teacher_model_name)
+    score, reason = extract_score_and_reason(output)
+    return score, reason, output
 
 
 async def evaluate_file_async(file_path, file_name="file", file_type=None,
@@ -174,15 +156,13 @@ async def evaluate_file_async(file_path, file_name="file", file_type=None,
         df = validate_excel(file_path)
         scores = []
         reasons = []
-        batch_size = 4
-        semaphore = asyncio.Semaphore(min(process_count, 24))
+        batch_size = max(1, min(process_count, 24))
 
         async def process_row(index, row):
-            async with semaphore:
-                score, reason, model_output = await evaluate_single_question(row, api_base, teacher_model_name)
-                if pbar:
-                    pbar.update(1)
-                return index, score, reason, model_output
+            score, reason, model_output = await evaluate_single_question(row, api_base, teacher_model_name)
+            if pbar:
+                pbar.update(1)
+            return index, score, reason, model_output
 
         for start in range(0, len(df), batch_size):
             end = min(start + batch_size, len(df))
@@ -296,9 +276,9 @@ async def main():
     
     # 设置教师模型URL
     if teacher_model == 'Deepseek':
-        api_base = "http://192.168.1.111:23333/v1"
+        api_base = os.environ.get('DEEPSEEK_BASE_URL', 'http://192.168.1.111:23333/v1')
     elif teacher_model == 'GPT-oss':
-        api_base = 'http://192.168.1.113:8000/v1'
+        api_base = os.environ.get('GPT_OSS_BASE_URL', 'http://192.168.1.113:8000/v1')
     else:
         print(json.dumps({"type": "error", "message": f"不支持的教师模型: {teacher_model}"}), flush=True)
         return

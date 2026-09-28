@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const XLSX = require('xlsx');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID, createHash } = require('node:crypto');
 const path = require('path');
 const fs = require('fs-extra');
 const http = require('http');
@@ -9,10 +9,15 @@ const socketIo = require('socket.io');
 const { spawn } = require('child_process');
 // PDF相关库已删除，现在使用新的三栏对比布局
 const ExcelJS = require('exceljs');
+const { indexRows, pairRows, score, reviewRows } = require('./comparison');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+function fileHash(filePath) {
+  return createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
 
 // 生成综合报告
 function generateComprehensiveReport(req, res, task) {
@@ -122,8 +127,39 @@ const upload = multer({
   }
 });
 
-// 内存中存储评测任务（实际项目中应使用数据库）
 let evaluationTasks = [];
+const tasksDataPath = process.env.TASKS_DATA_PATH || path.join(__dirname, 'tasks-data.json');
+
+function saveTasks() {
+  const temporaryPath = `${tasksDataPath}.tmp`;
+  try {
+    fs.writeFileSync(temporaryPath, JSON.stringify(evaluationTasks));
+    fs.renameSync(temporaryPath, tasksDataPath);
+  } catch (error) {
+    console.error('保存任务失败:', error);
+    fs.removeSync(temporaryPath);
+  }
+}
+
+function loadTasks() {
+  if (!fs.existsSync(tasksDataPath)) return;
+  try {
+    const saved = JSON.parse(fs.readFileSync(tasksDataPath, 'utf8'));
+    if (!Array.isArray(saved)) throw new Error('任务数据格式错误');
+    evaluationTasks = saved;
+    for (const task of evaluationTasks) {
+      if (task.status === '评测中') {
+        task.status = '评测失败';
+        task.error = '服务重启，评测进程已中断';
+      }
+    }
+    saveTasks();
+  } catch (error) {
+    console.error('加载任务失败:', error);
+    evaluationTasks = [];
+  }
+}
+loadTasks();
 
 // 存储已完成评估文件
 let completedFiles = [];
@@ -184,8 +220,8 @@ function validateExcelFile(filePath) {
     }
     
     const requiredFields = ['id', 'instruction', 'reference', 'parent_class', 'subclass', 'model_ans', 'source'];
-    const firstRow = data[0];
-    const missingFields = requiredFields.filter(field => !(field in firstRow));
+    const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1 })[0] || [];
+    const missingFields = requiredFields.filter(field => !headers.includes(field));
     
     if (missingFields.length > 0) {
       return { 
@@ -194,6 +230,8 @@ function validateExcelFile(filePath) {
       };
     }
     
+    indexRows(data, '文件');
+
     return { 
       valid: true, 
       rowCount: data.length,
@@ -232,6 +270,11 @@ app.post('/api/upload', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (
         error: `两个文件行数不一致: 文件1有${validation1.rowCount}行，文件2有${validation2.rowCount}行` 
       });
     }
+    try {
+      pairRows(validation1.data, validation2.data);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
     
     res.json({
       success: true,
@@ -246,7 +289,7 @@ app.post('/api/upload', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (
       },
       file1Path: req.files.file1[0].filename,
       file2Path: req.files.file2[0].filename,
-      sessionId: uuidv4()
+      sessionId: randomUUID()
     });
   } catch (error) {
     res.status(500).json({ error: '服务器错误: ' + error.message });
@@ -311,8 +354,19 @@ app.post('/api/create-task', upload.fields([
     } else {
       return res.status(400).json({ error: '必须提供对比模型文件' });
     }
+    const baseData = baseFilePath ? validateExcelFile(baseFilePath) : null;
+    const compareData = validateExcelFile(compareFilePath);
+    if (baseData && !baseData.valid) return res.status(400).json({ error: `Base文件格式错误: ${baseData.error}` });
+    if (!compareData.valid) return res.status(400).json({ error: `对比文件格式错误: ${compareData.error}` });
+    if (baseData) {
+      try {
+        pairRows(baseData.data, compareData.data);
+      } catch (error) {
+        return res.status(400).json({ error: error.message });
+      }
+    }
     
-    const taskId = uuidv4();
+    const taskId = randomUUID();
     const task = {
       id: taskId,
       name: taskName,
@@ -328,10 +382,15 @@ app.post('/api/create-task', upload.fields([
         path: compareFilePath,
         name: compareFileName,
         type: compareType
+      },
+      inputHashes: {
+        base: baseFilePath ? fileHash(baseFilePath) : null,
+        compare: fileHash(compareFilePath)
       }
     };
     
     evaluationTasks.push(task);
+    saveTasks();
     
     // 通知所有连接的客户端有新任务
     io.emit('taskCreated', task);
@@ -453,7 +512,7 @@ app.get('/api/tasks/:taskId/detailed-report', async (req, res) => {
     return res.status(404).json({ error: '任务未找到' });
   }
   
-  if (task.status !== '已完成' || !task.results || task.results.length !== 2) {
+  if (task.status !== '已完成' || !task.results || task.results.length === 0) {
     return res.status(400).json({ error: '任务未完成或缺少对比数据' });
   }
   
@@ -467,6 +526,23 @@ app.get('/api/tasks/:taskId/detailed-report', async (req, res) => {
   } catch (error) {
     console.error('生成详细报告失败:', error);
     res.status(500).json({ error: '生成详细报告失败: ' + error.message });
+  }
+});
+
+app.get('/api/tasks/:taskId/review-queue', (req, res) => {
+  const task = evaluationTasks.find(t => t.id === req.params.taskId);
+  if (!task) return res.status(404).json({ error: '任务不存在' });
+  if (task.status !== '已完成' || !task.results) return res.status(400).json({ error: '评测尚未完成' });
+  const base = task.results.find(result => result.type === 'base');
+  const compare = task.results.find(result => result.type === 'compare');
+  if (!base || !compare) return res.json({ total: 0, rows: [] });
+  try {
+    const baseRows = base.data || readExcelFile(base.outputPath);
+    const compareRows = compare.data || readExcelFile(compare.outputPath);
+    const rows = reviewRows(pairRows(baseRows, compareRows));
+    res.json({ total: rows.length, rows });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -488,6 +564,7 @@ app.delete('/api/tasks/:taskId', (req, res) => {
   
   // 删除任务
   evaluationTasks.splice(taskIndex, 1);
+  saveTasks();
   
   // 通知所有连接的客户端任务已删除
   io.emit('taskDeleted', { taskId: taskId });
@@ -517,6 +594,9 @@ app.post('/api/tasks/:taskId/evaluate', async (req, res) => {
   task.file2Progress = 0;
   task.file1Results = null;
   task.file2Results = null;
+  task.run = { mode: 'teacher model', teacherModel: teacherModel || 'Deepseek', startedAt: task.startTime,
+    inputHashes: task.inputHashes };
+  saveTasks();
   
   // 准备评测文件列表
   const filesToEvaluate = [];
@@ -542,6 +622,7 @@ app.post('/api/tasks/:taskId/evaluate', async (req, res) => {
   if (filesToEvaluate.length === 0) {
     task.status = '已完成';
     task.completedTime = new Date().toISOString();
+    saveTasks();
     io.emit('evaluationComplete', { taskId, task, message: '没有选择要评测的文件' });
     return res.json({ message: '没有选择要评测的文件', taskId: taskId });
   }
@@ -622,6 +703,16 @@ app.post('/api/tasks/:taskId/direct-comparison', async (req, res) => {
     if (!baseHasScore || !compareHasScore) {
       return res.status(400).json({ error: '两个文件都必须包含score列才能进行直接对比' });
     }
+    try {
+      const pairs = pairRows(baseData, compareData);
+      for (const { base, compare } of pairs) {
+        if (score(base) === null || score(compare) === null) {
+          throw new Error('两个文件的每一行都必须有有效的 score');
+        }
+      }
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
     
     // 计算统计数据
     const baseStats = calculateDetailedStats(baseData);
@@ -650,6 +741,8 @@ app.post('/api/tasks/:taskId/direct-comparison', async (req, res) => {
     task.completedTime = new Date().toISOString();
     task.results = results;
     task.statistics = statistics;
+    task.run = { mode: 'existing scores', startedAt: task.completedTime, inputHashes: task.inputHashes };
+    saveTasks();
     
     // 通知前端
     io.emit('evaluationComplete', {
@@ -702,6 +795,7 @@ app.post('/api/tasks/:taskId/save-log', (req, res) => {
   }
   
   task.evaluationLog = evaluationLog;
+  saveTasks();
   res.json({ success: true });
 });
 
@@ -744,6 +838,7 @@ app.post('/api/tasks/:taskId/stop', (req, res) => {
   // 更新任务状态
   task.status = '已停止';
   task.stoppedTime = new Date().toISOString();
+  saveTasks();
   
   // 通知前端评测已停止
   io.emit('evaluationStopped', {
@@ -780,7 +875,7 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
     });
     
     // 启动Python评测进程
-    const pythonProcess = spawn('python', ['eval_service.py', ...args], {
+    const pythonProcess = spawn(process.env.PYTHON || 'python3', ['eval_service.py', ...args], {
       cwd: __dirname,
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
@@ -790,17 +885,20 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
     });
     
     // 处理Python进程输出
+    let stdoutBuffer = '';
     pythonProcess.stdout.on('data', (data) => {
-      const lines = data.toString('utf8').split('\n').filter(line => line.trim());
+      stdoutBuffer += data.toString('utf8');
+      const lines = stdoutBuffer.split('\n');
+      stdoutBuffer = lines.pop();
       
       lines.forEach(line => {
         try {
           const result = JSON.parse(line);
           
           if (result.type === 'progress') {
-            if (result.file === 'file1') {
+            if (result.file === 'base' || result.file === 'file1') {
               task.file1Progress = result.progress;
-            } else if (result.file === 'file2') {
+            } else if (result.file === 'compare' || result.file === 'file2') {
               task.file2Progress = result.progress;
             }
             
@@ -879,6 +977,7 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
             task.status = '已完成';
             task.completedTime = new Date().toISOString();
             task.results = result.results;
+            task.run = { ...task.run, rubricVersion: result.rubricVersion, modelId: result.modelId };
             
             // 从results中提取statistics并构建全局statistics数组
             if (result.results && Array.isArray(result.results)) {
@@ -1128,11 +1227,11 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
                           minScore: min,
                           maxScore: max,
                           scoreDistribution: {
-                            '0-20': scores.filter(s => s >= 0 && s < 20).length,
-                            '20-40': scores.filter(s => s >= 20 && s < 40).length,
-                            '40-60': scores.filter(s => s >= 40 && s < 60).length,
-                            '60-80': scores.filter(s => s >= 60 && s < 80).length,
-                            '80-100': scores.filter(s => s >= 80 && s <= 100).length
+                            '0-20': scores.filter(s => s >= 0 && s < 0.2).length,
+                            '20-40': scores.filter(s => s >= 0.2 && s < 0.4).length,
+                            '40-60': scores.filter(s => s >= 0.4 && s < 0.6).length,
+                            '60-80': scores.filter(s => s >= 0.6 && s < 0.8).length,
+                            '80-100': scores.filter(s => s >= 0.8 && s <= 1).length
                           }
                         };
                       }
@@ -1154,7 +1253,7 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
                   const displayName = res.fileName;
                   
                   const completedFile = {
-                    id: uuidv4(),
+                    id: randomUUID(),
                     name: displayName,
                     originalName: res.fileName,
                     filePath: res.outputPath,
@@ -1166,27 +1265,7 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
                     scoreStats: scoreStats
                   };
                   
-                  // 检查是否存在同名文件，如果存在则覆盖
-                  const existingFileIndex = completedFiles.findIndex(file => file.name === displayName);
-                  if (existingFileIndex !== -1) {
-                    // 删除旧文件
-                    const oldFile = completedFiles[existingFileIndex];
-                    if (fs.existsSync(oldFile.filePath)) {
-                      try {
-                        fs.unlinkSync(oldFile.filePath);
-                        console.log(`删除旧文件: ${oldFile.filePath}`);
-                      } catch (error) {
-                        console.error(`删除旧文件失败: ${error.message}`);
-                      }
-                    }
-                    // 替换为新文件
-                    completedFiles[existingFileIndex] = completedFile;
-                    console.log(`覆盖已完成文件: ${displayName}`);
-                  } else {
-                    // 添加新文件
-                    completedFiles.push(completedFile);
-                    console.log(`添加已完成文件: ${displayName}`);
-                  }
+                  completedFiles.push(completedFile);
                 }
               });
               // 保存已完成文件列表
@@ -1224,6 +1303,7 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
             }
             
             // 通知前端评测完成
+            saveTasks();
             io.emit('evaluationComplete', {
               taskId: task.id,
               task: task,
@@ -1239,6 +1319,8 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
           } else if (result.type === 'error') {
             console.error('Python评测服务错误:', result.message);
             task.status = '评测失败';
+            task.error = result.message;
+            saveTasks();
             
             // 通知前端评测失败
             io.emit('evaluationError', {
@@ -1290,15 +1372,24 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
     
     pythonProcess.on('close', (code) => {
       console.log(`Python进程退出，代码: ${code}`);
-      if (code !== 0 && task.status === '评测中') {
+      if (task.status === '评测中') {
         task.status = '评测失败';
+        task.error = `Python进程结束但未完成评测，代码: ${code}`;
+        saveTasks();
         io.emit('evaluationError', {
           taskId: task.id,
-          message: `Python进程异常退出，代码: ${code}`,
-          error: `Python进程异常退出，代码: ${code}`  // 保持向后兼容
+          message: `Python进程结束但未完成评测，代码: ${code}`,
+          error: `Python进程结束但未完成评测，代码: ${code}`
         });
         evaluationProcesses.delete(task.id);
       }
+    });
+    pythonProcess.on('error', (error) => {
+      task.status = '评测失败';
+      task.error = error.message;
+      saveTasks();
+      evaluationProcesses.delete(task.id);
+      io.emit('evaluationError', { taskId: task.id, message: error.message, error: error.message });
     });
     
     // 保存进程引用
@@ -1307,6 +1398,8 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
   } catch (error) {
     console.error('启动Python评测服务失败:', error);
     task.status = '评测失败';
+    task.error = error.message;
+    saveTasks();
     
     io.emit('evaluationError', {
       taskId: task.id,
@@ -1454,8 +1547,8 @@ function calculateDetailedStats(data) {
       max_score: 0,
       min_score: 1
     },
-    by_parent_class: {},
-    by_sub_class: {}
+    by_parent_class: Object.create(null),
+    by_sub_class: Object.create(null)
   };
   
   if (data.length === 0) return stats;
@@ -1609,17 +1702,23 @@ async function generateDetailedExcelReport(task) {
   } else {
     compareData = [];
   }
+  const pairedData = hasBase && hasCompare ? pairRows(baseData, compareData) : [];
+  const baseScored = hasBase && baseData.every(row => score(row) !== null);
+  const compareScored = hasCompare && compareData.every(row => score(row) !== null);
+  const shown = (value, scored) => scored ? value.toFixed(3) : '未评分';
+  const difference = (baseValue, compareValue) => baseScored && compareScored
+    ? (compareValue - baseValue).toFixed(3) : '未评分';
   
   // 使用已有的统计数据或重新计算
   let baseStats, compareStats;
   
   if (hasBase) {
-    baseStats = (task.statistics && task.statistics[0]) ? task.statistics[0] : calculateDetailedStats(baseData);
+    baseStats = (task.statistics && task.statistics[0]?.overall) ? task.statistics[0] : calculateDetailedStats(baseData);
   }
   
   if (hasCompare) {
     const statsIndex = hasBase ? 1 : 0;
-    compareStats = (task.statistics && task.statistics[statsIndex]) ? task.statistics[statsIndex] : calculateDetailedStats(compareData);
+    compareStats = (task.statistics && task.statistics[statsIndex]?.overall) ? task.statistics[statsIndex] : calculateDetailedStats(compareData);
   }
   
   // 创建概览工作表
@@ -1635,6 +1734,14 @@ async function generateDetailedExcelReport(task) {
   // 获取用户配置的模型名称
   const baseModelName = (task.fileConfigs && task.fileConfigs.baseFile && task.fileConfigs.baseFile.name) || (baseResult && baseResult.fileName) || 'Base模型';
   const compareModelName = (task.fileConfigs && task.fileConfigs.compareFile && task.fileConfigs.compareFile.name) || (compareResult && compareResult.fileName) || '对比模型';
+  const runSheet = workbook.addWorksheet('运行信息');
+  for (const [label, value] of [
+    ['任务ID', task.id], ['创建时间', task.submitTime], ['完成时间', task.completedTime],
+    ['评测模式', task.run?.mode], ['教师模型', task.run?.teacherModel],
+    ['模型ID', task.run?.modelId], ['评分规则版本', task.run?.rubricVersion],
+    ['Base SHA-256', task.inputHashes?.base], ['Compare SHA-256', task.inputHashes?.compare]
+  ]) runSheet.addRow([label, value ?? '']);
+  runSheet.columns = [{ width: 22 }, { width: 80 }];
   
   // 基本信息
   let currentRow = 3;
@@ -1662,9 +1769,9 @@ async function generateDetailedExcelReport(task) {
     overviewSheet.addRow(overallHeaders);
     
     const overallData = [
-      ['平均分', baseStats.overall.average_score.toFixed(3), compareStats.overall.average_score.toFixed(3), (compareStats.overall.average_score - baseStats.overall.average_score).toFixed(3)],
-      ['最高分', baseStats.overall.max_score.toFixed(3), compareStats.overall.max_score.toFixed(3), (compareStats.overall.max_score - baseStats.overall.max_score).toFixed(3)],
-      ['最低分', baseStats.overall.min_score.toFixed(3), compareStats.overall.min_score.toFixed(3), (compareStats.overall.min_score - baseStats.overall.min_score).toFixed(3)],
+      ['平均分', shown(baseStats.overall.average_score, baseScored), shown(compareStats.overall.average_score, compareScored), difference(baseStats.overall.average_score, compareStats.overall.average_score)],
+      ['最高分', shown(baseStats.overall.max_score, baseScored), shown(compareStats.overall.max_score, compareScored), difference(baseStats.overall.max_score, compareStats.overall.max_score)],
+      ['最低分', shown(baseStats.overall.min_score, baseScored), shown(compareStats.overall.min_score, compareScored), difference(baseStats.overall.min_score, compareStats.overall.min_score)],
       ['题目总数', baseStats.overall.total_questions, compareStats.overall.total_questions, compareStats.overall.total_questions - baseStats.overall.total_questions]
     ];
     
@@ -1680,9 +1787,9 @@ async function generateDetailedExcelReport(task) {
     overviewSheet.addRow(singleHeaders);
     
     const singleData = [
-      ['平均分', stats.overall.average_score.toFixed(3)],
-      ['最高分', stats.overall.max_score.toFixed(3)],
-      ['最低分', stats.overall.min_score.toFixed(3)],
+      ['平均分', shown(stats.overall.average_score, hasBase ? baseScored : compareScored)],
+      ['最高分', shown(stats.overall.max_score, hasBase ? baseScored : compareScored)],
+      ['最低分', shown(stats.overall.min_score, hasBase ? baseScored : compareScored)],
       ['题目总数', stats.overall.total_questions]
     ];
     
@@ -1709,9 +1816,9 @@ async function generateDetailedExcelReport(task) {
       const compareScore = compareStats.by_parent_class[parentClass]?.average_score || 0;
       overviewSheet.addRow([
         parentClass,
-        baseScore.toFixed(3),
-        compareScore.toFixed(3),
-        (compareScore - baseScore).toFixed(3)
+        shown(baseScore, baseScored),
+        shown(compareScore, compareScored),
+        difference(baseScore, compareScore)
       ]);
     });
   } else {
@@ -1726,7 +1833,7 @@ async function generateDetailedExcelReport(task) {
       const score = stats.by_parent_class[parentClass]?.average_score || 0;
       overviewSheet.addRow([
         parentClass,
-        score.toFixed(3)
+        shown(score, hasBase ? baseScored : compareScored)
       ]);
     });
   }
@@ -1748,9 +1855,9 @@ async function generateDetailedExcelReport(task) {
       const compareScore = compareStats.by_sub_class[subclass]?.average_score || 0;
       overviewSheet.addRow([
         subclass,
-        baseScore.toFixed(3),
-        compareScore.toFixed(3),
-        (compareScore - baseScore).toFixed(3)
+        shown(baseScore, baseScored),
+        shown(compareScore, compareScored),
+        difference(baseScore, compareScore)
       ]);
     });
   } else {
@@ -1765,7 +1872,7 @@ async function generateDetailedExcelReport(task) {
       const score = stats.by_sub_class[subclass]?.average_score || 0;
       overviewSheet.addRow([
         subclass,
-        score.toFixed(3)
+        shown(score, hasBase ? baseScored : compareScored)
       ]);
     });
   }
@@ -1798,74 +1905,55 @@ async function generateDetailedExcelReport(task) {
       'id', 'instruction', 'reference', 'parent_class', 'subclass',
       `model_ans(${detailBaseModelName})`, `score(${detailBaseModelName})`, `reason(${detailBaseModelName})`,
       `model_ans(${detailCompareModelName})`, `score(${detailCompareModelName})`, `reason(${detailCompareModelName})`,
-      'source'
+      'source', '分数差值(Compare-Base)', '复核原因'
     ];
     detailSheet.addRow(headers);
-    
-    // 创建统一的ID映射，将所有数据按行号重新编号为自然数序列
-    let primaryData, secondaryData;
-    let primaryDataWithIndex, secondaryDataWithIndex;
-    
-    if (hasBase && baseData.length > 0) {
-      primaryData = baseData;
-      secondaryData = hasCompare ? compareData : [];
-    } else {
-      primaryData = compareData;
-      secondaryData = [];
-    }
-    
-    primaryDataWithIndex = primaryData.map((row, index) => ({
-      ...row,
-      normalizedId: (index + 1).toString()
+    const reviewById = new Map(reviewRows(pairedData).map(row => [row.id, row]));
+    const rows = pairedData.length ? pairedData : (hasBase ? baseData : compareData).map(row => ({
+      id: String(row.id), base: hasBase ? row : {}, compare: hasBase ? {} : row
     }));
-    
-    secondaryDataWithIndex = secondaryData.map((row, index) => ({
-      ...row,
-      normalizedId: (index + 1).toString()
-    }));
-    
-    // 创建ID到数据的映射
-    const secondaryDataMap = new Map();
-    secondaryDataWithIndex.forEach(row => {
-      secondaryDataMap.set(row.normalizedId, row);
-    });
-    
-    // 按照主要文件的顺序合并数据
-    primaryDataWithIndex.forEach(primaryRow => {
-      const secondaryRow = secondaryDataMap.get(primaryRow.normalizedId) || {};
+    rows.forEach(({ id, base: primaryRow, compare: secondaryRow }) => {
+      const sourceRow = hasBase ? primaryRow : secondaryRow;
+      const baseScore = hasBase ? score(primaryRow) : null;
+      const compareScore = hasCompare ? score(secondaryRow) : null;
+      const delta = baseScore !== null && compareScore !== null ? compareScore - baseScore : null;
       
       let mergedRow;
       if (hasBase && baseData.length > 0) {
         // base是主要数据源
         mergedRow = [
-          primaryRow.id || '',
+          id,
           primaryRow.instruction || '',
           primaryRow.reference || '',
           primaryRow.parent_class || '',
           primaryRow.subclass || '',
           primaryRow.model_ans || '',
-          primaryRow.score !== undefined && primaryRow.score !== null && primaryRow.score !== '' ? primaryRow.score : 0,
+          baseScore,
           primaryRow.reason || '',
           secondaryRow.model_ans || '',
-          secondaryRow.score !== undefined && secondaryRow.score !== null && secondaryRow.score !== '' ? secondaryRow.score : 0,
+          compareScore,
           secondaryRow.reason || '',
-          primaryRow.source || ''
+          sourceRow.source || '',
+          delta,
+          reviewById.get(id)?.reviewReason || ''
         ];
       } else {
         // compare是主要数据源
         mergedRow = [
-          primaryRow.id || '',
-          primaryRow.instruction || '',
-          primaryRow.reference || '',
-          primaryRow.parent_class || '',
-          primaryRow.subclass || '',
+          id,
+          sourceRow.instruction || '',
+          sourceRow.reference || '',
+          sourceRow.parent_class || '',
+          sourceRow.subclass || '',
           '', // base model_ans (空)
-          0,  // base score (0)
+          null,
           '', // base reason (空)
-          primaryRow.model_ans || '',
-          primaryRow.score !== undefined && primaryRow.score !== null && primaryRow.score !== '' ? primaryRow.score : 0,
-          primaryRow.reason || '',
-          primaryRow.source || ''
+          secondaryRow.model_ans || '',
+          compareScore,
+          secondaryRow.reason || '',
+          sourceRow.source || '',
+          null,
+          ''
         ];
       }
       
@@ -1885,8 +1973,19 @@ async function generateDetailedExcelReport(task) {
       { width: 30 },  // compare model_ans
       { width: 10 },  // compare score
       { width: 40 },  // compare reason
-      { width: 15 }   // source
+      { width: 15 },  // source
+      { width: 18 },  // delta
+      { width: 25 }   // review reason
     ];
+  }
+  if (pairedData.length) {
+    const reviewSheet = workbook.addWorksheet('待复核');
+    reviewSheet.addRow(['id', '问题', 'Base分数', 'Compare分数', '分数差值', 'Base理由', 'Compare理由', '复核原因']);
+    for (const row of reviewRows(pairedData)) {
+      reviewSheet.addRow([row.id, row.instruction, row.baseScore, row.compareScore,
+        row.delta, row.baseReason, row.compareReason, row.reviewReason]);
+    }
+    reviewSheet.columns = [10, 50, 12, 12, 12, 40, 40, 26].map(width => ({ width }));
   }
   
   // 生成Excel缓冲区

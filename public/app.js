@@ -1,6 +1,12 @@
 // Socket.IO连接
 const socket = io();
 
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+}
+
 // 全局变量
 let selectedFiles = {
     base: null,
@@ -371,12 +377,8 @@ function showSuccessModal(task) {
     const modal = new bootstrap.Modal(document.getElementById('successModal'));
     const messageElement = document.getElementById('successMessage');
     
-    messageElement.innerHTML = `
-        <strong>任务创建成功！</strong><br>
-        任务ID: ${task.id}<br>
-        任务名称: ${task.name}<br>
-        提交人: ${task.submitter}
-    `;
+    messageElement.style.whiteSpace = 'pre-line';
+    messageElement.textContent = `任务创建成功！\n任务ID: ${task.id}\n任务名称: ${task.name}\n提交人: ${task.submitter}`;
     
     modal.show();
 }
@@ -386,10 +388,12 @@ function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
     alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
+    alertDiv.textContent = message;
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'btn-close';
+    closeButton.setAttribute('data-bs-dismiss', 'alert');
+    alertDiv.appendChild(closeButton);
     
     document.body.appendChild(alertDiv);
     
@@ -469,8 +473,8 @@ function displayTasks(tasks) {
     tbody.innerHTML = tasks.map(task => `
         <tr data-task-id="${task.id}">
             <td>${task.id}</td>
-            <td>${task.name}</td>
-            <td>${task.submitter}</td>
+            <td>${escapeHtml(task.name)}</td>
+            <td>${escapeHtml(task.submitter)}</td>
             <td>${new Date(task.submitTime).toLocaleString()}</td>
             <td><span class="badge task-status ${getStatusClass(task.status)}">${getStatusText(task.status)}</span></td>
             <td>

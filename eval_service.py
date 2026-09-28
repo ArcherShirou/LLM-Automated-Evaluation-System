@@ -7,17 +7,15 @@ import uuid
 import shutil
 import time
 import math
+from pathlib import Path
 from openai import OpenAI
 from tqdm import tqdm
 
 
 
 TEACHER_MODEL_NAME = 'GPT-oss'
-# 教师模型URL
-if TEACHER_MODEL_NAME == 'Deepseek':
-    TEACHER_MODEL_URL = "http://192.168.1.111:23333/v1"
-elif TEACHER_MODEL_NAME == 'GPT-oss':
-    TEACHER_MODEL_URL = 'http://192.168.1.113:8000/v1'
+RUBRIC_VERSION = 'medical-rubric-2026-09'
+TEACHER_MODEL_URL = os.environ.get('GPT_OSS_BASE_URL')
 
 
 def validate_excel(file_path):
@@ -28,6 +26,11 @@ def validate_excel(file_path):
         raise ValueError(f"Excel文件缺少必要字段: {', '.join(missing_columns)}")
     if len(df) == 0:
         raise ValueError("Excel文件没有数据行")
+    ids = df['id'].astype('string').str.strip()
+    if ids.isna().any() or ids.eq('').any():
+        raise ValueError("Excel文件存在空的 id")
+    if ids.duplicated().any():
+        raise ValueError(f"Excel文件存在重复 id: {ids[ids.duplicated()].iloc[0]}")
     return df
 
 
@@ -117,6 +120,10 @@ def extract_score_and_reason(output: str):
 
 
 def call_teacher_model(prompt, api_base=TEACHER_MODEL_URL, teacher_model_name=TEACHER_MODEL_NAME):
+    model_key = 'DEEPSEEK_MODEL' if teacher_model_name == 'Deepseek' else 'GPT_OSS_MODEL'
+    model_id = os.environ.get(model_key)
+    if not api_base or not model_id:
+        raise ValueError(f'请配置模型地址和 {model_key}')
     client = OpenAI(
         api_key=os.environ.get('TEACHER_MODEL_API_KEY', 'EMPTY'),
         base_url=api_base,
@@ -125,7 +132,7 @@ def call_teacher_model(prompt, api_base=TEACHER_MODEL_URL, teacher_model_name=TE
     )
     if teacher_model_name == 'Deepseek':
         response = client.chat.completions.create(
-            model=os.environ.get('DEEPSEEK_MODEL', '/disk2/liweichao/DeepSeek/DeepSeek-R1'),
+            model=model_id,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.6,
             top_p=0.8,
@@ -134,7 +141,7 @@ def call_teacher_model(prompt, api_base=TEACHER_MODEL_URL, teacher_model_name=TE
         return response.choices[0].message.content.strip()
     if teacher_model_name == 'GPT-oss':
         response = client.responses.create(
-            model=os.environ.get('GPT_OSS_MODEL', 'Open-Model/openai-120B'),
+            model=model_id,
             instructions="You are a helpful assistant.",
             input=prompt,
         )
@@ -178,11 +185,16 @@ async def evaluate_file_async(file_path, file_name="file", file_type=None,
             for index, score, reason, model_output in results:
                 df.at[index, 'teacher_model_output'] = model_output
                 df.at[index, 'reason'] = reason
+            print(json.dumps({
+                'type': 'progress', 'file': file_type, 'progress': round(end * 100 / len(df), 1),
+                'current': end, 'total': len(df), 'elapsed_time': round(time.time() - start_time, 1)
+            }), flush=True)
 
         df['score'] = scores
         df['reason'] = reasons
 
-        result_path = file_path.replace('.xlsx', '_scored.xlsx')
+        source = Path(file_path)
+        result_path = str(source.with_name(f'{source.stem}_scored.xlsx'))
 
         # 计算详细统计信息
         detailed_stats = calculate_detailed_statistics(df)
@@ -276,11 +288,16 @@ async def main():
     
     # 设置教师模型URL
     if teacher_model == 'Deepseek':
-        api_base = os.environ.get('DEEPSEEK_BASE_URL', 'http://192.168.1.111:23333/v1')
+        api_base = os.environ.get('DEEPSEEK_BASE_URL')
+        model_id = os.environ.get('DEEPSEEK_MODEL')
     elif teacher_model == 'GPT-oss':
-        api_base = os.environ.get('GPT_OSS_BASE_URL', 'http://192.168.1.113:8000/v1')
+        api_base = os.environ.get('GPT_OSS_BASE_URL')
+        model_id = os.environ.get('GPT_OSS_MODEL')
     else:
         print(json.dumps({"type": "error", "message": f"不支持的教师模型: {teacher_model}"}), flush=True)
+        return
+    if not api_base or not model_id:
+        print(json.dumps({"type": "error", "message": "请配置教师模型的 BASE_URL 和 MODEL 环境变量"}), flush=True)
         return
 
     # 检查剩余参数是否为3的倍数
@@ -324,9 +341,9 @@ async def main():
                 'statistics': detailed_stats
             })
 
-        print(json.dumps({"type": "complete", "results": results}, ensure_ascii=False), flush=True)
+        print(json.dumps({"type": "complete", "results": results, "rubricVersion": RUBRIC_VERSION,
+                          "modelId": model_id}, ensure_ascii=False), flush=True)
 
 
 if __name__ == "__main__":
     asyncio.run(main())
-

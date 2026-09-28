@@ -6,7 +6,7 @@
 
 - 📊 **Excel文件自动评测**：支持批量评测Excel文件中的问答数据
 - 🔄 **实时进度监控**：WebSocket实时显示评测进度和状态
-- 📈 **对比分析报告**：生成详细的PDF和Excel对比报告
+- 📈 **对比分析报告**：生成逐题对比 Excel 报告
 - 🎯 **灵活文件配置**：支持Base文件和Compare文件的灵活配置
 - 📁 **文件管理**：完整的文件上传、下载和管理功能
 - 🌐 **多用户支持**：支持多人同时在线使用
@@ -18,13 +18,13 @@
 - **后端**：Node.js + Express + Socket.IO
 - **评测引擎**：Python + OpenAI API + asyncio
 - **文件处理**：ExcelJS + XLSX + pandas
-- **报告生成**：PDFKit + ExcelJS
+- **报告生成**：ExcelJS
 
 ## 环境要求
 
 ### 系统要求
 - Windows 10/11 或 Linux 或 macOS
-- Node.js 16.0+ 
+- Node.js 20.0+
 - Python 3.9+
 - 至少 4GB RAM
 - 至少 2GB 可用磁盘空间
@@ -40,8 +40,8 @@
 
 ```bash
 # 如果使用Git
-git clone <repository-url>
-cd 自动评测系统2
+git clone https://github.com/ArcherShirou/LLM-Automated-Evaluation-System.git
+cd LLM-Automated-Evaluation-System
 
 # 或者直接下载并解压代码包
 ```
@@ -49,7 +49,7 @@ cd 自动评测系统2
 ### 2. 安装Node.js依赖
 
 ```bash
-npm install
+npm ci
 ```
 
 主要依赖包：
@@ -58,7 +58,6 @@ npm install
 - multer: 文件上传处理
 - xlsx: Excel文件解析
 - exceljs: Excel文件生成
-- pdfkit: PDF报告生成
 - fs-extra: 文件系统操作
 
 ### 3. 安装Python依赖
@@ -67,16 +66,7 @@ npm install
 pip install pandas openai tqdm openpyxl
 ```
 
-或者创建requirements.txt文件：
-
-```txt
-pandas>=1.3.0
-openai>=1.0.0
-tqdm>=4.60.0
-openpyxl>=3.0.0
-```
-
-然后安装：
+也可以使用仓库中的依赖清单：
 
 ```bash
 pip install -r requirements.txt
@@ -93,15 +83,19 @@ DEEPSEEK_MODEL=your_deepseek_model_id
 GPT_OSS_BASE_URL=http://127.0.0.1:8000/v1
 GPT_OSS_MODEL=your_gpt_oss_model_id
 TEACHER_MODEL_API_KEY=your_key_if_required
+PYTHON=python3
+TASKS_DATA_PATH=./tasks-data.json
 ```
 
 ### 5. 配置评测模型
 
-教师模型使用兼容 OpenAI API 的服务；上述变量可覆盖现有默认地址和模型 ID。本地服务如无需鉴权，可不设置 `TEACHER_MODEL_API_KEY`。模型调用失败或返回无效 JSON 时，任务会失败，不会把失败项记为 0 分。存在非空 `reference` 时，评分会使用该参考答案。
+教师模型使用兼容 OpenAI API 的服务；所选模型的 `BASE_URL` 和 `MODEL` 环境变量必须设置。本地服务如无需鉴权，可不设置 `TEACHER_MODEL_API_KEY`。模型调用失败或返回无效 JSON 时，任务会失败，不会把失败项记为 0 分。存在非空 `reference` 时，评分会使用该参考答案。
 
 服务器默认只监听本机 `127.0.0.1`。当前项目尚无身份验证，不应直接暴露到公网；只有在可信网络并配置访问保护时才设置 `HOST=0.0.0.0`。上传文件上限为 10 MB。
+任务状态保存在 `tasks-data.json`，重启后可查看已完成任务；重启时仍在运行的任务会标记为失败，需要重新发起评测。
 
 离线回归检查：`python3 -m unittest -v test_eval_service.py`。
+Node 回归检查：`npm test`。其中接口测试仅启动本机临时服务，不调用教师模型。
 
 ## 启动系统
 
@@ -121,13 +115,11 @@ npm start
 
 ```
 已加载 X 个已完成文件
-服务器运行在 http://localhost:8000
-也可以通过网络访问: http://your_ip:8000
+服务器运行在 http://127.0.0.1:8000
 ```
 
 访问地址：
-- 本地访问：http://localhost:8000
-- 网络访问：http://your_ip:8000
+- 本地访问：http://127.0.0.1:8000
 
 ## 使用说明
 
@@ -154,14 +146,14 @@ npm start
 
 1. 配置完成后点击"开始评测"
 2. 系统将显示实时评测进度
-3. 可以随时点击"停止评测"中断进程
+3. 可以随时点击"停止评测"中断进程；进度按每批已完成的题目更新
 
 ### 4. 查看结果
 
 评测完成后可以：
 - **查看统计信息**：平均分、总题数、分类统计等
-- **导出详细报告**：Excel格式的详细评测报告
-- **生成对比报告**：PDF格式的对比分析报告
+- **导出详细报告**：Excel 格式的逐题对比、待复核清单和运行信息；运行信息包含输入文件 SHA-256、教师模型和评分规则版本
+- **待人工复核**：双模型分差至少 0.5，或任一分数不高于 0.4 的题目会在页面和详细报告中列出。这是排序规则，不是模型置信度或医学判断
 - **下载评测文件**：下载包含评分的Excel文件
 
 ### 5. 文件管理
@@ -179,20 +171,23 @@ npm start
 
 | 列名 | 说明 | 必需 | 示例 |
 |------|------|------|------|
-| question | 问题内容 | 是 | "什么是人工智能？" |
-| answer | 标准答案 | 是 | "人工智能是..." |
-| student_answer | 学生/模型答案 | 是 | "AI是一种技术..." |
-| parent_class | 父类别 | 否 | "计算机科学" |
-| sub_class | 子类别 | 否 | "人工智能基础" |
-| source | 来源 | 否 | "教材第一章" |
-| score | 分数（如果已有） | 否 | 85 |
+| id | 题目唯一标识 | 是 | 1 |
+| instruction | 问题内容 | 是 | "什么是人工智能？" |
+| reference | 参考答案 | 是 | "人工智能是..." |
+| model_ans | 待评测模型答案 | 是 | "AI是一种技术..." |
+| parent_class | 父类别 | 是 | "计算机科学" |
+| subclass | 子类别 | 是 | "人工智能基础" |
+| source | 来源 | 是 | "教材第一章" |
+| score | 分数（如果已有） | 否 | 0.85 |
+
+文件格式为 `.xlsx`，第一行是上述英文列名。`id` 在各文件内须唯一且非空；双模型对比要求两文件的 `id` 集合、对应问题和参考答案一致，行顺序可以不同。已有评分必须在 0 到 1 之间，缺失分数在报告中保持空白。
 
 ### 示例数据
 
 ```csv
-question,answer,student_answer,parent_class,sub_class,source
-什么是AI？,人工智能是模拟人类智能的技术,人工智能技术,计算机科学,AI基础,教材
-机器学习的定义,机器学习是AI的一个分支,ML是AI子领域,计算机科学,机器学习,课件
+id,instruction,reference,model_ans,parent_class,subclass,source
+1,什么是AI？,人工智能是模拟人类智能的技术,人工智能技术,计算机科学,AI基础,教材
+2,机器学习的定义,机器学习是AI的一个分支,ML是AI子领域,计算机科学,机器学习,课件
 ```
 
 ## 配置说明

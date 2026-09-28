@@ -1,4 +1,6 @@
 import asyncio
+import contextlib
+import io
 import tempfile
 import threading
 import unittest
@@ -12,6 +14,17 @@ import test_eval
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_excel_rejects_duplicate_and_empty_ids(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'input.xlsx'
+            required = {'instruction': 'q', 'reference': 'a', 'parent_class': 'p',
+                        'subclass': 's', 'model_ans': 'x', 'source': 'test'}
+            for ids in ([1, 1], [1, None]):
+                with self.subTest(ids=ids):
+                    pd.DataFrame([{'id': value, **required} for value in ids]).to_excel(source, index=False)
+                    with self.assertRaisesRegex(ValueError, 'id'):
+                        eval_service.validate_excel(source)
+
     def test_reference_is_used_when_present(self):
         row = {'instruction': 'question', 'reference': 'correct answer', 'model_ans': 'candidate'}
         self.assertIn('Reference answer: correct answer', eval_service.build_prompt(row))
@@ -61,6 +74,23 @@ class EvaluationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     asyncio.run(eval_service.evaluate_file_async(str(source)))
             self.assertFalse((Path(directory) / 'input_scored.xlsx').exists())
+
+    def test_scoring_emits_progress_and_preserves_ids(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'input.xlsx'
+            rows = [{'id': value, 'instruction': 'q', 'reference': 'a',
+                     'parent_class': 'p', 'subclass': 's', 'model_ans': 'a', 'source': 'test'}
+                    for value in [2, 1]]
+            pd.DataFrame(rows).to_excel(source, index=False)
+            output = io.StringIO()
+            with patch.object(eval_service, 'call_teacher_model',
+                              return_value='{"student": 1.0}\n{"reason": "correct"}'), \
+                 contextlib.redirect_stdout(output):
+                result_path, scores, _ = asyncio.run(eval_service.evaluate_file_async(
+                    str(source), file_type='compare', process_count=2))
+            self.assertEqual(scores, [1.0, 1.0])
+            self.assertIn('"progress": 100.0', output.getvalue())
+            self.assertEqual(pd.read_excel(result_path)['id'].tolist(), [2, 1])
 
     def test_legacy_score_parser_never_executes_model_output(self):
         self.assertEqual(test_eval.extract_score('{"student": 0.7}'), 0.7)

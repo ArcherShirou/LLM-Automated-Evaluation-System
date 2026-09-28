@@ -141,7 +141,7 @@ async function loadTaskDetails(taskId) {
                 // 恢复评测日志
                 const logContainer = document.getElementById('evaluationLog');
                 if (logContainer && currentTask.evaluationLog) {
-                    logContainer.innerHTML = currentTask.evaluationLog;
+                    logContainer.textContent = currentTask.evaluationLog;
                 } else if (logContainer) {
                     logContainer.innerHTML = '';
                     addLogMessage('🚀 评测已完成', logContainer);
@@ -186,7 +186,7 @@ async function loadTaskDetails(taskId) {
                 // 恢复评测日志
                 const logContainer = document.getElementById('evaluationLog');
                 if (logContainer && currentTask.evaluationLog) {
-                    logContainer.innerHTML = currentTask.evaluationLog;
+                    logContainer.textContent = currentTask.evaluationLog;
                 } else if (logContainer) {
                     logContainer.innerHTML = '';
                     addLogMessage('🚀 评测正在进行中...', logContainer);
@@ -1199,7 +1199,7 @@ function addLogMessage(message, logContainer, type = 'normal') {
     
     // 保存日志到当前任务对象中
     if (currentTask) {
-        currentTask.evaluationLog = logContainer.innerHTML;
+        currentTask.evaluationLog = logContainer.innerText;
         
         // 异步保存到服务器
         fetch(`/api/tasks/${currentTask.id}/save-log`, {
@@ -1208,7 +1208,7 @@ function addLogMessage(message, logContainer, type = 'normal') {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                evaluationLog: logContainer.innerHTML
+                evaluationLog: currentTask.evaluationLog
             })
         }).catch(error => {
             console.warn('保存日志失败:', error);
@@ -1502,6 +1502,35 @@ function displayResults(results, statistics) {
             const statsCard = createStatisticsCard(statistics);
             resultsContent.appendChild(statsCard);
         }
+    }
+    loadReviewQueue(results);
+}
+
+async function loadReviewQueue(results) {
+    const container = document.getElementById('reviewContainer');
+    container.style.display = 'none';
+    if (!currentTask || !results.some(result => result.type === 'base') ||
+        !results.some(result => result.type === 'compare')) return;
+    try {
+        const response = await fetch(`/api/tasks/${currentTask.id}/review-queue`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || '无法读取复核清单');
+        document.getElementById('reviewSummary').textContent = `共 ${data.total} 题需要复核；完整理由可在详细 Excel 报告中查看。`;
+        const tbody = document.getElementById('reviewRows');
+        tbody.replaceChildren();
+        for (const row of data.rows.slice(0, 50)) {
+            const tr = document.createElement('tr');
+            for (const value of [row.id, row.instruction, row.baseScore, row.compareScore,
+                row.delta.toFixed(2), row.reviewReason]) {
+                const td = document.createElement('td');
+                td.textContent = value;
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        container.style.display = 'block';
+    } catch (error) {
+        console.error('加载复核清单失败:', error);
     }
 }
 

@@ -8,4 +8,6 @@ __pycache__/
 uploads/
 completed-files/
 completed-files-data.json
+tasks-data.json
+tasks-data.json.tmp
 *_scored.xlsx

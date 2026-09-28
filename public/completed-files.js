@@ -5,6 +5,12 @@ let selectedFiles = [];
 let selectionMode = false;
 let selectionType = '';
 
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     initializePage();
@@ -115,11 +121,11 @@ function displayFiles(files) {
                 <td>${file.id}</td>
                 <td>
                     <i class="fas fa-file-excel text-success me-2"></i>
-                    ${file.name}
+                    ${escapeHtml(file.name)}
                 </td>
                 <td>
                     <i class="fas fa-user me-1 text-muted"></i>
-                    ${file.submitter || file.uploader || '未知'}
+                    ${escapeHtml(file.submitter || file.uploader || '未知')}
                 </td>
                 <td>
                     <small class="text-muted">

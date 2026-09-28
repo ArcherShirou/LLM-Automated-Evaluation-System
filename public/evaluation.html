@@ -57,6 +57,7 @@
         }
         
         #evaluationLog {
+            white-space: pre-line;
             max-height: 200px;
             overflow-y: auto;
             background-color: #f8f9fa;
@@ -210,6 +211,21 @@
                         <div id="resultsContent">
                             <!-- 评测结果将在这里显示 -->
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4" id="reviewContainer" style="display: none;">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-warning"><h5 class="mb-0">待人工复核</h5></div>
+                    <div class="card-body">
+                        <p class="text-muted">两模型分数差至少 0.5，或任一分数不高于 0.4 时列入。此清单仅用于复核排序，不代表医学结论。</p>
+                        <p id="reviewSummary"></p>
+                        <div class="table-responsive"><table class="table table-sm table-striped">
+                            <thead><tr><th>ID</th><th>问题</th><th>Base</th><th>Compare</th><th>差值</th><th>复核原因</th></tr></thead>
+                            <tbody id="reviewRows"></tbody>
+                        </table></div>
                     </div>
                 </div>
             </div>

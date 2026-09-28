@@ -5,9 +5,7 @@ import math
 from tqdm import tqdm
 from openai import OpenAI
 
-API_BASE = os.environ.get('DEEPSEEK_BASE_URL', 'http://192.168.1.111:23333/v1')
-
-client = OpenAI(api_key="EMPTY", base_url=API_BASE)
+API_BASE = os.environ.get('DEEPSEEK_BASE_URL')
 
 
 def validate_excel(file_path):
@@ -79,6 +77,9 @@ def extract_score(output):
 
 
 def call_teacher_model(prompt):
+    if not API_BASE:
+        raise ValueError('请配置 DEEPSEEK_BASE_URL')
+    client = OpenAI(api_key=os.environ.get('TEACHER_MODEL_API_KEY', 'EMPTY'), base_url=API_BASE)
     try:
         response = client.chat.completions.create(
             model=client.models.list().data[0].id,

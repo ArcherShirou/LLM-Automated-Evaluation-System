@@ -25,13 +25,13 @@
 ### 系统要求
 - Windows 10/11 或 Linux 或 macOS
 - Node.js 16.0+ 
-- Python 3.8+
+- Python 3.9+
 - 至少 4GB RAM
 - 至少 2GB 可用磁盘空间
 
 ### 软件依赖
 - Node.js 和 npm
-- Python 3.8+
+- Python 3.9+
 - Git（可选，用于克隆代码）
 
 ## 安装部署
@@ -60,12 +60,11 @@ npm install
 - exceljs: Excel文件生成
 - pdfkit: PDF报告生成
 - fs-extra: 文件系统操作
-- cors: 跨域支持
 
 ### 3. 安装Python依赖
 
 ```bash
-pip install pandas asyncio openai tqdm openpyxl
+pip install pandas openai tqdm openpyxl
 ```
 
 或者创建requirements.txt文件：
@@ -75,7 +74,6 @@ pandas>=1.3.0
 openai>=1.0.0
 tqdm>=4.60.0
 openpyxl>=3.0.0
-aiohttp>=3.8.0
 ```
 
 然后安装：
@@ -86,25 +84,24 @@ pip install -r requirements.txt
 
 ### 4. 配置环境变量
 
-在项目根目录创建 `.env` 文件（可选）：
+设置以下环境变量；若使用 `.env` 文件，需要自行加载该文件：
 
 ```env
 PORT=8000
-TEACHER_MODEL_URL=your_openai_api_endpoint
-OPENAI_API_KEY=your_openai_api_key
+DEEPSEEK_BASE_URL=http://127.0.0.1:23333/v1
+DEEPSEEK_MODEL=your_deepseek_model_id
+GPT_OSS_BASE_URL=http://127.0.0.1:8000/v1
+GPT_OSS_MODEL=your_gpt_oss_model_id
+TEACHER_MODEL_API_KEY=your_key_if_required
 ```
 
 ### 5. 配置评测模型
 
-编辑 `eval_service.py` 文件，配置您的AI模型API：
+教师模型使用兼容 OpenAI API 的服务；上述变量可覆盖现有默认地址和模型 ID。本地服务如无需鉴权，可不设置 `TEACHER_MODEL_API_KEY`。模型调用失败或返回无效 JSON 时，任务会失败，不会把失败项记为 0 分。存在非空 `reference` 时，评分会使用该参考答案。
 
-```python
-# 修改以下配置
-TEACHER_MODEL_URL = "your_api_endpoint"  # 例如："https://api.openai.com/v1"
-api_key = "your_api_key"  # 您的OpenAI API密钥
-```
+服务器默认只监听本机 `127.0.0.1`。当前项目尚无身份验证，不应直接暴露到公网；只有在可信网络并配置访问保护时才设置 `HOST=0.0.0.0`。上传文件上限为 10 MB。
 
-**重要**：请确保您有有效的OpenAI API密钥，否则评测功能将无法正常工作。
+离线回归检查：`python3 -m unittest -v test_eval_service.py`。
 
 ## 启动系统
 
@@ -222,13 +219,10 @@ const upload = multer({
 
 ### 评测配置
 
-在 `eval_service.py` 中可以修改：
+通过环境变量配置模型地址和模型 ID，并在调用 `evaluate_file_async` 时设置并发数：
 
 ```python
-TEACHER_MODEL_URL = "your_api_endpoint"  # AI模型API地址
-process_count = 4  # 并发评测数量
-max_retries = 3    # 最大重试次数
-timeout = 30       # 请求超时时间（秒）
+await evaluate_file_async(file_path, process_count=4)
 ```
 
 ### 目录结构配置

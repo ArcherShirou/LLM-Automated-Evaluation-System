@@ -1,16 +1,11 @@
 import pandas as pd
 import os
 import json
+import math
 from tqdm import tqdm
 from openai import OpenAI
 
-# 清除系统代理，防止连接失败
-os.environ.pop("HTTP_PROXY", None)
-os.environ.pop("HTTPS_PROXY", None)
-os.environ.pop("http_proxy", None)
-os.environ.pop("https_proxy", None)
-
-API_BASE = "http://192.168.1.111:23333/v1"
+API_BASE = os.environ.get('DEEPSEEK_BASE_URL', 'http://192.168.1.111:23333/v1')
 
 client = OpenAI(api_key="EMPTY", base_url=API_BASE)
 
@@ -70,15 +65,17 @@ without any extra explanation and output,
 def extract_score(output):
     try:
         if isinstance(output, str):
-            result = eval(output)
+            result = json.loads(output)
         else:
             result = output
         if isinstance(result, dict) and 'student' in result:
-            score = float(result['student'])
-            return max(0.0, min(1.0, score))
-    except:
-        pass
-    return 0.0
+            score = result['student']
+            if isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score) or not 0 <= score <= 1:
+                raise ValueError('教师模型评分必须是 0 到 1 之间的数字')
+            return float(score)
+    except (ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+        raise ValueError('教师模型未返回有效评分') from exc
+    raise ValueError('教师模型未返回有效评分')
 
 
 def call_teacher_model(prompt):
@@ -92,8 +89,7 @@ def call_teacher_model(prompt):
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
-        print(f"模型调用失败: {e}")
-        return '{"student": 0.0}'
+        raise RuntimeError('模型调用失败') from e
 
 
 def evaluate_excel_file(file_path):
@@ -140,4 +136,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

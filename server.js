@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const XLSX = require('xlsx');
-const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs-extra');
@@ -13,12 +12,7 @@ const ExcelJS = require('exceljs');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+const io = socketIo(server);
 
 // 生成综合报告
 function generateComprehensiveReport(req, res, task) {
@@ -95,9 +89,9 @@ function generateComprehensiveReport(req, res, task) {
 }
 
 const PORT = process.env.PORT || 8000;
+const HOST = process.env.HOST || '127.0.0.1';
 
 // 中间件
-app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -118,6 +112,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (path.extname(file.originalname).toLowerCase() === '.xlsx') {
       cb(null, true);
@@ -1912,9 +1907,8 @@ io.on('connection', (socket) => {
 });
 
 // 启动服务器
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`服务器运行在 http://localhost:${PORT}`);
-  console.log(`也可以通过网络访问: http://192.168.10.34:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`服务器运行在 http://${HOST}:${PORT}`);
 });
 
 module.exports = app;

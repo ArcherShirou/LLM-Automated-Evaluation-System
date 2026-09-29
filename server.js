@@ -7,7 +7,6 @@ const fs = require('fs-extra');
 const http = require('http');
 const socketIo = require('socket.io');
 const { spawn } = require('child_process');
-// PDF相关库已删除，现在使用新的三栏对比布局
 const ExcelJS = require('exceljs');
 const { indexRows, pairRows, score, reviewRows } = require('./comparison');
 
@@ -18,80 +17,6 @@ const io = socketIo(server, { allowRequest: (req, callback) =>
 
 function fileHash(filePath) {
   return createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
-}
-
-// 生成综合报告
-function generateComprehensiveReport(req, res, task) {
-  try {
-    const file1ScoredPath = task.file1Path.replace('.xlsx', '_scored.xlsx');
-    const file2ScoredPath = task.file2Path.replace('.xlsx', '_scored.xlsx');
-    
-    // 检查评测结果文件是否存在
-    if (!fs.existsSync(file1ScoredPath) || !fs.existsSync(file2ScoredPath)) {
-      return res.status(404).json({ error: '评测结果文件不存在' });
-    }
-    
-    // 读取两个评测结果文件
-    const file1Workbook = XLSX.readFile(file1ScoredPath, { codepage: 65001 });
-  const file2Workbook = XLSX.readFile(file2ScoredPath, { codepage: 65001 });
-    
-    const file1SheetName = file1Workbook.SheetNames[0];
-    const file2SheetName = file2Workbook.SheetNames[0];
-    
-    const file1Data = XLSX.utils.sheet_to_json(file1Workbook.Sheets[file1SheetName]);
-    const file2Data = XLSX.utils.sheet_to_json(file2Workbook.Sheets[file2SheetName]);
-    
-    // 创建新的工作簿
-    const comprehensiveWorkbook = XLSX.utils.book_new();
-    
-    // 添加文件1数据
-    const file1DisplayName = task.fileConfig?.file1Name || '文件1';
-    const file1Sheet = XLSX.utils.json_to_sheet(file1Data);
-    XLSX.utils.book_append_sheet(comprehensiveWorkbook, file1Sheet, file1DisplayName);
-    
-    // 添加文件2数据
-    const file2DisplayName = task.fileConfig?.file2Name || '文件2';
-    const file2Sheet = XLSX.utils.json_to_sheet(file2Data);
-    XLSX.utils.book_append_sheet(comprehensiveWorkbook, file2Sheet, file2DisplayName);
-    
-    // 添加模型输出记录（如果有的话）
-    if (task.modelOutputs && task.modelOutputs.length > 0) {
-      const modelOutputSheet = XLSX.utils.json_to_sheet(task.modelOutputs);
-      XLSX.utils.book_append_sheet(comprehensiveWorkbook, modelOutputSheet, '模型输出记录');
-    }
-    
-    // 生成临时文件
-    const timestamp = Date.now();
-    const comprehensiveFileName = `comprehensive_report_${timestamp}.xlsx`;
-    const comprehensiveFilePath = path.join(uploadDir, comprehensiveFileName);
-    
-    // 写入文件
-    XLSX.writeFile(comprehensiveWorkbook, comprehensiveFilePath);
-    
-    // 设置下载文件名
-    const downloadFileName = `${file1DisplayName}_vs_${file2DisplayName}_综合报告.xlsx`;
-    
-    // 发送文件并在发送后删除临时文件
-    res.download(comprehensiveFilePath, downloadFileName, (err) => {
-      // 删除临时文件
-      fs.unlink(comprehensiveFilePath, (unlinkErr) => {
-        if (unlinkErr) {
-          console.error('删除临时文件失败:', unlinkErr);
-        }
-      });
-      
-      if (err) {
-        console.error('综合报告下载错误:', err);
-        if (!res.headersSent) {
-          res.status(500).json({ error: '综合报告下载失败' });
-        }
-      }
-    });
-    
-  } catch (error) {
-    console.error('生成综合报告错误:', error);
-    res.status(500).json({ error: '生成综合报告失败' });
-  }
 }
 
 const PORT = process.env.PORT || 8000;
@@ -307,58 +232,6 @@ function validateExcelFile(filePath) {
 
 // API路由
 
-// 上传并验证文件
-app.post('/api/upload', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (req, res) => {
-  try {
-    if (!req.files.file1 || !req.files.file2) {
-      return res.status(400).json({ error: '请上传两个文件' });
-    }
-    
-    const file1Path = req.files.file1[0].path;
-    const file2Path = req.files.file2[0].path;
-    
-    const validation1 = validateExcelFile(file1Path);
-    const validation2 = validateExcelFile(file2Path);
-    
-    if (!validation1.valid) {
-      return res.status(400).json({ error: `文件1验证失败: ${validation1.error}` });
-    }
-    
-    if (!validation2.valid) {
-      return res.status(400).json({ error: `文件2验证失败: ${validation2.error}` });
-    }
-    
-    if (validation1.rowCount !== validation2.rowCount) {
-      return res.status(400).json({ 
-        error: `两个文件行数不一致: 文件1有${validation1.rowCount}行，文件2有${validation2.rowCount}行` 
-      });
-    }
-    try {
-      pairRows(validation1.data, validation2.data);
-    } catch (error) {
-      return res.status(400).json({ error: error.message });
-    }
-    
-    res.json({
-      success: true,
-      message: '文件验证成功',
-      file1: {
-        filename: req.files.file1[0].filename,
-        rowCount: validation1.rowCount
-      },
-      file2: {
-        filename: req.files.file2[0].filename,
-        rowCount: validation2.rowCount
-      },
-      file1Path: req.files.file1[0].filename,
-      file2Path: req.files.file2[0].filename,
-      sessionId: randomUUID()
-    });
-  } catch (error) {
-    res.status(500).json({ error: '服务器错误: ' + error.message });
-  }
-});
-
 // 创建评测任务
 app.post('/api/create-task', upload.fields([
   { name: 'baseFile', maxCount: 1 },
@@ -367,7 +240,7 @@ app.post('/api/create-task', upload.fields([
   try {
     const { taskName, submitter, baseType, compareType, baseFileId, compareFileId } = req.body;
     
-    if (!taskName || !submitter || !compareType) {
+    if (!taskName || !compareType) {
       return res.status(400).json({ error: '缺少必要参数' });
     }
     
@@ -433,7 +306,7 @@ app.post('/api/create-task', upload.fields([
     const task = {
       id: taskId,
       name: taskName,
-      submitter: submitter,
+      submitter: submitter?.trim() || '未填写',
       submitTime: new Date().toISOString(),
       status: '待评测',
       baseFile: baseFilePath ? {
@@ -674,19 +547,6 @@ app.post('/api/tasks/:taskId/evaluate', async (req, res) => {
     return res.status(400).json({ error: '任务已在评测中' });
   }
   
-  // 更新任务状态
-  task.status = '评测中';
-  task.startTime = new Date().toISOString();
-  task.fileConfigs = fileConfigs;
-  task.file1Progress = 0;
-  task.file2Progress = 0;
-  task.file1Results = null;
-  task.file2Results = null;
-  task.run = { mode: 'teacher model', teacherModel: teacherModel || 'Deepseek', agentReview: agentReview === true,
-    startedAt: task.startTime,
-    inputHashes: task.inputHashes };
-  saveTasks();
-  
   // 准备评测文件列表
   const filesToEvaluate = [];
   
@@ -708,13 +568,18 @@ app.post('/api/tasks/:taskId/evaluate', async (req, res) => {
     });
   }
   
-  if (filesToEvaluate.length === 0) {
-    task.status = '已完成';
-    task.completedTime = new Date().toISOString();
-    saveTasks();
-    io.emit('evaluationComplete', { taskId, task, message: '没有选择要评测的文件' });
-    return res.json({ message: '没有选择要评测的文件', taskId: taskId });
-  }
+  if (filesToEvaluate.length === 0) return res.status(400).json({ error: '请至少选择一个文件进行评分' });
+
+  // 更新任务状态
+  task.status = '评测中';
+  task.startTime = new Date().toISOString();
+  task.fileConfigs = fileConfigs;
+  task.file1Progress = 0;
+  task.file2Progress = 0;
+  task.run = { mode: 'teacher model', teacherModel: teacherModel || 'Deepseek', agentReview: agentReview === true,
+    startedAt: task.startTime,
+    inputHashes: task.inputHashes };
+  saveTasks();
   
   // 启动评测进程
   startEvaluationProcess(task, filesToEvaluate, teacherModel || 'Deepseek');
@@ -852,25 +717,6 @@ app.post('/api/tasks/:taskId/direct-comparison', async (req, res) => {
     console.error('直接对比失败:', error);
     res.status(500).json({ error: '直接对比失败: ' + error.message });
   }
-});
-
-// 获取评测进度
-app.get('/api/tasks/:taskId/progress', (req, res) => {
-  const taskId = req.params.taskId;
-  const task = evaluationTasks.find(t => t.id === taskId);
-  
-  if (!task) {
-    return res.status(404).json({ error: '任务不存在' });
-  }
-  
-  res.json({
-    taskId: taskId,
-    status: task.status,
-    file1Progress: task.file1Progress || 0,
-    file2Progress: task.file2Progress || 0,
-    file1Results: task.file1Results,
-    file2Results: task.file2Results
-  });
 });
 
 // 保存评测日志
@@ -1499,118 +1345,6 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
   }
 }
 
-// 模拟评测函数已移除，现在使用真正的Python评测服务
-
-// 下载评测结果文件
-app.get('/api/download/:taskId/:fileType', (req, res) => {
-  try {
-    const { taskId, fileType } = req.params;
-    
-    // 查找任务
-    const task = evaluationTasks.find(t => t.id === taskId);
-    if (!task) {
-      return res.status(404).json({ error: '任务不存在' });
-    }
-    
-    // 确定要下载的文件
-    let originalFileName, scoredFileName, originalFilePath;
-    if (fileType === 'file1') {
-      originalFileName = task.file1Name;
-      originalFilePath = task.file1Path;
-      scoredFileName = task.file1Path.replace('.xlsx', '_scored.xlsx');
-    } else if (fileType === 'file2') {
-      originalFileName = task.file2Name;
-      originalFilePath = task.file2Path;
-      scoredFileName = task.file2Path.replace('.xlsx', '_scored.xlsx');
-    } else if (fileType === 'comprehensive') {
-      // 生成综合报告
-      return generateComprehensiveReport(req, res, task);
-    } else if (fileType === 'file1_outputs') {
-      // 下载文件1的模型输出
-      if (!task.file1OutputsPath) {
-        return res.status(404).json({ error: '文件1模型输出不存在' });
-      }
-      const filePath = path.join(uploadDir, task.file1OutputsPath);
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: '文件1模型输出文件不存在' });
-      }
-      const downloadFileName = `${task.file1Name.replace('.xlsx', '')}_模型输出.jsonl`;
-      return res.download(filePath, downloadFileName);
-    } else if (fileType === 'file2_outputs') {
-      // 下载文件2的模型输出
-      if (!task.file2OutputsPath) {
-        return res.status(404).json({ error: '文件2模型输出不存在' });
-      }
-      const filePath = path.join(uploadDir, task.file2OutputsPath);
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: '文件2模型输出文件不存在' });
-      }
-      const downloadFileName = `${task.file2Name.replace('.xlsx', '')}_模型输出.jsonl`;
-      return res.download(filePath, downloadFileName);
-    } else if (fileType === 'file1_scored') {
-      // 下载文件1的评分结果
-      const scoredFilePath = task.file1Path.replace('.xlsx', '_scored.xlsx');
-      const filePath = path.join(uploadDir, scoredFilePath);
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: '文件1评分结果不存在' });
-      }
-      const downloadFileName = `${task.file1Name.replace('.xlsx', '')}_评分结果.xlsx`;
-      return res.download(filePath, downloadFileName);
-    } else if (fileType === 'file2_scored') {
-      // 下载文件2的评分结果
-      const scoredFilePath = task.file2Path.replace('.xlsx', '_scored.xlsx');
-      const filePath = path.join(uploadDir, scoredFilePath);
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: '文件2评分结果不存在' });
-      }
-      const downloadFileName = `${task.file2Name.replace('.xlsx', '')}_评分结果.xlsx`;
-      return res.download(filePath, downloadFileName);
-    } else {
-      return res.status(400).json({ error: '无效的文件类型' });
-    }
-    
-    let filePath = path.join(uploadDir, scoredFileName);
-    let downloadFileName = originalFileName.replace('.xlsx', '_scored.xlsx');
-    
-    // 检查评分结果文件是否存在，如果不存在则下载原始文件
-    if (!fs.existsSync(filePath)) {
-      // 检查是否是base文件不参与评测的情况
-      const isBaseFile = (fileType === 'file1' && task.baseFileEvaluate === false) || 
-                        (fileType === 'file2' && task.compareFileEvaluate === false);
-      
-      if (isBaseFile) {
-        // 如果是base文件不参与评测，下载原始文件
-        filePath = path.join(uploadDir, originalFilePath);
-        downloadFileName = originalFileName;
-        
-        if (!fs.existsSync(filePath)) {
-          return res.status(404).json({ error: '原始文件不存在' });
-        }
-      } else {
-        return res.status(404).json({ error: '评测结果文件不存在' });
-      }
-    }
-    
-    // 设置正确的MIME类型
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="${downloadFileName}"`);
-    
-    // 发送文件
-    res.download(filePath, downloadFileName, (err) => {
-      if (err) {
-        console.error('文件下载错误:', err);
-        if (!res.headersSent) {
-          res.status(500).json({ error: '文件下载失败' });
-        }
-      }
-    });
-    
-  } catch (error) {
-    console.error('下载文件错误:', error);
-    res.status(500).json({ error: '服务器内部错误' });
-  }
-});
-
 // 读取Excel文件数据
 function readExcelFile(filePath, sheetName = null) {
   const workbook = XLSX.readFile(filePath, { codepage: 65001 }); // 使用UTF-8编码
@@ -1721,10 +1455,8 @@ function calculateSourceDistribution(data) {
   return sourceDistribution;
 }
 
-// 旧的PDF对比报告生成函数已删除，现在使用新的三栏对比布局
 
 // 绘制表格
-// 旧的PDF绘图函数已删除，现在使用新的三栏对比布局
 
 // 生成详细Excel报告
 async function generateDetailedExcelReport(task) {
@@ -2098,7 +1830,6 @@ async function generateDetailedExcelReport(task) {
 }
 
 // 生成PDF对比报告
-// 旧的对比报告路由已删除，现在使用新的三栏对比布局
 
 // 合成场景评测：每次运行持久化轨迹，重启后仍可查看结果。
 const scenarioRunsDir = process.env.SCENARIO_RUNS_DIR || path.join(__dirname, 'scenario-runs');

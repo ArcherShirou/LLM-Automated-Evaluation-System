@@ -45,11 +45,8 @@ function setupEventListeners() {
     
     // 返回首页按钮
     const backBtn = document.getElementById('backToHomeBtn');
-    console.log('返回按钮元素:', backBtn);
     if (backBtn) {
-        console.log('绑定返回按钮事件监听器');
         backBtn.addEventListener('click', (e) => {
-            console.log('返回按钮被点击');
             e.preventDefault();
             window.location.href = '/';
         });
@@ -60,25 +57,13 @@ function setupEventListeners() {
 
 // 设置Socket监听器
 function setupSocketListeners() {
-    console.log('设置Socket监听器');
-    
-    socket.on('connect', () => {
-        console.log('Socket.IO连接成功');
-    });
-    
-    socket.on('disconnect', () => {
-        console.log('Socket.IO连接断开');
-    });
-    
     socket.on('evaluationProgress', (data) => {
-        console.log('收到评测进度更新:', data);
         if (data.taskId === currentTask?.id) {
             updateProgress(data);
         }
     });
     
     socket.on('evaluationComplete', (data) => {
-        console.log('收到评测完成事件:', data);
         handleEvaluationComplete(data);
         // 更新任务状态显示
         if (currentTask && data.task) {
@@ -88,7 +73,6 @@ function setupSocketListeners() {
     });
     
     socket.on('evaluationError', (data) => {
-        console.log('收到评测错误事件:', data);
         handleEvaluationError(data);
         // 更新任务状态显示
         if (currentTask) {
@@ -98,7 +82,6 @@ function setupSocketListeners() {
     });
     
     socket.on('evaluationLog', (data) => {
-        console.log('收到评测日志事件:', data);
         if (data.taskId === currentTask?.id) {
             const logContainer = document.getElementById('evaluationLog');
             if (logContainer && data.message) {
@@ -117,26 +100,21 @@ function setupSocketListeners() {
 // 加载任务详情
 async function loadTaskDetails(taskId) {
     try {
-        console.log('正在加载任务详情，taskId:', taskId);
         const response = await fetch(`/api/tasks/${taskId}`);
-        console.log('API响应状态:', response.status);
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-        console.log('API响应数据:', data);
         
         if (data.success) {
             currentTask = data.task;
-            console.log('当前任务数据:', currentTask);
             displayTaskInfo(currentTask);
             setupFileConfiguration(currentTask);
             
             // 如果任务已完成，恢复评测结果和进度条
             if (currentTask.status === '已完成' && currentTask.results) {
-                console.log('✅ 任务已完成，恢复评测结果');
                 
                 // 显示进度容器
                 const progressContainer = document.getElementById('progressContainer');
@@ -181,7 +159,6 @@ async function loadTaskDetails(taskId) {
             }
             // 如果任务正在评测中，恢复进度状态
             else if (currentTask.status === '评测中') {
-                console.log('⏳ 任务正在评测中，恢复进度状态');
                 
                 // 显示进度容器
                 const progressContainer = document.getElementById('progressContainer');
@@ -253,182 +230,59 @@ async function loadTaskDetails(taskId) {
 
 // 显示任务信息
 function displayTaskInfo(task) {
-    console.log('显示任务信息:', task);
-    console.log('submitter值:', task.submitter);
     
-    document.getElementById('taskName').textContent = task.name || '未知任务';
-    document.getElementById('submitter').textContent = task.submitter || '未知提交人';
-    // 修复字段名不匹配问题，使用submitTime而不是createdAt
+    document.getElementById('taskTitle').textContent = task.name || '未知任务';
+    const submitter = document.getElementById('submitter');
+    submitter.hidden = !task.submitter || task.submitter === '未填写';
+    if (!submitter.hidden) submitter.textContent = `提交人：${task.submitter}`;
     const createTime = task.submitTime || task.createdAt;
-    document.getElementById('createTime').textContent = createTime ? new Date(createTime).toLocaleString() : '未知时间';
+    document.getElementById('createTime').textContent = createTime ? `创建：${new Date(createTime).toLocaleString()}` : '';
     document.getElementById('taskStatus').textContent = task.status || '未知状态';
 }
 
 // 设置文件配置
 async function setupFileConfiguration(task) {
-    const fileConfigContainer = document.getElementById('fileConfigContainer');
-    fileConfigContainer.innerHTML = '';
-    
-    // 检查两个文件是否都包含score列
-    let baseHasScore = false;
-    let compareHasScore = false;
-    
-    if (task.baseFile && task.compareFile) {
-        try {
-            // 检查base文件是否包含score列
-            const baseCheckResponse = await fetch(`/api/tasks/${task.id}/check-score-column`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ fileType: 'base' })
-            });
-            const baseCheckData = await baseCheckResponse.json();
-            baseHasScore = baseCheckData.hasScore;
-            
-            // 检查compare文件是否包含score列
-            const compareCheckResponse = await fetch(`/api/tasks/${task.id}/check-score-column`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ fileType: 'compare' })
-            });
-            const compareCheckData = await compareCheckResponse.json();
-            compareHasScore = compareCheckData.hasScore;
-        } catch (error) {
-            console.error('检查score列失败:', error);
-        }
-    }
-    
-    // 将score状态保存到currentTask中
-    if (currentTask) {
-        currentTask.baseHasScore = baseHasScore;
-        currentTask.compareHasScore = compareHasScore;
-    }
-    
-    // 如果两个文件都包含score列，显示直接对比选项
-    if (baseHasScore && compareHasScore) {
-        const directCompareCard = document.createElement('div');
-        directCompareCard.className = 'card mb-3 border-success';
-        directCompareCard.innerHTML = `
-            <div class="card-header bg-success text-white">
-                <h6 class="mb-0">🎉 检测到两个文件都包含评分数据</h6>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-success mb-3">
-                    <strong>好消息！</strong> 两个文件都已包含评分数据，您可以选择：
-                    <ul class="mb-0 mt-2">
-                        <li>直接查看对比结果（推荐）</li>
-                        <li>重新评测后再对比</li>
-                    </ul>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="directCompare" checked>
-                    <label class="form-check-label" for="directCompare">
-                        <strong>直接对比现有评分数据</strong>
-                    </label>
-                    <small class="text-muted d-block">勾选此项将跳过评测过程，直接使用现有的评分数据进行对比分析</small>
-                </div>
-            </div>
-        `;
-        fileConfigContainer.appendChild(directCompareCard);
-        
-        // 添加直接对比选项的事件监听器
-        const directCompareCheckbox = document.getElementById('directCompare');
-        directCompareCheckbox.addEventListener('change', function() {
-            const baseEvaluate = document.getElementById('baseEvaluate');
-            const compareEvaluate = document.getElementById('compareEvaluate');
-            
-            if (this.checked) {
-                // 直接对比模式：取消评测选项
-                if (baseEvaluate) baseEvaluate.checked = false;
-                if (compareEvaluate) compareEvaluate.checked = false;
-                
-                // 禁用评测选项
-                if (baseEvaluate) baseEvaluate.disabled = true;
-                if (compareEvaluate) compareEvaluate.disabled = true;
-            } else {
-                // 重新评测模式：启用评测选项
-                if (baseEvaluate) {
-                    baseEvaluate.disabled = false;
-                    baseEvaluate.checked = true;
-                }
-                if (compareEvaluate) {
-                    compareEvaluate.disabled = false;
-                    compareEvaluate.checked = true;
-                }
-            }
+    const container = document.getElementById('fileConfigContainer');
+    container.replaceChildren();
+    async function hasScore(fileType) {
+        const response = await fetch(`/api/tasks/${task.id}/check-score-column`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileType })
         });
+        if (!response.ok) throw new Error('读取文件评分信息失败');
+        return (await response.json()).hasScore;
     }
-    
-    // Base文件配置
-    if (task.baseFile) {
-        const baseFileConfig = createFileConfigCard(task.baseFile, 'base', 'Base模型文件', baseHasScore);
-        fileConfigContainer.appendChild(baseFileConfig);
-    }
-    
-    // 对比文件配置
-    if (task.compareFile) {
-        const compareFileConfig = createFileConfigCard(task.compareFile, 'compare', '对比模型文件', compareHasScore);
-        fileConfigContainer.appendChild(compareFileConfig);
-    }
-    
-    // 如果两个文件都有score列且选择了直接对比，初始化禁用评测选项
-    if (baseHasScore && compareHasScore) {
-        const directCompareCheckbox = document.getElementById('directCompare');
-        if (directCompareCheckbox && directCompareCheckbox.checked) {
-            const baseEvaluate = document.getElementById('baseEvaluate');
-            const compareEvaluate = document.getElementById('compareEvaluate');
-            if (baseEvaluate) {
-                baseEvaluate.checked = false;
-                baseEvaluate.disabled = true;
-            }
-            if (compareEvaluate) {
-                compareEvaluate.checked = false;
-                compareEvaluate.disabled = true;
-            }
-        }
+    try {
+        const [base, compare] = await Promise.all([
+            task.baseFile ? hasScore('base') : false,
+            hasScore('compare')
+        ]);
+        task.baseHasScore = base;
+        task.compareHasScore = compare;
+        if (task.baseFile) container.appendChild(createFileConfigCard(task.baseFile, 'base', 'Base 文件', base, true));
+        container.appendChild(createFileConfigCard(task.compareFile, 'compare', '对比文件', compare, !!task.baseFile));
+        const startButton = document.getElementById('startEvaluationBtn');
+        const updateLabel = () => {
+            const reuseBoth = base && compare &&
+                !document.getElementById('baseEvaluate').checked &&
+                !document.getElementById('compareEvaluate').checked;
+            document.getElementById('scoringOptions').style.display = reuseBoth ? 'none' : '';
+            startButton.textContent = reuseBoth ? '查看现有评分' : '开始评测';
+        };
+        container.querySelectorAll('input[type="checkbox"]').forEach(input => input.addEventListener('change', updateLabel));
+        updateLabel();
+    } catch (error) {
+        showError(error.message);
     }
 }
 
-// 创建文件配置卡片
-function createFileConfigCard(file, type, title, hasScore = false) {
+function createFileConfigCard(file, type, title, hasScore, allowReuse) {
     const card = document.createElement('div');
-    card.className = hasScore ? 'card mb-3 border-info' : 'card mb-3';
-    
-    const scoreIndicator = hasScore ? 
-        '<span class="badge bg-success ms-2">✓ 包含评分数据</span>' : 
-        '<span class="badge bg-secondary ms-2">无评分数据</span>';
-    
-    card.innerHTML = `
-        <div class="card-header ${hasScore ? 'bg-light' : ''}">
-            <h6 class="mb-0">${title}${scoreIndicator}</h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">原文件名</label>
-                    <input type="text" class="form-control" value="${escapeHtml(file.name)}" readonly>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">模型名</label>
-                    <input type="text" class="form-control" id="${type}FileName" value="${escapeHtml(file.name)}" placeholder="输入模型名称">
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="${type}Evaluate" checked>
-                        <label class="form-check-label" for="${type}Evaluate">
-                            评测此文件
-                        </label>
-                    </div>
-                    <small class="text-muted">${hasScore ? '文件已包含评分数据，重新评测将覆盖原分数' : '文件无评分数据，需要进行评测'}</small>
-                </div>
-            </div>
-        </div>
-    `;
+    card.className = 'card mb-2';
+    card.innerHTML = `<div class="card-body d-flex justify-content-between align-items-center gap-3">
+        <div><strong>${title}</strong><div class="text-muted">${escapeHtml(file.name)}</div></div>
+        ${hasScore && allowReuse ? `<label class="form-check-label"><input class="form-check-input" type="checkbox" id="${type}Evaluate"> 重新评分</label>` : `<span class="text-muted">${hasScore ? '将重新评分' : '待评分'}</span>`}
+    </div>`;
     return card;
 }
 
@@ -566,27 +420,22 @@ function showDetailedRanking(type) {
     rankingArea.scrollIntoView({ behavior: 'smooth' });
 }
 
+function modelDisplayName(type, result) {
+    const configured = currentTask?.fileConfigs?.[`${type}File`]?.name?.trim();
+    if (configured) return configured;
+    const file = result || currentTask?.results?.find(item => item.type === type);
+    const name = file?.fileName || file?.name || currentTask?.[`${type}File`]?.name;
+    return name ? name.replace(/\.xlsx$/i, '') : (type === 'base' ? 'Base模型' : '对比模型');
+}
+
 // 创建整体排名
 function createOverallRanking(baseStats, compareStats) {
     const baseScore = baseStats.overall?.average_score || 0;
     const compareScore = compareStats.overall?.average_score || 0;
     
-    // 获取用户配置的模型名称
-    let baseModelName = 'Base模型';
-    let compareModelName = '对比模型';
-    
-    if (currentTask.fileConfigs && currentTask.fileConfigs.baseFile && currentTask.fileConfigs.baseFile.name && currentTask.fileConfigs.baseFile.name.trim()) {
-        baseModelName = currentTask.fileConfigs.baseFile.name.trim();
-    } else if (currentTask.results && currentTask.results[0] && currentTask.results[0].fileName) {
-        baseModelName = currentTask.results[0].fileName.replace(/\.[^/.]+$/, "");
-    }
-    
-    if (currentTask.fileConfigs && currentTask.fileConfigs.compareFile && currentTask.fileConfigs.compareFile.name && currentTask.fileConfigs.compareFile.name.trim()) {
-        compareModelName = currentTask.fileConfigs.compareFile.name.trim();
-    } else if (currentTask.results && currentTask.results[1] && currentTask.results[1].fileName) {
-        compareModelName = currentTask.results[1].fileName.replace(/\.[^/.]+$/, "");
-    }
-    
+    const baseModelName = modelDisplayName('base');
+    const compareModelName = modelDisplayName('compare');
+
     const models = [
         { name: baseModelName, score: baseScore, type: 'base' },
         { name: compareModelName, score: compareScore, type: 'compare' }
@@ -628,22 +477,9 @@ function createParentClassRanking(baseStats, compareStats) {
         return '<p class="text-muted">暂无父类数据</p>';
     }
     
-    // 获取用户配置的模型名称
-    let baseModelName = 'Base模型';
-    let compareModelName = '对比模型';
-    
-    if (currentTask.fileConfigs && currentTask.fileConfigs.baseFile && currentTask.fileConfigs.baseFile.name && currentTask.fileConfigs.baseFile.name.trim()) {
-        baseModelName = currentTask.fileConfigs.baseFile.name.trim();
-    } else if (currentTask.results && currentTask.results[0] && currentTask.results[0].fileName) {
-        baseModelName = currentTask.results[0].fileName.replace(/\.[^/.]+$/, "");
-    }
-    
-    if (currentTask.fileConfigs && currentTask.fileConfigs.compareFile && currentTask.fileConfigs.compareFile.name && currentTask.fileConfigs.compareFile.name.trim()) {
-        compareModelName = currentTask.fileConfigs.compareFile.name.trim();
-    } else if (currentTask.results && currentTask.results[1] && currentTask.results[1].fileName) {
-        compareModelName = currentTask.results[1].fileName.replace(/\.[^/.]+$/, "");
-    }
-    
+    const baseModelName = modelDisplayName('base');
+    const compareModelName = modelDisplayName('compare');
+
     const allParentClasses = new Set([
         ...Object.keys(baseStats.by_parent_class),
         ...Object.keys(compareStats.by_parent_class)
@@ -732,24 +568,8 @@ function createSubClassRanking(baseStats, compareStats) {
                     <tr>
                         <th>排名</th>
                         <th>子类</th>
-                        <th>${(() => {
-                            let baseModelName = 'Base模型';
-                            if (currentTask.fileConfigs && currentTask.fileConfigs.baseFile && currentTask.fileConfigs.baseFile.name && currentTask.fileConfigs.baseFile.name.trim()) {
-                                baseModelName = currentTask.fileConfigs.baseFile.name.trim();
-                            } else if (currentTask.results && currentTask.results[0] && currentTask.results[0].fileName) {
-                                baseModelName = currentTask.results[0].fileName.replace(/\.[^/.]+$/, "");
-                            }
-                            return escapeHtml(baseModelName);
-                        })()}</th>
-                        <th>${(() => {
-                            let compareModelName = '对比模型';
-                            if (currentTask.fileConfigs && currentTask.fileConfigs.compareFile && currentTask.fileConfigs.compareFile.name && currentTask.fileConfigs.compareFile.name.trim()) {
-                                compareModelName = currentTask.fileConfigs.compareFile.name.trim();
-                            } else if (currentTask.results && currentTask.results[1] && currentTask.results[1].fileName) {
-                                compareModelName = currentTask.results[1].fileName.replace(/\.[^/.]+$/, "");
-                            }
-                            return escapeHtml(compareModelName);
-                        })()}</th>
+                        <th>${escapeHtml(modelDisplayName('base'))}</th>
+                        <th>${escapeHtml(modelDisplayName('compare'))}</th>
                         <th>差异</th>
                     </tr>
                 </thead>
@@ -770,41 +590,6 @@ function createSubClassRanking(baseStats, compareStats) {
             </table>
         </div>
     `;
-}
-
-// 导出详细报告
-// 一键导出全部文件
-async function exportAllFiles() {
-    if (!currentTask) {
-        showError('当前没有可用的任务数据');
-        return;
-    }
-    
-    showSuccess('正在准备导出全部文件，请稍候...');
-    
-    try {
-        // 1. 导出详细报告
-        await exportDetailedReport();
-        
-        // 延迟一下，避免同时下载太多文件
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // 2. 下载Base评分文件
-        if (currentTask.baseFile) {
-            downloadScoredFile('file1');
-            await new Promise(resolve => setTimeout(resolve, 500));
-        }
-        
-        // 3. 下载对比评分文件
-        if (currentTask.compareFile) {
-            downloadScoredFile('file2');
-        }
-        
-        showSuccess('全部文件导出完成！请检查浏览器下载文件夹');
-    } catch (error) {
-        console.error('导出全部文件失败:', error);
-        showError('导出全部文件失败: ' + error.message);
-    }
 }
 
 async function exportDetailedReport() {
@@ -848,22 +633,6 @@ async function exportDetailedReport() {
         console.error('导出详细报告失败:', error);
         showError('导出详细报告失败: ' + error.message);
     }
-}
-
-// 下载评分文件
-function downloadScoredFile(fileType) {
-    if (!currentTask) {
-        showError('当前没有可用的任务数据');
-        return;
-    }
-    
-    const downloadUrl = `/api/download/${currentTask.id}/${fileType}`;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 }
 
 // 开始评测
@@ -912,7 +681,7 @@ async function handleDirectComparison() {
         // 恢复按钮状态
         const startBtn = document.getElementById('startEvaluationBtn');
         startBtn.disabled = false;
-        startBtn.textContent = '开始评测';
+        startBtn.textContent = '查看现有评分';
     }
 }
 
@@ -927,87 +696,22 @@ async function startEvaluation() {
     const teacherModel = teacherModelSelect ? teacherModelSelect.value : 'Deepseek';
     const agentReview = document.getElementById('agentReview')?.checked === true;
     
-    // 收集文件配置
+    // Files with existing scores can be reused; unscored files are always evaluated.
     const fileConfigs = {};
-    
-    // Base文件配置
-    if (currentTask.baseFile) {
-        const baseEvaluate = document.getElementById('baseEvaluate');
-        const baseFileName = document.getElementById('baseFileName');
-        
-        if (baseEvaluate && baseFileName) {
-            fileConfigs.baseFile = {
-                evaluate: baseEvaluate.checked,
-                name: baseFileName.value.trim() || currentTask.baseFile.name
-            };
-        }
-    }
-    
-    // 对比文件配置
-    if (currentTask.compareFile) {
-        const compareEvaluate = document.getElementById('compareEvaluate');
-        const compareFileName = document.getElementById('compareFileName');
-        
-        if (compareEvaluate && compareFileName) {
-            fileConfigs.compareFile = {
-                evaluate: compareEvaluate.checked,
-                name: compareFileName.value.trim() || currentTask.compareFile.name
-            };
-        }
-    }
-    
-    // 检查是否选择了直接对比模式
-    const directCompareCheckbox = document.getElementById('directCompare');
-    const isDirectCompare = directCompareCheckbox && directCompareCheckbox.checked;
-    
-    if (isDirectCompare) {
-        // 直接对比模式：调用直接对比API
+    if (currentTask.baseFile) fileConfigs.baseFile = {
+        evaluate: document.getElementById('baseEvaluate')?.checked ?? true,
+        name: currentTask.baseFile.name
+    };
+    fileConfigs.compareFile = {
+        evaluate: document.getElementById('compareEvaluate')?.checked ?? true,
+        name: currentTask.compareFile.name
+    };
+    if (currentTask.baseHasScore && currentTask.compareHasScore &&
+        !fileConfigs.baseFile.evaluate && !fileConfigs.compareFile.evaluate) {
         await handleDirectComparison();
         return;
     }
-    
-    // 检查文件是否包含score字段
-    let baseHasScore = false;
-    let compareHasScore = false;
-    
-    if (currentTask.baseFile && currentTask.compareFile) {
-        try {
-            // 检查base文件是否包含score列
-            const baseCheckResponse = await fetch(`/api/tasks/${currentTask.id}/check-score-column`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ filePath: currentTask.baseFile.path })
-            });
-            const baseCheckData = await baseCheckResponse.json();
-            baseHasScore = baseCheckData.hasScore;
-            
-            // 检查compare文件是否包含score列
-            const compareCheckResponse = await fetch(`/api/tasks/${currentTask.id}/check-score-column`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ filePath: currentTask.compareFile.path })
-            });
-            const compareCheckData = await compareCheckResponse.json();
-            compareHasScore = compareCheckData.hasScore;
-        } catch (error) {
-            console.error('检查score列失败:', error);
-        }
-    }
-    
-    // 如果两个文件都有score字段，直接进行对比
-    if (baseHasScore && compareHasScore) {
-        console.log('两个文件都包含score字段，直接进行对比');
-        await handleDirectComparison();
-        return;
-    }
-    
-    // 检查是否至少选择了一个需要评测的文件进行评测
-    const hasFileToEvaluate = Object.values(fileConfigs).some(config => config.evaluate);
-    if (!hasFileToEvaluate) {
-        showError('请至少选择一个需要评测的文件进行评测');
-        return;
-    }
-    
+
     try {
         // 清除之前的评测记录
         const logContainer = document.getElementById('evaluationLog');
@@ -1130,7 +834,6 @@ async function stopEvaluation() {
 
 // 更新进度
 function updateProgress(data) {
-    console.log('更新进度:', data);
     const logContainer = document.getElementById('evaluationLog');
     
     if (!logContainer) {
@@ -1369,7 +1072,6 @@ function updateProgressBar(fileName, progress, logContainer, currentQuestion = n
 
 // 处理评测完成
 function handleEvaluationComplete(data) {
-    console.log('🎉 评测完成事件接收到的数据:', data);
     if (data.taskId !== currentTask?.id) return;
     if (data.task) currentTask = data.task;
     
@@ -1393,17 +1095,10 @@ function handleEvaluationComplete(data) {
     const progressContainer = document.getElementById('progressContainer');
     if (progressContainer) {
         progressContainer.style.display = 'block';
-        console.log('✅ 进度容器保持显示');
     }
     
     // 显示结果区域
     if (data.results) {
-        console.log('📊 准备显示结果:', {
-            results: data.results,
-            statistics: data.statistics,
-            statisticsType: typeof data.statistics,
-            statisticsLength: data.statistics ? data.statistics.length : 'undefined'
-        });
         displayResults(data.results, data.statistics);
     } else {
         console.warn('⚠️ 没有接收到results数据');
@@ -1419,7 +1114,6 @@ function handleEvaluationComplete(data) {
         element.style.opacity = '0.7';
     });
     
-    console.log('✅ 评测完成处理结束，进度条数量:', progressElements.length);
 }
 
 // 处理评测错误
@@ -1447,70 +1141,16 @@ function handleEvaluationError(data) {
 
 // 显示评测结果
 function displayResults(results, statistics) {
-    console.log('displayResults called with:', { results, statistics });
-    
-    const resultsContainer = document.getElementById('resultsContainer');
-    resultsContainer.style.display = 'block';
-    
-    const resultsContent = document.getElementById('resultsContent');
-    resultsContent.innerHTML = '';
-    
-    // 如果有base和compare文件，显示新的三栏对比布局
-    const baseResult = results.find(r => r.type === 'base');
-    const compareResult = results.find(r => r.type === 'compare');
-    
-    console.log('检查三栏布局条件:', {
-        baseResult: !!baseResult,
-        compareResult: !!compareResult,
-        statistics: !!statistics,
-        statisticsLength: statistics ? statistics.length : 0,
-        baseResultData: baseResult,
-        compareResultData: compareResult
-    });
-    
-    // 检查文件是否有可用于对比的数据（评测结果数据或已有的score数据）
-    const baseHasData = baseResult && (baseResult.data || (currentTask && currentTask.baseHasScore));
-    const compareHasData = compareResult && (compareResult.data || (currentTask && currentTask.compareHasScore));
-    
-    console.log('检查数据可用性:', {
-        baseHasData,
-        compareHasData,
-        baseResultData: baseResult ? !!baseResult.data : false,
-        compareResultData: compareResult ? !!compareResult.data : false,
-        baseHasScore: currentTask ? currentTask.baseHasScore : false,
-        compareHasScore: currentTask ? currentTask.compareHasScore : false
-    });
-    
-    // 如果有任何文件有可用数据且有统计数据，显示三栏对比布局
-    if ((baseHasData || compareHasData) && statistics && statistics.length >= 1) {
-        console.log('✅ 显示三栏对比布局', { baseResult, compareResult, statistics });
-        const newComparisonCard = createNewComparisonLayout(baseResult, compareResult, statistics);
-        resultsContent.appendChild(newComparisonCard);
-        
-        // 保存统计数据到全局变量以供其他函数使用
-        if (currentTask) {
-            currentTask.statistics = statistics;
-        }
+    const container = document.getElementById('resultsContent');
+    document.getElementById('resultsContainer').style.display = 'block';
+    container.replaceChildren();
+    const base = results.find(result => result.type === 'base');
+    const compare = results.find(result => result.type === 'compare');
+    if (base && compare && statistics?.length === 2) {
+        currentTask.statistics = statistics;
+        container.appendChild(createNewComparisonLayout(base, compare, statistics));
     } else {
-        console.log('❌ 显示传统布局，原因:', {
-            hasBaseResult: !!baseResult,
-            hasCompareResult: !!compareResult,
-            hasStatistics: !!statistics,
-            statisticsLength: statistics ? statistics.length : 0,
-            results,
-            statistics
-        });
-        // 显示每个文件的结果（旧版本兼容）
-        results.forEach(result => {
-            const resultCard = createResultCard(result);
-            resultsContent.appendChild(resultCard);
-        });
-        
-        // 显示统计信息
-        if (statistics) {
-            const statsCard = createStatisticsCard(statistics);
-            resultsContent.appendChild(statsCard);
-        }
+        for (const result of results) container.appendChild(createResultCard(result));
     }
     loadReviewQueue(results);
     loadAgentReviewQueue();
@@ -1576,27 +1216,11 @@ function createResultCard(result) {
     const card = document.createElement('div');
     card.className = 'card mb-3';
     
-    const stats = result.statistics;
+    const stats = result.statistics || {};
     const overall = stats.overall || {};
     
-    // 检测并获取模型名称，优先使用用户配置的名称
-    let displayName = result.type === 'base' ? 'Base模型' : '对比模型';
-    
-    // 检查是否有用户配置的模型名称
-    if (currentTask && currentTask.fileConfigs) {
-        if (result.type === 'base' && currentTask.fileConfigs.baseFile && currentTask.fileConfigs.baseFile.name && currentTask.fileConfigs.baseFile.name.trim()) {
-            displayName = currentTask.fileConfigs.baseFile.name.trim();
-        } else if (result.type === 'compare' && currentTask.fileConfigs.compareFile && currentTask.fileConfigs.compareFile.name && currentTask.fileConfigs.compareFile.name.trim()) {
-            displayName = currentTask.fileConfigs.compareFile.name.trim();
-        } else if (result.fileName) {
-            // 如果没有用户配置的名称，使用文件名（去掉扩展名）
-            displayName = result.fileName.replace(/\.[^/.]+$/, "");
-        }
-    } else if (result.fileName) {
-        // 如果没有配置信息，使用文件名（去掉扩展名）
-        displayName = result.fileName.replace(/\.[^/.]+$/, "");
-    }
-    
+    const displayName = modelDisplayName(result.type, result);
+
     card.innerHTML = `
         <div class="card-header">
             <h6 class="mb-0">${escapeHtml(displayName)} (${result.type === 'base' ? 'Base模型' : '对比模型'})</h6>
@@ -1647,25 +1271,9 @@ function createNewComparisonLayout(baseResult, compareResult, statistics) {
     const baseStats = statistics[0];
     const compareStats = statistics[1];
     
-    // 检测并获取模型名称，优先使用用户配置的名称
-    let baseModelName = 'Base模型';
-    let compareModelName = '对比模型';
-    
-    // 检查是否有用户配置的模型名称
-    if (currentTask.fileConfigs && currentTask.fileConfigs.baseFile && currentTask.fileConfigs.baseFile.name && currentTask.fileConfigs.baseFile.name.trim()) {
-        baseModelName = currentTask.fileConfigs.baseFile.name.trim();
-    } else if (baseResult.fileName) {
-        // 如果没有用户配置的名称，使用文件名（去掉扩展名）
-        baseModelName = baseResult.fileName.replace(/\.[^/.]+$/, "");
-    }
-    
-    if (currentTask.fileConfigs && currentTask.fileConfigs.compareFile && currentTask.fileConfigs.compareFile.name && currentTask.fileConfigs.compareFile.name.trim()) {
-        compareModelName = currentTask.fileConfigs.compareFile.name.trim();
-    } else if (compareResult.fileName) {
-        // 如果没有用户配置的名称，使用文件名（去掉扩展名）
-        compareModelName = compareResult.fileName.replace(/\.[^/.]+$/, "");
-    }
-    
+    const baseModelName = modelDisplayName('base', baseResult);
+    const compareModelName = modelDisplayName('compare', compareResult);
+
     container.innerHTML = `
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
@@ -1764,164 +1372,6 @@ function createNewComparisonLayout(baseResult, compareResult, statistics) {
     return container;
 }
 
-// 创建统计信息卡片（保留旧版本兼容）
-function createStatisticsCard(statistics) {
-    const card = document.createElement('div');
-    card.className = 'card mb-3';
-    
-    // 检查是否有两个模型的统计数据
-    const hasComparison = statistics && statistics.length === 2;
-    
-    if (!hasComparison) {
-        card.innerHTML = `
-            <div class="card-header">
-                <h6 class="mb-0">整体统计</h6>
-            </div>
-            <div class="card-body">
-                <p>需要两个模型的评测结果才能显示对比统计信息</p>
-            </div>
-        `;
-        return card;
-    }
-    
-    const baseStats = statistics[0];
-    const compareStats = statistics[1];
-    
-    // 构建父类对比表格
-    let parentClassTable = '';
-    if (baseStats.by_parent_class && compareStats.by_parent_class) {
-        const allParentClasses = new Set([
-            ...Object.keys(baseStats.by_parent_class),
-            ...Object.keys(compareStats.by_parent_class)
-        ]);
-        
-        parentClassTable = `
-            <h6 class="mt-4">父类对比</h6>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>父类</th>
-                            <th>Base模型平均分</th>
-                            <th>Compare模型平均分</th>
-                            <th>差异</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-        
-        Array.from(allParentClasses).forEach(parentClass => {
-            const baseAvg = baseStats.by_parent_class[parentClass]?.average_score || 0;
-            const compareAvg = compareStats.by_parent_class[parentClass]?.average_score || 0;
-            const diff = compareAvg - baseAvg;
-            const diffClass = diff > 0 ? 'text-success' : diff < 0 ? 'text-danger' : 'text-muted';
-            
-            parentClassTable += `
-                <tr>
-                    <td>${escapeHtml(parentClass)}</td>
-                    <td>${baseAvg.toFixed(3)}</td>
-                    <td>${compareAvg.toFixed(3)}</td>
-                    <td class="${diffClass}">${diff > 0 ? '+' : ''}${diff.toFixed(3)}</td>
-                </tr>
-            `;
-        });
-        
-        parentClassTable += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-    }
-    
-    // 构建子类对比表格
-    let subClassTable = '';
-    if (baseStats.by_sub_class && compareStats.by_sub_class) {
-        const allSubClasses = new Set([
-            ...Object.keys(baseStats.by_sub_class),
-            ...Object.keys(compareStats.by_sub_class)
-        ]);
-        
-        subClassTable = `
-            <h6 class="mt-4">子类对比</h6>
-            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>子类</th>
-                            <th>Base模型平均分</th>
-                            <th>Compare模型平均分</th>
-                            <th>差异</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-        
-        Array.from(allSubClasses).forEach(subClass => {
-            const baseAvg = baseStats.by_sub_class[subClass]?.average_score || 0;
-            const compareAvg = compareStats.by_sub_class[subClass]?.average_score || 0;
-            const diff = compareAvg - baseAvg;
-            const diffClass = diff > 0 ? 'text-success' : diff < 0 ? 'text-danger' : 'text-muted';
-            
-            subClassTable += `
-                <tr>
-                    <td>${escapeHtml(subClass)}</td>
-                    <td>${baseAvg.toFixed(3)}</td>
-                    <td>${compareAvg.toFixed(3)}</td>
-                    <td class="${diffClass}">${diff > 0 ? '+' : ''}${diff.toFixed(3)}</td>
-                </tr>
-            `;
-        });
-        
-        subClassTable += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-    }
-    
-    card.innerHTML = `
-        <div class="card-header">
-            <h6 class="mb-0">详细统计对比</h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6>Base模型整体统计</h6>
-                    <p>平均分: <strong>${baseStats.overall?.average_score?.toFixed(3) || '0.000'}</strong></p>
-                    <p>最高分: <strong>${baseStats.overall?.max_score?.toFixed(3) || '0.000'}</strong></p>
-                    <p>最低分: <strong>${baseStats.overall?.min_score?.toFixed(3) || '0.000'}</strong></p>
-                    <p>题目总数: <strong>${baseStats.overall?.total_questions || 0}</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <h6>Compare模型整体统计</h6>
-                    <p>平均分: <strong>${compareStats.overall?.average_score?.toFixed(3) || '0.000'}</strong></p>
-                    <p>最高分: <strong>${compareStats.overall?.max_score?.toFixed(3) || '0.000'}</strong></p>
-                    <p>最低分: <strong>${compareStats.overall?.min_score?.toFixed(3) || '0.000'}</strong></p>
-                    <p>题目总数: <strong>${compareStats.overall?.total_questions || 0}</strong></p>
-                </div>
-            </div>
-            ${parentClassTable}
-            ${subClassTable}
-        </div>
-    `;
-    
-    return card;
-}
-
-// 创建对比卡片
-// 旧的createComparisonCard函数已删除，现在使用createNewComparisonLayout函数
-
-// 旧的generateComparisonReport函数已删除，现在使用新的导出功能
-
-// 下载文件
-// 获取URL中的任务ID
-function getTaskIdFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('taskId');
-}
-
-// 下载功能已移除，统一使用导出报告功能
-
 // 显示成功消息
 function showSuccess(message) {
     showAlert(message, 'success');
@@ -1936,7 +1386,6 @@ function showError(message) {
 function showAlert(message, type = 'info') {
     const alertContainer = document.getElementById('alertContainer');
     if (!alertContainer) {
-        console.log(`${type.toUpperCase()}: ${message}`);
         return;
     }
     
@@ -1958,408 +1407,3 @@ function showAlert(message, type = 'info') {
         }
     }, 3000);
 }
-
-// 添加CSS样式
-const style = document.createElement('style');
-style.textContent = `
-    .log-entry {
-        padding: 2px 0;
-        font-family: monospace;
-        font-size: 0.9em;
-    }
-    
-    .progress-bar-entry {
-        padding: 4px 0;
-        font-family: 'Courier New', monospace;
-        font-size: 0.85em;
-        color: #28a745;
-        font-weight: bold;
-        background-color: #f8f9fa;
-        border-left: 3px solid #28a745;
-        padding-left: 8px;
-        margin: 2px 0;
-        border-radius: 3px;
-        transition: all 0.3s ease;
-    }
-    .progress-bar-entry.completed {
-        background-color: #e8f5e8;
-        border-left-color: #20c997;
-        color: #20c997;
-    }
-    
-    #evaluationLog {
-        max-height: 300px;
-        overflow-y: auto;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 0.375rem;
-        padding: 10px;
-        font-family: monospace;
-    }
-    
-    .card-header h6 {
-        color: #495057;
-        font-weight: 600;
-    }
-    
-    #alertContainer {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1050;
-        max-width: 400px;
-    }
-    
-    /* 新增样式：三栏对比布局 */
-    .comparison-layout {
-        margin-top: 20px;
-    }
-
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .comparison-column {
-        border: 1px solid #e8ecef;
-        border-radius: 12px;
-        padding: 20px;
-        height: 100%;
-        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .comparison-column:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-    }
-
-    .overall-column {
-        border-left: 4px solid #ffc107;
-    }
-
-    .parent-column {
-        border-left: 4px solid #17a2b8;
-    }
-
-    .subclass-column {
-        border-left: 4px solid #28a745;
-    }
-
-    .column-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #f1f3f4;
-    }
-
-    .column-header i {
-        font-size: 18px;
-    }
-
-    .column-header h6 {
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .score-comparison {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 20px 0;
-    }
-
-    .model-score {
-        text-align: center;
-        flex: 1;
-        position: relative;
-    }
-
-    .model-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 8px;
-    }
-
-    .base-badge {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-    }
-
-    .compare-badge {
-        background: linear-gradient(135deg, #f093fb, #f5576c);
-        color: white;
-    }
-
-    .model-name-display {
-        margin-bottom: 8px;
-    }
-
-    .model-title {
-        font-size: 12px;
-        color: #495057;
-        font-weight: 600;
-        margin-bottom: 4px;
-    }
-
-    .model-name {
-        font-size: 10px;
-        color: #6c757d;
-        word-break: break-all;
-        font-weight: 400;
-        background-color: rgba(0,0,0,0.05);
-        padding: 2px 6px;
-        border-radius: 4px;
-        display: inline-block;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .score-value {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-
-    .base-score {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .compare-score {
-        background: linear-gradient(135deg, #f093fb, #f5576c);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .score-label {
-        font-size: 10px;
-        color: #adb5bd;
-        margin-top: 2px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .vs-divider {
-        margin: 0 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .vs-circle {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 12px;
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-    
-    .score-difference {
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        text-align: center;
-        margin-top: 15px;
-    }
-
-    .score-difference.positive {
-        background: linear-gradient(135deg, #d4edda, #c3e6cb);
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .score-difference.negative {
-        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    .score-difference.neutral {
-        background: linear-gradient(135deg, #e2e3e5, #d6d8db);
-        color: #383d41;
-        border: 1px solid #d6d8db;
-    }
-
-    .detail-btn {
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
-
-    .detail-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .category-summary {
-        max-height: 300px;
-        overflow-y: auto;
-        padding-right: 5px;
-    }
-
-    .category-summary::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .category-summary::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 2px;
-    }
-
-    .category-summary::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 2px;
-    }
-
-    .category-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid #f1f3f4;
-        transition: background-color 0.2s ease;
-    }
-
-    .category-item:hover {
-        background-color: rgba(102, 126, 234, 0.05);
-        border-radius: 6px;
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-
-    .category-item:last-child {
-        border-bottom: none;
-    }
-
-    .category-name {
-        font-size: 11px;
-        color: #495057;
-        flex: 1;
-        font-weight: 500;
-    }
-
-    .category-scores {
-        display: flex;
-        gap: 12px;
-        font-size: 10px;
-        font-weight: 600;
-    }
-    
-    .summary-stats {
-        display: flex;
-        justify-content: space-around;
-        margin: 15px 0;
-    }
-    
-    .stat-item {
-        text-align: center;
-    }
-    
-    .stat-number {
-        display: block;
-        font-size: 1.5em;
-        font-weight: bold;
-    }
-    
-    .stat-label {
-        font-size: 0.8em;
-        display: block;
-    }
-    
-    .ranking-table {
-        max-height: 400px;
-        overflow-y: auto;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
-    }
-
-    .ranking-table::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .ranking-table::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 3px;
-    }
-
-    .ranking-table::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 3px;
-    }
-
-    .ranking-table table {
-        margin-bottom: 0;
-        border-collapse: collapse;
-    }
-
-    .ranking-table th {
-        position: sticky;
-        top: 0;
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        z-index: 10;
-        font-weight: 600;
-        padding: 12px 8px;
-        text-align: center;
-        border-bottom: 2px solid #dee2e6;
-        color: #495057;
-        font-size: 13px;
-    }
-
-    .ranking-table td {
-        padding: 10px 8px;
-        text-align: center;
-        border-bottom: 1px solid #f1f3f4;
-        transition: background-color 0.2s ease;
-        font-size: 12px;
-    }
-
-    .ranking-table tr:hover td {
-        background-color: rgba(102, 126, 234, 0.05);
-    }
-
-    .ranking-table .category-name {
-        text-align: left;
-        max-width: 200px;
-        word-break: break-word;
-        font-weight: 500;
-    }
-    
-    /* 完成消息样式 */
-    .completion-message {
-        color: #28a745;
-        font-weight: bold;
-        background-color: #d4edda;
-        border-left: 3px solid #28a745;
-        padding-left: 8px;
-        margin: 2px 0;
-        border-radius: 3px;
-    }
-`;
-document.head.appendChild(style);

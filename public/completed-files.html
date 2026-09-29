@@ -12,18 +12,6 @@
             color: white;
             padding: 2rem 0;
         }
-        .file-card {
-            transition: transform 0.2s;
-            cursor: pointer;
-        }
-        .file-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .selected-file {
-            border: 2px solid #007bff;
-            background-color: #f8f9ff;
-        }
         .filter-section {
             background-color: #f8f9fa;
             border-radius: 10px;
@@ -57,34 +45,16 @@
         <!-- 筛选和操作区域 -->
         <div class="filter-section">
             <div class="row align-items-end">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">按文件名筛选</label>
                     <input type="text" class="form-control" id="fileNameFilter" placeholder="输入文件名关键词">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">按上传人筛选</label>
                     <input type="text" class="form-control" id="uploaderFilter" placeholder="输入上传人姓名">
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">操作</label>
-                    <div class="d-grid">
-                        <button class="btn btn-primary" onclick="applyFilters()">
-                            <i class="fas fa-search me-1"></i>筛选
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">&nbsp;</label>
-                    <div class="d-grid gap-2">
-                        <div class="btn-group">
-                            <button class="btn btn-warning" onclick="batchDelete()" id="batchDeleteBtn" disabled>
-                                <i class="fas fa-trash me-1"></i>批量删除
-                            </button>
-                            <button class="btn btn-danger" onclick="clearAll()">
-                                <i class="fas fa-trash-alt me-1"></i>清空全部
-                            </button>
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-danger w-100" onclick="batchDelete()" id="batchDeleteBtn" disabled>删除选中文件</button>
                 </div>
             </div>
         </div>
@@ -93,9 +63,6 @@
         <div class="alert alert-info" id="selectionModeAlert" style="display: none;">
             <i class="fas fa-info-circle me-2"></i>
             <span id="selectionModeText">请选择一个文件作为Base模型</span>
-            <button class="btn btn-sm btn-success ms-3" onclick="confirmSelection()" id="confirmBtn" disabled>
-                <i class="fas fa-check me-1"></i>确认选择
-            </button>
             <button class="btn btn-sm btn-secondary ms-2" onclick="cancelSelection()">
                 <i class="fas fa-times me-1"></i>取消
             </button>
@@ -113,7 +80,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-3">
+                        <div class="row mb-3" id="selectAllRow">
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="selectAll">
@@ -130,7 +97,6 @@
                                     <thead class="table-dark">
                                         <tr>
                                             <th width="50">选择</th>
-                                            <th>ID</th>
                                             <th>文件名</th>
                                             <th>上传人</th>
                                             <th>上传时间</th>
@@ -140,7 +106,7 @@
                                     </thead>
                                     <tbody id="filesTableBody">
                                         <tr>
-                                            <td colspan="7" class="text-center text-muted py-4">
+                                            <td colspan="6" class="text-center text-muted py-4">
                                                 <i class="fas fa-inbox fa-2x mb-2"></i>
                                                 <br>暂无已完成的评估文件
                                             </td>
@@ -169,24 +135,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">确认删除</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 成功提示模态框 -->
-    <div class="modal fade" id="successModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>操作成功</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="successMessage"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">确定</button>
                 </div>
             </div>
         </div>

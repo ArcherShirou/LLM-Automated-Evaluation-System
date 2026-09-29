@@ -221,8 +221,18 @@ let completedFiles = [];
 const completedFilesDir = path.join(__dirname, 'completed-files');
 fs.ensureDirSync(completedFilesDir);
 
+function taskFilePaths(task) {
+  return [task.baseFile?.path, task.compareFile?.path, task.file1Path, task.file2Path,
+    ...(task.results || []).map(result => result.outputPath)].filter(Boolean);
+}
+
+function safeStoredPath(filePath, directories = [uploadDir, completedFilesDir]) {
+  if (typeof filePath !== 'string' || !directories.includes(path.dirname(path.resolve(filePath)))) return false;
+  try { return !fs.lstatSync(filePath).isSymbolicLink(); } catch { return true; }
+}
+
 // 已完成文件列表的持久化文件
-const completedFilesDataPath = path.join(__dirname, 'completed-files-data.json');
+const completedFilesDataPath = process.env.COMPLETED_FILES_DATA_PATH || path.join(__dirname, 'completed-files-data.json');
 
 // 保存已完成文件列表到文件
 function saveCompletedFiles() {
@@ -493,6 +503,13 @@ app.delete('/api/completed-files/batch-delete', async (req, res) => {
     if (!fileIds || !Array.isArray(fileIds)) {
       return res.status(400).json({ error: '无效的文件ID列表' });
     }
+    const selected = completedFiles.filter(file => fileIds.includes(file.id));
+    if (selected.some(file => evaluationTasks.some(task => taskFilePaths(task).includes(file.filePath)))) {
+      return res.status(409).json({ error: '文件仍被评测任务引用，请先删除相关任务' });
+    }
+    if (selected.some(file => !safeStoredPath(file.filePath))) {
+      return res.status(400).json({ error: '文件路径不在允许的存储目录内' });
+    }
     
     let deletedCount = 0;
     
@@ -502,13 +519,7 @@ app.delete('/api/completed-files/batch-delete', async (req, res) => {
         const file = completedFiles[fileIndex];
         
         // 删除物理文件
-        try {
-          if (fs.existsSync(file.filePath)) {
-            await fs.unlink(file.filePath);
-          }
-        } catch (error) {
-          console.error(`删除文件失败: ${file.filePath}`, error);
-        }
+        if (fs.existsSync(file.filePath)) await fs.unlink(file.filePath);
         
         // 从列表中移除
         completedFiles.splice(fileIndex, 1);
@@ -521,6 +532,7 @@ app.delete('/api/completed-files/batch-delete', async (req, res) => {
     
     res.json({ success: true, deletedCount });
   } catch (error) {
+    saveCompletedFiles();
     console.error('批量删除文件失败:', error);
     res.status(500).json({ error: '批量删除文件失败' });
   }
@@ -635,6 +647,12 @@ app.delete('/api/tasks/:taskId', (req, res) => {
   // 删除任务
   evaluationTasks.splice(taskIndex, 1);
   saveTasks();
+  for (const filePath of taskFilePaths(task)) {
+    if (!safeStoredPath(filePath, [uploadDir])) continue;
+    const usedByTask = evaluationTasks.some(other => taskFilePaths(other).includes(filePath));
+    const savedAsCompleted = completedFiles.some(file => file.filePath === filePath);
+    if (!usedByTask && !savedAsCompleted) fs.removeSync(filePath);
+  }
   
   // 通知所有连接的客户端任务已删除
   io.emit('taskDeleted', { taskId: taskId });
@@ -2100,7 +2118,7 @@ function saveScenarioRun(run) {
 }
 
 app.get('/api/scenarios', (req, res) => {
-  res.json(scenarioCatalog.map(({ patient, checks, ...publicInfo }) => publicInfo));
+  res.json(scenarioCatalog.map(({ patient, checks, environment, ...publicInfo }) => publicInfo));
 });
 
 app.post('/api/scenario-runs', (req, res) => {
@@ -2117,6 +2135,7 @@ app.post('/api/scenario-runs', (req, res) => {
   }
   if (scenarioProcesses.size >= 2) return res.status(429).json({ error: '最多同时运行 2 个场景' });
   const run = { id: randomUUID(), scenarioId, scenarioTitle: scenario.title,
+    counterpartyLabel: scenario.counterparty_label || '患者',
     status: 'running', teacherModel, candidateModel: process.env.CANDIDATE_MODEL,
     startedAt: new Date().toISOString(), trace: [] };
   saveScenarioRun(run);

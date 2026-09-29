@@ -75,6 +75,10 @@ test('direct comparison aligns rows by id and exposes review cases', async () =>
     assert.equal(restored.task.status, '已完成');
     assert.equal(restored.task.inputHashes.base, task.inputHashes.base);
     assert.equal((await (await fetch(`${url}/api/tasks/${task.id}/review-queue`)).json()).total, 1);
+    const deleted = await fetch(`${url}/api/tasks/${task.id}`, { method: 'DELETE' });
+    assert.equal(deleted.status, 200);
+    assert.equal(fs.existsSync(task.baseFile.path), false);
+    assert.equal(fs.existsSync(task.compareFile.path), false);
   } finally {
     child.kill();
     for (const file of [task?.baseFile?.path, task?.compareFile?.path]) {

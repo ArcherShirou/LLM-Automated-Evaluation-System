@@ -14,6 +14,43 @@ class ScenarioEvaluationTests(unittest.TestCase):
         self.assertNotIn('patient', visible)
         self.assertNotIn('checks', visible)
         self.assertEqual(visible['id'], self.scenario['id'])
+        self.assertNotIn('environment', scenario_eval.public_scenarios()[-1])
+
+    def test_environment_actions_change_state_and_are_scored_without_judge(self):
+        scenario = scenario_eval.load_scenarios()[-1]
+        prompts = []
+
+        async def doctor(system, prompt):
+            prompts.append(prompt)
+            self.assertNotIn('refund_eligible', system)
+            if len(prompts) == 1:
+                return json.dumps({'message': '商品损坏很抱歉，我先查询订单并处理退款，后续会通知您。',
+                                   'actions': [{'type': 'lookup_order', 'order_id': 'ORD-1001'},
+                                               {'type': 'issue_refund', 'order_id': 'ORD-1001'}]})
+            return json.dumps({'message': '退款已经提交，后续处理进度会通知您。', 'actions': []})
+
+        async def customer(system, prompt):
+            return '谢谢，请告知处理进度。'
+
+        async def judge(system, prompt):
+            return json.dumps({'checks': [
+                {'id': 'acknowledge_damage', 'passed': True,
+                 'evidence': '商品损坏很抱歉，我先查询订单并处理退款，后续会通知您。'},
+                {'id': 'next_step', 'passed': True,
+                 'evidence': '退款已经提交，后续处理进度会通知您。'}]})
+
+        result = asyncio.run(scenario_eval.run_scenario(scenario, doctor, customer, judge))
+        self.assertTrue(result['environmentState']['refund_issued'])
+        self.assertEqual(result['score'], 1.0)
+        self.assertEqual(len([item for item in result['trace'] if item['role'] == 'environment']), 2)
+        self.assertIn('符合退款条件：是', prompts[1])
+
+    def test_refund_requires_order_lookup_and_matching_order_id(self):
+        state = dict(scenario_eval.load_scenarios()[-1]['environment'])
+        self.assertFalse(scenario_eval.apply_action(state, {'type': 'issue_refund', 'order_id': 'ORD-1001'})[0])
+        self.assertFalse(scenario_eval.apply_action(state, {'type': 'lookup_order', 'order_id': 'wrong'})[0])
+        self.assertFalse(state['looked_up'])
+        self.assertFalse(state['refund_issued'])
 
     def test_multi_turn_trace_has_patient_replies_and_timed_event(self):
         seen_by_doctor = []

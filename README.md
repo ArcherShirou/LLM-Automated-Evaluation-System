@@ -11,7 +11,7 @@
 - 📁 **文件管理**：完整的文件上传、下载和管理功能
 - 🌐 **共享工作区**：支持多个浏览器同时使用同一工作区
 - 🤖 **AI智能评分**：基于OpenAI API的智能评分系统
-- 🎭 **合成场景评测**：模拟患者与待测接诊助手多轮互动，按完整轨迹评分并保存证据
+- 🎭 **合成场景评测**：多轮模拟用户、环境事件和待测助手互动，按完整轨迹评分并保存证据；客服退款场景可在沙盒中查询订单与提交退款
 
 ## 系统架构
 
@@ -86,6 +86,7 @@ GPT_OSS_MODEL=your_gpt_oss_model_id
 TEACHER_MODEL_API_KEY=your_key_if_required
 PYTHON=python3
 TASKS_DATA_PATH=./tasks-data.json
+COMPLETED_FILES_DATA_PATH=./completed-files-data.json
 CANDIDATE_BASE_URL=http://127.0.0.1:9000/v1
 CANDIDATE_MODEL=your_candidate_model_id
 CANDIDATE_API_KEY=your_key_if_required
@@ -104,6 +105,8 @@ APP_ACCESS_TOKEN=replace_with_a_long_random_secret
 离线回归检查：`python3 -m unittest -v test_eval_service.py`。
 Node 回归检查：`npm test`。其中接口测试仅启动本机临时服务，不调用教师模型。
 场景引擎离线检查：`python3 -m unittest -v test_scenario_eval.py`。
+
+场景评分会核对模型原文证据与检查点关键词；评分器与证据规则不一致时会标记人工复核。客服退款场景要求待测模型输出包含 `message` 和 `actions` 的 JSON，可执行 `lookup_order`、`issue_refund` 两种沙盒动作。动作结果写入轨迹，并由确定性状态规则评分；这里的订单和退款均为合成数据，不会调用真实订单系统。
 
 ## 启动系统
 

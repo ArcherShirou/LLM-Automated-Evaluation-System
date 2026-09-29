@@ -11,7 +11,7 @@ from openai import OpenAI
 
 
 SCENARIOS_PATH = Path(__file__).with_name('scenarios.json')
-RUBRIC_VERSION = 'scenario-rubric-v1'
+RUBRIC_VERSION = 'scenario-rubric-v2'
 
 
 def load_scenarios():
@@ -24,10 +24,13 @@ def load_scenarios():
         check_ids = [check['id'] for check in scenario['checks']]
         if len(check_ids) != len(set(check_ids)) or not check_ids:
             raise ValueError('场景检查点无效')
-        if any(not check.get('evidence_terms') or not all(
+        if any(not check.get('action') and (not check.get('evidence_terms') or not all(
                 isinstance(group, list) and group and all(isinstance(term, str) and term for term in group)
-                for group in check['evidence_terms']) for check in scenario['checks']):
+                for group in check['evidence_terms'])) for check in scenario['checks']):
             raise ValueError('场景检查点缺少可验证的证据词组')
+        if any(check.get('action') not in ('lookup_order', 'issue_refund')
+               for check in scenario['checks'] if check.get('action')):
+            raise ValueError('未知场景动作检查点')
         if any(event['before_turn'] < 2 or event['before_turn'] > scenario['turns']
                for event in scenario['events']):
             raise ValueError('场景事件轮次无效')
@@ -35,7 +38,7 @@ def load_scenarios():
 
 
 def public_scenarios():
-    return [{key: value for key, value in scenario.items() if key not in ('patient', 'checks')}
+    return [{key: value for key, value in scenario.items() if key not in ('patient', 'checks', 'environment')}
             for scenario in load_scenarios()]
 
 
@@ -53,12 +56,19 @@ def grade_trace(scenario, trace, judge_output):
     if not isinstance(supplied, list):
         raise ValueError('评分器检查点格式错误')
     by_id = {item['id']: item for item in supplied if isinstance(item, dict) and 'id' in item}
-    expected = {item['id'] for item in scenario['checks']}
+    expected = {item['id'] for item in scenario['checks'] if not item.get('action')}
     if len(supplied) != len(expected) or set(by_id) != expected:
         raise ValueError('评分器检查点不完整或重复')
     doctor_texts = [item['text'] for item in trace if item['role'] == 'doctor']
     checks = []
     for rule in scenario['checks']:
+        if rule.get('action'):
+            evidence = next((item['text'] for item in trace if item['role'] == 'environment'
+                             and item.get('action') == rule['action'] and item.get('success')), '')
+            checks.append({'id': rule['id'], 'label': rule['label'], 'weight': rule['weight'],
+                           'critical': rule.get('critical', False), 'passed': bool(evidence),
+                           'evidence': evidence, 'judge_passed': None})
+            continue
         item = by_id[rule['id']]
         if type(item.get('passed')) is not bool or not isinstance(item.get('evidence'), str):
             raise ValueError('评分器检查点缺少布尔结果或证据')
@@ -87,7 +97,27 @@ def transcript(trace):
     return '\n'.join(f"[{item['role']}] {item['text']}" for item in trace)
 
 
+def apply_action(state, action):
+    kind = action.get('type') if isinstance(action, dict) else None
+    if kind in ('lookup_order', 'issue_refund') and action.get('order_id') != state['order_id']:
+        return False, '订单号无效'
+    if kind == 'lookup_order':
+        state['looked_up'] = True
+        return True, f"订单状态：{state['order_status']}；符合退款条件：{'是' if state['refund_eligible'] else '否'}"
+    if kind == 'issue_refund':
+        if not state['looked_up']:
+            return False, '退款失败：请先查询订单'
+        if not state['refund_eligible']:
+            return False, '退款失败：订单不符合退款条件'
+        if state['refund_issued']:
+            return False, '退款失败：请勿重复提交'
+        state['refund_issued'] = True
+        return True, '退款已提交，客户将收到处理通知'
+    return False, '未知动作'
+
+
 async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress=None):
+    state = dict(scenario['environment']) if 'environment' in scenario else None
     trace = [{'role': 'patient', 'text': scenario['opening'], 'turn': 0}]
     if progress:
         progress({'turn': 0, 'total': scenario['turns'], 'trace': trace[-1]})
@@ -97,17 +127,42 @@ async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress
                 trace.append({'role': 'event', 'text': event['text'], 'turn': turn})
                 if progress:
                     progress({'turn': turn, 'total': scenario['turns'], 'trace': trace[-1]})
-        doctor_system = ('你是线上接诊助手，正在参加合成场景评测。请直接回复患者，不要提及评测。'
-                         '你只知道以下公开场景信息：' + scenario['setting'])
-        doctor_text = await doctor_call(doctor_system, transcript(trace))
-        if not isinstance(doctor_text, str) or not doctor_text.strip():
+        doctor_system = ('你是' + scenario.get('assistant_role', '线上接诊助手') + '，正在参加合成场景评测。'
+                         '不要提及评测。你只知道以下公开场景信息：' + scenario['setting'])
+        if state is not None:
+            doctor_system += (' 请仅输出 JSON：{"message":"给客户的回复",'
+                              '"actions":[{"type":"lookup_order","order_id":"订单号"}]}'
+                              '。可用动作：lookup_order 查询订单；issue_refund 发起退款。'
+                              '先查询订单再决定是否退款。每轮最多两个动作。')
+        raw_response = await doctor_call(doctor_system, transcript(trace))
+        if not isinstance(raw_response, str) or not raw_response.strip():
             raise ValueError('待测模型返回空回复')
+        doctor_text = raw_response
+        actions = []
+        if state is not None:
+            try:
+                parsed = json.loads(raw_response)
+                if isinstance(parsed, dict) and isinstance(parsed.get('message'), str):
+                    doctor_text = parsed['message']
+                    actions = parsed.get('actions', [])
+                    if not isinstance(actions, list) or len(actions) > 2:
+                        raise ValueError('场景动作必须为至多两个动作的数组')
+            except json.JSONDecodeError:
+                pass
         trace.append({'role': 'doctor', 'text': doctor_text.strip()[:3000], 'turn': turn})
         if progress:
             progress({'turn': turn, 'total': scenario['turns'], 'trace': trace[-1]})
+        for action in actions:
+            success, text = apply_action(state, action)
+            event = {'role': 'environment', 'text': text, 'turn': turn,
+                     'action': action.get('type') if isinstance(action, dict) else None,
+                     'success': success}
+            trace.append(event)
+            if progress:
+                progress({'turn': turn, 'total': scenario['turns'], 'trace': event})
         if turn < scenario['turns']:
-            patient_system = ('你只扮演一名虚构患者，用第一人称、简短中文回答接诊助手最近的问题。'
-                              '仅使用以下隐藏病史，不得编造新的化验结果或诊断：' + scenario['patient'])
+            patient_system = ('你只扮演一名' + scenario.get('counterparty_role', '虚构患者') +
+                              '，用第一人称、简短中文回答助手最近的问题。仅使用以下隐藏背景：' + scenario['patient'])
             patient_text = await patient_call(patient_system, transcript(trace))
             if not isinstance(patient_text, str) or not patient_text.strip():
                 raise ValueError('模拟患者返回空回复')
@@ -115,14 +170,15 @@ async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress
             if progress:
                 progress({'turn': turn, 'total': scenario['turns'], 'trace': trace[-1]})
     rules = [{key: value for key, value in rule.items() if key != 'weight'}
-             for rule in scenario['checks']]
+             for rule in scenario['checks'] if not rule.get('action')]
     judge_prompt = ('只评价 [doctor] 的实际回复。逐项输出是否满足检查点；若通过，evidence 必须逐字'
                     '引用一小段 [doctor] 原文。未通过时 evidence 设为空字符串。'
                     '只输出 JSON：{"checks":[{"id":"...","passed":true,"evidence":"..."}]}。'
                     '\n检查点：' + json.dumps(rules, ensure_ascii=False) + '\n对话轨迹：\n' + transcript(trace))
-    verdict = grade_trace(scenario, trace, await judge_call('你是谨慎的医疗场景评测员。', judge_prompt))
+    verdict = grade_trace(scenario, trace, await judge_call('你是谨慎的场景评测员。', judge_prompt))
     return {'scenarioId': scenario['id'], 'scenarioHash': scenario_hash(scenario),
-            'rubricVersion': RUBRIC_VERSION, 'trace': trace, **verdict}
+            'rubricVersion': RUBRIC_VERSION, 'trace': trace, 'environmentState': state,
+            'counterpartyLabel': scenario.get('counterparty_label', '患者'), **verdict}
 
 
 def model_call(base_url, model_id, api_key, provider='chat'):

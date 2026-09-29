@@ -11,6 +11,7 @@
 - 📁 **文件管理**：完整的文件上传、下载和管理功能
 - 🌐 **多用户支持**：支持多人同时在线使用
 - 🤖 **AI智能评分**：基于OpenAI API的智能评分系统
+- 🎭 **合成场景评测**：模拟患者与待测接诊助手多轮互动，按完整轨迹评分并保存证据
 
 ## 系统架构
 
@@ -85,6 +86,10 @@ GPT_OSS_MODEL=your_gpt_oss_model_id
 TEACHER_MODEL_API_KEY=your_key_if_required
 PYTHON=python3
 TASKS_DATA_PATH=./tasks-data.json
+CANDIDATE_BASE_URL=http://127.0.0.1:9000/v1
+CANDIDATE_MODEL=your_candidate_model_id
+CANDIDATE_API_KEY=your_key_if_required
+SCENARIO_RUNS_DIR=./scenario-runs
 ```
 
 ### 5. 配置评测模型
@@ -96,6 +101,7 @@ TASKS_DATA_PATH=./tasks-data.json
 
 离线回归检查：`python3 -m unittest -v test_eval_service.py`。
 Node 回归检查：`npm test`。其中接口测试仅启动本机临时服务，不调用教师模型。
+场景引擎离线检查：`python3 -m unittest -v test_scenario_eval.py`。
 
 ## 启动系统
 
@@ -156,6 +162,14 @@ npm start
 - **待人工复核**：双模型分差至少 0.5，或任一分数不高于 0.4 的题目会在页面和详细报告中列出。这是排序规则，不是模型置信度或医学判断
 - **可选 Agent 二次复核**：勾选后，初评不高于 0.7 的题目全部由独立提示词复核，高分题按 ID 稳定抽样约 10%。每道入选题增加一次同一教师模型调用。分差至少 0.3 或复核失败时加入人工复核清单；初评分保持不变。评分数据保留初评和复核记录，详细报告另有 `Agent复核` 工作表。复核意见仍需人工校准，不代表医学结论。
 - **下载评测文件**：下载包含评分的Excel文件
+
+### 场景评测（合成虚拟诊室）
+
+首页点击“场景评测”，选择内置场景和模拟/评分模型后运行。待测助手使用 `CANDIDATE_BASE_URL` / `CANDIDATE_MODEL`，模拟患者与评分器使用所选 Deepseek 或 GPT-oss 教师模型。每轮患者根据隐藏设定回应，场景事件按指定轮次插入，最多 4 轮；两种角色的输入分开，隐藏病史与评分检查点不会发送给待测模型。运行轨迹和结果保存在 `scenario-runs/`，页面刷新后可恢复最近一次运行。
+
+评分器逐项给出通过与否及待测助手原文证据；系统验证引文确实出现在待测助手回复中，按权重计分，关键项未通过时总分最高为 0.5。评分仍依赖模型判断，应由领域专家校准。内置数据是合成示例，不包含真实患者信息，也不构成临床认证。自定义场景可按 `scenarios.json` 的结构增加，并应经过领域审查。
+
+胸痛场景的紧急求助检查点参考 [American Heart Association 警示症状资料](https://www.heart.org/en/health-topics/heart-attack/warning-signs-of-a-heart-attack)。
 
 ### 5. 文件管理
 

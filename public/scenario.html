@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>场景评测</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>[hidden] { display: none !important; }</style>
+</head>
+<body class="bg-light">
+  <main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div><h1>场景评测</h1><p class="text-muted mb-0">模拟患者、待测接诊助手和轨迹评分器组成多轮对话。</p></div>
+      <a href="/" class="btn btn-outline-secondary">返回任务列表</a>
+    </div>
+    <div class="alert alert-info">内置场景均为合成数据。结果仅用于模型行为评测，不用于真实患者诊疗或临床认证。</div>
+    <section class="card mb-4"><div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-6"><label class="form-label" for="scenarioSelect">场景</label><select id="scenarioSelect" class="form-select"></select></div>
+        <div class="col-md-3"><label class="form-label" for="teacherSelect">模拟患者和评分器</label><select id="teacherSelect" class="form-select"><option>Deepseek</option><option>GPT-oss</option></select></div>
+        <div class="col-md-3"><button id="startButton" class="btn btn-primary w-100">运行场景</button></div>
+      </div>
+      <p id="scenarioDescription" class="mt-3 mb-0 text-muted"></p>
+      <p class="small text-muted mt-2 mb-0">待测模型由服务端 CANDIDATE_BASE_URL 和 CANDIDATE_MODEL 指定；每轮患者回复和最终评分都会调用模拟/评分模型。</p>
+    </div></section>
+    <section id="runSection" class="card" hidden><div class="card-body">
+      <div class="d-flex justify-content-between align-items-center"><h2 class="h4 mb-0">运行记录</h2><button id="stopButton" class="btn btn-outline-danger btn-sm" hidden>停止</button></div>
+      <p id="runStatus" class="mt-2"></p>
+      <h3 class="h5">对话轨迹</h3><ol id="traceList" class="list-group list-group-numbered mb-4"></ol>
+      <div id="scoreSection" hidden><h3 class="h5">评分与证据</h3><p id="scoreSummary"></p><div id="checkList" class="list-group"></div></div>
+      <p id="runError" class="text-danger" role="alert"></p>
+    </div></section>
+  </main>
+  <script src="/scenario.js"></script>
+</body>
+</html>

@@ -92,6 +92,49 @@ class EvaluationTests(unittest.TestCase):
             self.assertIn('"progress": 100.0', output.getvalue())
             self.assertEqual(pd.read_excel(result_path)['id'].tolist(), [2, 1])
 
+    def test_agent_review_flags_disagreement_without_changing_primary_score(self):
+        row = {'id': 1, 'instruction': 'q', 'reference': 'a', 'model_ans': 'x'}
+        outputs = ['{"student": 0.0}\n{"reason": "initial"}',
+                   '{"student": 1.0}\n{"reason": "disagrees"}']
+        with patch.object(eval_service, 'call_teacher_model', side_effect=outputs) as call:
+            score, reason, _, review = asyncio.run(eval_service.evaluate_with_review(
+                row, 'http://localhost/v1', 'Deepseek', agent_review=True))
+        self.assertEqual((score, reason), (0.0, 'initial'))
+        self.assertEqual(review['review_status'], 'needs_human_review')
+        self.assertEqual(review['review_score'], 1.0)
+        self.assertNotIn('initial', call.call_args_list[1].args[0])
+
+    def test_agent_review_error_keeps_primary_score(self):
+        row = {'id': 1, 'instruction': 'q', 'reference': 'a', 'model_ans': 'x'}
+        with patch.object(eval_service, 'call_teacher_model', side_effect=[
+                '{"student": 0.0}\n{"reason": "initial"}', 'invalid']):
+            score, _, _, review = asyncio.run(eval_service.evaluate_with_review(
+                row, 'http://localhost/v1', 'Deepseek', agent_review=True))
+        self.assertEqual(score, 0.0)
+        self.assertEqual(review['review_status'], 'review_error')
+
+    def test_agent_review_sampling_is_deterministic(self):
+        self.assertEqual(eval_service.review_trigger('case', 0.7), 'low_or_borderline')
+        self.assertEqual(eval_service.review_trigger('case', 0.9),
+                         eval_service.review_trigger('case', 0.9))
+
+    def test_agent_review_is_saved_in_scored_workbook(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'input.xlsx'
+            pd.DataFrame([{'id': 1, 'instruction': 'q', 'reference': 'a',
+                           'parent_class': 'p', 'subclass': 's', 'model_ans': 'x',
+                           'source': 'test'}]).to_excel(source, index=False)
+            outputs = ['{"student": 0.0}\n{"reason": "initial"}',
+                       '{"student": 1.0}\n{"reason": "disagrees"}']
+            with patch.object(eval_service, 'call_teacher_model', side_effect=outputs), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                result_path, scores, _ = asyncio.run(eval_service.evaluate_file_async(
+                    str(source), agent_review=True))
+            saved = pd.read_excel(result_path, sheet_name='评分数据')
+            self.assertEqual(scores, [0.0])
+            self.assertEqual(saved.loc[0, 'review_status'], 'needs_human_review')
+            self.assertEqual(saved.loc[0, 'review_score'], 1.0)
+
     def test_legacy_score_parser_never_executes_model_output(self):
         self.assertEqual(test_eval.extract_score('{"student": 0.7}'), 0.7)
         with tempfile.TemporaryDirectory() as directory:

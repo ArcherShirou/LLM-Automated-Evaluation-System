@@ -2029,6 +2029,124 @@ async function generateDetailedExcelReport(task) {
 // 生成PDF对比报告
 // 旧的对比报告路由已删除，现在使用新的三栏对比布局
 
+// 合成场景评测：每次运行持久化轨迹，重启后仍可查看结果。
+const scenarioRunsDir = process.env.SCENARIO_RUNS_DIR || path.join(__dirname, 'scenario-runs');
+const scenarioProcesses = new Map();
+const scenarioCatalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'scenarios.json'), 'utf8'));
+
+function scenarioRunPath(id) {
+  if (!/^[0-9a-f-]{36}$/.test(id)) throw new Error('无效的运行 ID');
+  return path.join(scenarioRunsDir, `${id}.json`);
+}
+
+function saveScenarioRun(run) {
+  fs.ensureDirSync(scenarioRunsDir);
+  const target = scenarioRunPath(run.id);
+  fs.writeFileSync(`${target}.tmp`, JSON.stringify(run));
+  fs.renameSync(`${target}.tmp`, target);
+}
+
+app.get('/api/scenarios', (req, res) => {
+  res.json(scenarioCatalog.map(({ patient, checks, ...publicInfo }) => publicInfo));
+});
+
+app.post('/api/scenario-runs', (req, res) => {
+  const { scenarioId, teacherModel } = req.body || {};
+  const scenario = scenarioCatalog.find(item => item.id === scenarioId);
+  if (!scenario) return res.status(400).json({ error: '未知场景' });
+  if (!['Deepseek', 'GPT-oss'].includes(teacherModel)) {
+    return res.status(400).json({ error: '未知模拟/评分模型' });
+  }
+  const teacherPrefix = teacherModel === 'Deepseek' ? 'DEEPSEEK' : 'GPT_OSS';
+  if (!process.env.CANDIDATE_BASE_URL || !process.env.CANDIDATE_MODEL ||
+      !process.env[`${teacherPrefix}_BASE_URL`] || !process.env[`${teacherPrefix}_MODEL`]) {
+    return res.status(400).json({ error: '请配置待测模型及模拟/评分模型的 BASE_URL 和 MODEL' });
+  }
+  if (scenarioProcesses.size >= 2) return res.status(429).json({ error: '最多同时运行 2 个场景' });
+  const run = { id: randomUUID(), scenarioId, scenarioTitle: scenario.title,
+    status: 'running', teacherModel, candidateModel: process.env.CANDIDATE_MODEL,
+    startedAt: new Date().toISOString(), trace: [] };
+  saveScenarioRun(run);
+  const child = spawn(process.env.PYTHON || 'python3',
+    ['scenario_eval.py', scenarioId, teacherModel],
+    { cwd: __dirname, env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
+      stdio: ['ignore', 'pipe', 'pipe'] });
+  let output = '';
+  let stderr = '';
+  let finished = false;
+  const finish = (status, message) => {
+    if (finished) return;
+    finished = true;
+    clearTimeout(timer);
+    scenarioProcesses.delete(run.id);
+    run.status = status;
+    run.completedAt = new Date().toISOString();
+    if (message) run.error = message;
+    saveScenarioRun(run);
+  };
+  child.stdout.on('data', chunk => {
+    output += chunk.toString('utf8');
+    if (output.length > 1024 * 1024) {
+      child.kill();
+      finish('failed', '场景输出超过限制');
+      return;
+    }
+    const lines = output.split('\n');
+    output = lines.pop();
+    for (const line of lines) {
+      try {
+        const event = JSON.parse(line);
+        if (event.type === 'progress' && event.trace) {
+          run.trace.push(event.trace);
+          saveScenarioRun(run);
+        } else if (event.type === 'complete') {
+          run.result = event.result;
+          run.trace = event.result.trace;
+          finish('completed');
+        } else if (event.type === 'error') {
+          finish('failed', event.message);
+        }
+      } catch (error) {
+        finish('failed', '无法解析场景执行结果');
+        child.kill();
+      }
+    }
+  });
+  child.stderr.on('data', chunk => { stderr = (stderr + chunk.toString('utf8')).slice(-2000); });
+  child.on('error', error => finish('failed', error.message));
+  child.on('close', code => {
+    if (!finished) finish('failed', code === 0 ? '场景未返回结果' : (stderr || '场景进程失败'));
+  });
+  const timer = setTimeout(() => {
+    child.kill();
+    finish('failed', '场景运行超过 8 分钟');
+  }, 8 * 60 * 1000);
+  scenarioProcesses.set(run.id, { child, stop: () => finish('stopped') });
+  res.status(202).json({ id: run.id, status: run.status });
+});
+
+app.get('/api/scenario-runs/:id', (req, res) => {
+  try {
+    const run = fs.readJsonSync(scenarioRunPath(req.params.id));
+    if (run.status === 'running' && !scenarioProcesses.has(run.id)) {
+      run.status = 'failed';
+      run.error = '服务重启中断了场景运行';
+      saveScenarioRun(run);
+    }
+    res.json(run);
+  } catch (error) {
+    res.status(404).json({ error: '找不到场景运行记录' });
+  }
+});
+
+app.post('/api/scenario-runs/:id/stop', (req, res) => {
+  const process = scenarioProcesses.get(req.params.id);
+  if (!process) return res.status(404).json({ error: '运行中的场景不存在' });
+  process.stop();
+  process.child.kill();
+  res.json({ message: '停止请求已发送' });
+});
+
 // Socket.IO连接处理
 io.on('connection', (socket) => {
   console.log('用户连接:', socket.id);

@@ -546,6 +546,23 @@ app.get('/api/tasks/:taskId/review-queue', (req, res) => {
   }
 });
 
+app.get('/api/tasks/:taskId/agent-review', (req, res) => {
+  const task = evaluationTasks.find(t => t.id === req.params.taskId);
+  if (!task) return res.status(404).json({ error: '任务不存在' });
+  if (task.status !== '已完成' || !task.results) return res.status(400).json({ error: '评测尚未完成' });
+  try {
+    const rows = task.results.flatMap(result =>
+      readExcelFile(result.outputPath)
+        .filter(row => ['needs_human_review', 'review_error'].includes(row.review_status))
+        .map(row => ({ fileName: result.fileName, id: row.id, instruction: row.instruction,
+          score: row.score, reviewScore: row.review_score, reviewStatus: row.review_status,
+          reviewReason: row.review_reason })));
+    res.json({ total: rows.length, rows });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // 删除评测任务
 app.delete('/api/tasks/:taskId', (req, res) => {
   const taskId = req.params.taskId;
@@ -575,7 +592,7 @@ app.delete('/api/tasks/:taskId', (req, res) => {
 // 启动评测
 app.post('/api/tasks/:taskId/evaluate', async (req, res) => {
   const taskId = req.params.taskId;
-  const { fileConfigs, teacherModel } = req.body; // 文件配置信息和教师模型
+  const { fileConfigs, teacherModel, agentReview } = req.body; // 文件配置信息和教师模型
   const task = evaluationTasks.find(t => t.id === taskId);
   
   if (!task) {
@@ -594,7 +611,8 @@ app.post('/api/tasks/:taskId/evaluate', async (req, res) => {
   task.file2Progress = 0;
   task.file1Results = null;
   task.file2Results = null;
-  task.run = { mode: 'teacher model', teacherModel: teacherModel || 'Deepseek', startedAt: task.startTime,
+  task.run = { mode: 'teacher model', teacherModel: teacherModel || 'Deepseek', agentReview: agentReview === true,
+    startedAt: task.startTime,
     inputHashes: task.inputHashes };
   saveTasks();
   
@@ -880,7 +898,8 @@ async function callPythonEvaluationService(task, filesToEvaluate, teacherModel =
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,
-        PYTHONIOENCODING: 'utf-8'
+        PYTHONIOENCODING: 'utf-8',
+        AGENT_REVIEW: task.run?.agentReview ? '1' : '0'
       }
     });
     
@@ -1738,6 +1757,7 @@ async function generateDetailedExcelReport(task) {
   for (const [label, value] of [
     ['任务ID', task.id], ['创建时间', task.submitTime], ['完成时间', task.completedTime],
     ['评测模式', task.run?.mode], ['教师模型', task.run?.teacherModel],
+    ['Agent 二次复核', task.run?.agentReview ? '开启' : '关闭'],
     ['模型ID', task.run?.modelId], ['评分规则版本', task.run?.rubricVersion],
     ['Base SHA-256', task.inputHashes?.base], ['Compare SHA-256', task.inputHashes?.compare]
   ]) runSheet.addRow([label, value ?? '']);
@@ -1986,6 +2006,19 @@ async function generateDetailedExcelReport(task) {
         row.delta, row.baseReason, row.compareReason, row.reviewReason]);
     }
     reviewSheet.columns = [10, 50, 12, 12, 12, 40, 40, 26].map(width => ({ width }));
+  }
+  if (task.run?.agentReview) {
+    const agentSheet = workbook.addWorksheet('Agent复核');
+    agentSheet.addRow(['文件', 'id', '问题', '初评分', '复核分', '状态', '触发原因', '初评理由', '复核理由']);
+    for (const [name, rows] of [[baseModelName, baseData], [compareModelName, compareData]]) {
+      for (const row of rows) {
+        if (row.review_status && row.review_status !== 'not_reviewed') {
+          agentSheet.addRow([name, row.id, row.instruction, row.score, row.review_score ?? '',
+            row.review_status, row.review_trigger, row.reason, row.review_reason]);
+        }
+      }
+    }
+    agentSheet.columns = [22, 10, 50, 12, 12, 22, 22, 50, 50].map(width => ({ width }));
   }
   
   // 生成Excel缓冲区

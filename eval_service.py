@@ -7,6 +7,7 @@ import uuid
 import shutil
 import time
 import math
+import hashlib
 from pathlib import Path
 from openai import OpenAI
 from tqdm import tqdm
@@ -156,8 +157,50 @@ async def evaluate_single_question(row, api_base, teacher_model_name=TEACHER_MOD
     return score, reason, output
 
 
+def review_trigger(row_id, score):
+    """Choose cases worth a second call without using the first judge's prose."""
+    if score <= 0.7:
+        return 'low_or_borderline'
+    digest = hashlib.sha256(str(row_id).encode('utf-8')).digest()
+    return 'high_score_sample' if int.from_bytes(digest[:4], 'big') % 10 == 0 else None
+
+
+def build_review_prompt(row):
+    reference = str(row['reference']) if pd.notna(row['reference']) else ''
+    return f"""Independently audit this medical answer. Identify concrete factual errors,
+unsafe claims, and missing essential points. Do not assume another judge's score.
+Score 0.0 or 1.0 when a reference is provided; otherwise score from 0.0 to 1.0.
+Return exactly two JSON objects, with no other text:
+{{"student": SCORE}}
+{{"reason": "specific evidence, at most 150 characters"}}
+Question: {row['instruction']}
+Reference answer: {reference}
+Student's answer: {row['model_ans']}"""
+
+
+async def evaluate_with_review(row, api_base, teacher_model_name, agent_review=False):
+    score, reason, output = await evaluate_single_question(row, api_base, teacher_model_name)
+    review = {'review_score': None, 'review_reason': '', 'review_status': 'not_reviewed',
+              'review_trigger': '', 'review_model_output': ''}
+    trigger = review_trigger(row['id'], score) if agent_review else None
+    if trigger:
+        review['review_trigger'] = trigger
+        try:
+            second_output = await asyncio.to_thread(
+                call_teacher_model, build_review_prompt(row), api_base, teacher_model_name)
+            second_score, second_reason = extract_score_and_reason(second_output)
+            review.update(review_score=second_score, review_reason=second_reason,
+                          review_model_output=second_output,
+                          review_status=('needs_human_review' if abs(score - second_score) >= 0.3
+                                         else 'agreed'))
+        except Exception as exc:
+            review.update(review_status='review_error', review_reason=str(exc)[:150])
+    return score, reason, output, review
+
+
 async def evaluate_file_async(file_path, file_name="file", file_type=None,
-                              api_base=TEACHER_MODEL_URL, process_count=4, pbar=None, teacher_model_name=TEACHER_MODEL_NAME):
+                              api_base=TEACHER_MODEL_URL, process_count=4, pbar=None,
+                              teacher_model_name=TEACHER_MODEL_NAME, agent_review=False):
     start_time = time.time()
     try:
         df = validate_excel(file_path)
@@ -166,10 +209,11 @@ async def evaluate_file_async(file_path, file_name="file", file_type=None,
         batch_size = max(1, min(process_count, 24))
 
         async def process_row(index, row):
-            score, reason, model_output = await evaluate_single_question(row, api_base, teacher_model_name)
+            score, reason, model_output, review = await evaluate_with_review(
+                row, api_base, teacher_model_name, agent_review)
             if pbar:
                 pbar.update(1)
-            return index, score, reason, model_output
+            return index, score, reason, model_output, review
 
         for start in range(0, len(df), batch_size):
             end = min(start + batch_size, len(df))
@@ -179,12 +223,15 @@ async def evaluate_file_async(file_path, file_name="file", file_type=None,
 
             results.sort(key=lambda x: x[0])
 
-            scores.extend(score for _, score, _, _ in results)
-            reasons.extend(reason for _, _, reason, _ in results)
+            scores.extend(result[1] for result in results)
+            reasons.extend(result[2] for result in results)
 
-            for index, score, reason, model_output in results:
+            for index, score, reason, model_output, review in results:
                 df.at[index, 'teacher_model_output'] = model_output
                 df.at[index, 'reason'] = reason
+                if agent_review:
+                    for key, value in review.items():
+                        df.at[index, key] = value
             print(json.dumps({
                 'type': 'progress', 'file': file_type, 'progress': round(end * 100 / len(df), 1),
                 'current': end, 'total': len(df), 'elapsed_time': round(time.time() - start_time, 1)
@@ -320,7 +367,8 @@ async def main():
         results = []
         for file_info in files_to_evaluate:
             result_path, scores, stats = await evaluate_file_async(
-                file_info['path'], file_info['name'], file_info['type'], api_base=api_base, pbar=pbar, teacher_model_name=teacher_model
+                file_info['path'], file_info['name'], file_info['type'], api_base=api_base, pbar=pbar,
+                teacher_model_name=teacher_model, agent_review=os.environ.get('AGENT_REVIEW') == '1'
             )
             df = pd.read_excel(result_path)
             detailed_stats = calculate_detailed_statistics(df)

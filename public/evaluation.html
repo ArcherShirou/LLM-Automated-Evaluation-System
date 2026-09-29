@@ -163,6 +163,13 @@
                                 </select>
                                 <div class="form-text">选择用于评分的AI教师模型</div>
                             </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agentReview">
+                                    <label class="form-check-label" for="agentReview">启用 Agent 二次复核</label>
+                                    <div class="form-text">低分和临界分全部复核，高分抽样 10%；每道入选题增加一次模型调用。分歧需人工确认。</div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div id="fileConfigContainer">
@@ -229,6 +236,19 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row mb-4" id="agentReviewContainer" style="display: none;">
+            <div class="col-12"><div class="card shadow">
+                <div class="card-header bg-warning"><h5 class="mb-0">Agent 待人工复核</h5></div>
+                <div class="card-body">
+                    <p class="text-muted">二次评分与初评相差至少 0.3，或二次评分失败时列入。初评分不会自动改写；这不是医学结论。</p>
+                    <p id="agentReviewSummary"></p>
+                    <div class="table-responsive"><table class="table table-sm table-striped">
+                        <thead><tr><th>文件</th><th>ID</th><th>问题</th><th>初评分</th><th>复核分</th><th>状态</th><th>复核理由</th></tr></thead>
+                        <tbody id="agentReviewRows"></tbody>
+                    </table></div>
+                </div>
+            </div></div>
         </div>
     </div>
 

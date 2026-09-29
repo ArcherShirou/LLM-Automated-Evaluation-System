@@ -919,6 +919,7 @@ async function startEvaluation() {
     // 获取选择的教师模型
     const teacherModelSelect = document.getElementById('teacherModelSelect');
     const teacherModel = teacherModelSelect ? teacherModelSelect.value : 'Deepseek';
+    const agentReview = document.getElementById('agentReview')?.checked === true;
     
     // 收集文件配置
     const fileConfigs = {};
@@ -1043,7 +1044,7 @@ async function startEvaluation() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ fileConfigs, teacherModel })
+            body: JSON.stringify({ fileConfigs, teacherModel, agentReview })
         });
         
         const data = await response.json();
@@ -1363,6 +1364,8 @@ function updateProgressBar(fileName, progress, logContainer, currentQuestion = n
 // 处理评测完成
 function handleEvaluationComplete(data) {
     console.log('🎉 评测完成事件接收到的数据:', data);
+    if (data.taskId !== currentTask?.id) return;
+    if (data.task) currentTask = data.task;
     
     const startBtn = document.getElementById('startEvaluationBtn');
     const stopBtn = document.getElementById('stopEvaluationBtn');
@@ -1504,6 +1507,34 @@ function displayResults(results, statistics) {
         }
     }
     loadReviewQueue(results);
+    loadAgentReviewQueue();
+}
+
+async function loadAgentReviewQueue() {
+    const container = document.getElementById('agentReviewContainer');
+    container.style.display = 'none';
+    if (!currentTask?.run?.agentReview) return;
+    try {
+        const response = await fetch(`/api/tasks/${currentTask.id}/agent-review`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || '无法读取 Agent 复核清单');
+        document.getElementById('agentReviewSummary').textContent = `共 ${data.total} 题待人工复核；完整记录在详细 Excel 报告中。`;
+        const tbody = document.getElementById('agentReviewRows');
+        tbody.replaceChildren();
+        for (const row of data.rows.slice(0, 50)) {
+            const tr = document.createElement('tr');
+            for (const value of [row.fileName, row.id, row.instruction, row.score,
+                row.reviewScore ?? '—', row.reviewStatus, row.reviewReason]) {
+                const td = document.createElement('td');
+                td.textContent = value ?? '';
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        container.style.display = 'block';
+    } catch (error) {
+        console.error('加载 Agent 复核清单失败:', error);
+    }
 }
 
 async function loadReviewQueue(results) {

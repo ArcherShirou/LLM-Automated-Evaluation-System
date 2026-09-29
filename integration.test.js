@@ -39,7 +39,6 @@ test('direct comparison aligns rows by id and exposes review cases', async () =>
     ];
     const form = new FormData();
     form.set('taskName', 'pairing test');
-    form.set('submitter', 'test');
     form.set('baseType', 'upload');
     form.set('compareType', 'upload');
     form.set('baseFile', new Blob([workbook(base)]), 'base.xlsx');
@@ -48,6 +47,11 @@ test('direct comparison aligns rows by id and exposes review cases', async () =>
     const createdData = await created.json();
     assert.equal(created.status, 200, JSON.stringify(createdData));
     task = createdData.task;
+    assert.equal(task.submitter, '未填写');
+    const emptyRun = await fetch(`${url}/api/tasks/${task.id}/evaluate`, { method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileConfigs: {} }) });
+    assert.equal(emptyRun.status, 400);
+    assert.equal((await (await fetch(`${url}/api/tasks/${task.id}`)).json()).task.status, '待评测');
     const compared = await fetch(`${url}/api/tasks/${task.id}/direct-comparison`, { method: 'POST' });
     const comparedData = await compared.json();
     assert.equal(compared.status, 200, JSON.stringify(comparedData));

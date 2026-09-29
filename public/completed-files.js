@@ -10,7 +10,6 @@ function escapeHtml(value) {
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[char]);
 }
-
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     initializePage();
@@ -38,7 +37,7 @@ function initializePage() {
         
         // 隐藏批量操作按钮
         document.getElementById('batchDeleteBtn').style.display = 'none';
-        document.querySelector('.btn-danger').style.display = 'none';
+        document.getElementById('selectAllRow').style.display = 'none';
     }
 }
 
@@ -100,7 +99,7 @@ function displayFiles(files) {
     if (files.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center text-muted py-4">
+                <td colspan="6" class="text-center text-muted py-4">
                     <i class="fas fa-inbox fa-2x mb-2"></i>
                     <br>暂无已完成的评估文件
                 </td>
@@ -115,10 +114,8 @@ function displayFiles(files) {
         return `
             <tr>
                 <td>
-                    <input type="checkbox" class="form-check-input file-checkbox" 
-                           value="${file.id}" onchange="updateSelectedCount()">
+                    ${selectionMode ? '' : `<input type="checkbox" class="form-check-input file-checkbox" value="${file.id}" onchange="updateSelectedCount()">`}
                 </td>
-                <td>${file.id}</td>
                 <td>
                     <i class="fas fa-file-excel text-success me-2"></i>
                     ${escapeHtml(file.name)}
@@ -188,45 +185,10 @@ function updateSelectedCount() {
     
     const selectedCountBadge = document.getElementById('selectedCount');
     const batchDeleteBtn = document.getElementById('batchDeleteBtn');
-    const confirmBtn = document.getElementById('confirmBtn');
-    
-    if (count > 0) {
-        selectedCountBadge.textContent = `已选择 ${count} 个`;
-        selectedCountBadge.style.display = 'inline';
-        
-        if (!selectionMode) {
-            batchDeleteBtn.disabled = false;
-        }
-    } else {
-        selectedCountBadge.style.display = 'none';
-        
-        if (!selectionMode) {
-            batchDeleteBtn.disabled = true;
-        }
-    }
-    
-    // 在选择模式下，只能选择一个文件
-    if (selectionMode) {
-        if (count === 1) {
-            confirmBtn.disabled = false;
-        } else {
-            confirmBtn.disabled = true;
-        }
-        
-        // 如果选择了多个，取消其他选择
-        if (count > 1) {
-            const allCheckboxes = document.querySelectorAll('.file-checkbox');
-            const checkedBoxes = document.querySelectorAll('.file-checkbox:checked');
-            
-            // 保留最后一个选中的
-            for (let i = 0; i < checkedBoxes.length - 1; i++) {
-                checkedBoxes[i].checked = false;
-            }
-            
-            // 递归调用以更新计数
-            setTimeout(() => updateSelectedCount(), 0);
-        }
-    }
+    selectedCountBadge.style.display = count ? 'inline' : 'none';
+    selectedCountBadge.textContent = `已选择 ${count} 个`;
+    batchDeleteBtn.disabled = count === 0;
+
 }
 
 // 选择文件（选择模式）
@@ -248,18 +210,6 @@ function selectFile(fileId) {
         // 关闭当前窗口
         window.close();
     }
-}
-
-// 确认选择
-function confirmSelection() {
-    const checkedBoxes = document.querySelectorAll('.file-checkbox:checked');
-    if (checkedBoxes.length !== 1) {
-        showAlert('请选择一个文件', 'warning');
-        return;
-    }
-    
-    const fileId = checkedBoxes[0].value;
-    selectFile(fileId);
 }
 
 // 取消选择
@@ -293,19 +243,6 @@ function batchDelete() {
     showDeleteModal(
         `确定要删除以下 ${fileIds.length} 个文件吗？\n\n${fileNames.join('\n')}\n\n此操作不可撤销。`,
         () => deleteFiles(fileIds)
-    );
-}
-
-// 清空全部
-function clearAll() {
-    if (completedFiles.length === 0) {
-        showAlert('没有文件可以清空', 'info');
-        return;
-    }
-    
-    showDeleteModal(
-        `确定要删除全部 ${completedFiles.length} 个文件吗？此操作不可撤销。`,
-        () => deleteFiles(completedFiles.map(f => f.id))
     );
 }
 
@@ -404,13 +341,4 @@ function showAlert(message, type = 'info') {
             alertDiv.remove();
         }
     }, 3000);
-}
-
-// 显示成功模态框
-function showSuccessModal(message) {
-    const modal = new bootstrap.Modal(document.getElementById('successModal'));
-    const messageElement = document.getElementById('successMessage');
-    
-    messageElement.textContent = message;
-    modal.show();
 }

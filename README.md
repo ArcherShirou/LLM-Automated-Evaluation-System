@@ -9,7 +9,7 @@
 - 📈 **对比分析报告**：生成逐题对比 Excel 报告
 - 🎯 **灵活文件配置**：支持Base文件和Compare文件的灵活配置
 - 📁 **文件管理**：完整的文件上传、下载和管理功能
-- 🌐 **多用户支持**：支持多人同时在线使用
+- 🌐 **共享工作区**：支持多个浏览器同时使用同一工作区
 - 🤖 **AI智能评分**：基于OpenAI API的智能评分系统
 - 🎭 **合成场景评测**：模拟患者与待测接诊助手多轮互动，按完整轨迹评分并保存证据
 
@@ -90,13 +90,15 @@ CANDIDATE_BASE_URL=http://127.0.0.1:9000/v1
 CANDIDATE_MODEL=your_candidate_model_id
 CANDIDATE_API_KEY=your_key_if_required
 SCENARIO_RUNS_DIR=./scenario-runs
+APP_ACCESS_TOKEN=replace_with_a_long_random_secret
+# 通过 HTTPS 反向代理访问时设置 APP_HTTPS=1
 ```
 
 ### 5. 配置评测模型
 
 教师模型使用兼容 OpenAI API 的服务；所选模型的 `BASE_URL` 和 `MODEL` 环境变量必须设置。本地服务如无需鉴权，可不设置 `TEACHER_MODEL_API_KEY`。模型调用失败或返回无效 JSON 时，任务会失败，不会把失败项记为 0 分。存在非空 `reference` 时，评分会使用该参考答案。
 
-服务器默认只监听本机 `127.0.0.1`。当前项目尚无身份验证，不应直接暴露到公网；只有在可信网络并配置访问保护时才设置 `HOST=0.0.0.0`。上传文件上限为 10 MB。
+服务器默认只监听本机 `127.0.0.1`。设置 `HOST=0.0.0.0` 时必须配置 `APP_ACCESS_TOKEN`；HTTP 页面、API 和实时连接会使用同一访问令牌保护。跨网络访问请通过 HTTPS 反向代理，并设置 `APP_HTTPS=1`，使会话 Cookie 仅通过 HTTPS 传输。此令牌是共享工作区访问控制，尚不支持独立账号或按用户隔离数据。上传文件上限为 10 MB。
 任务状态保存在 `tasks-data.json`，重启后可查看已完成任务；重启时仍在运行的任务会标记为失败，需要重新发起评测。
 
 离线回归检查：`python3 -m unittest -v test_eval_service.py`。

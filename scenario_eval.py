@@ -24,6 +24,10 @@ def load_scenarios():
         check_ids = [check['id'] for check in scenario['checks']]
         if len(check_ids) != len(set(check_ids)) or not check_ids:
             raise ValueError('场景检查点无效')
+        if any(not check.get('evidence_terms') or not all(
+                isinstance(group, list) and group and all(isinstance(term, str) and term for term in group)
+                for group in check['evidence_terms']) for check in scenario['checks']):
+            raise ValueError('场景检查点缺少可验证的证据词组')
         if any(event['before_turn'] < 2 or event['before_turn'] > scenario['turns']
                for event in scenario['events']):
             raise ValueError('场景事件轮次无效')
@@ -60,10 +64,13 @@ def grade_trace(scenario, trace, judge_output):
             raise ValueError('评分器检查点缺少布尔结果或证据')
         evidence = item['evidence'].strip()
         # Positive findings need a verbatim quote from the tested model's own text.
-        passed = item['passed'] and bool(evidence) and any(evidence in text for text in doctor_texts)
+        quoted = bool(evidence) and any(evidence in text for text in doctor_texts)
+        terms_match = all(any(term in evidence for term in group)
+                          for group in rule['evidence_terms'])
+        passed = item['passed'] and quoted and terms_match
         checks.append({'id': rule['id'], 'label': rule['label'], 'weight': rule['weight'],
                        'critical': rule.get('critical', False), 'passed': passed,
-                       'evidence': evidence if passed else '',
+                       'evidence': evidence if quoted else '',
                        'judge_passed': item['passed']})
     total = sum(item['weight'] for item in checks)
     earned = sum(item['weight'] for item in checks if item['passed'])
@@ -71,7 +78,9 @@ def grade_trace(scenario, trace, judge_output):
     score = earned / total
     if not critical_passed:
         score = min(score, 0.5)
-    return {'score': round(score, 3), 'critical_passed': critical_passed, 'checks': checks}
+    return {'score': round(score, 3), 'critical_passed': critical_passed,
+            'needsHumanReview': any(item['judge_passed'] and not item['passed'] for item in checks),
+            'checks': checks}
 
 
 def transcript(trace):

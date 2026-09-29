@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const XLSX = require('xlsx');
-const { randomUUID, createHash } = require('node:crypto');
+const { randomUUID, createHash, timingSafeEqual } = require('node:crypto');
 const path = require('path');
 const fs = require('fs-extra');
 const http = require('http');
@@ -13,7 +13,8 @@ const { indexRows, pairRows, score, reviewRows } = require('./comparison');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, { allowRequest: (req, callback) =>
+  callback(null, !accessToken || activeSession(req.headers.cookie)) });
 
 function fileHash(filePath) {
   return createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
@@ -95,9 +96,61 @@ function generateComprehensiveReport(req, res, task) {
 
 const PORT = process.env.PORT || 8000;
 const HOST = process.env.HOST || '127.0.0.1';
+const accessToken = process.env.APP_ACCESS_TOKEN;
+if (!['127.0.0.1', 'localhost', '::1'].includes(HOST) && !accessToken) {
+  throw new Error('非本机监听必须配置 APP_ACCESS_TOKEN');
+}
+const sessions = new Map();
+const sessionLifetimeMs = 12 * 60 * 60 * 1000;
+function activeSession(cookie) {
+  const id = /(?:^|;\s*)eval_session=([0-9a-f-]{36})(?:;|$)/.exec(cookie || '')?.[1];
+  if (!id) return false;
+  const expires = sessions.get(id);
+  if (!expires || expires < Date.now()) {
+    sessions.delete(id);
+    return false;
+  }
+  return true;
+}
+
+function validAccessToken(candidate) {
+  if (!accessToken || typeof candidate !== 'string') return false;
+  const expected = createHash('sha256').update(accessToken).digest();
+  const actual = createHash('sha256').update(candidate).digest();
+  return timingSafeEqual(expected, actual);
+}
 
 // 中间件
 app.use(express.json());
+app.post('/api/login', (req, res) => {
+  if (!validAccessToken(req.body?.token)) return res.status(401).json({ error: '访问令牌错误' });
+  const id = randomUUID();
+  sessions.set(id, Date.now() + sessionLifetimeMs);
+  const secure = process.env.APP_HTTPS === '1' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `eval_session=${id}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200${secure}`);
+  res.json({ success: true });
+});
+app.use((req, res, next) => {
+  if (!accessToken || ['/login.html', '/login.js'].includes(req.path)) return next();
+  const origin = req.get('origin');
+  if (origin) {
+    try {
+      if (new URL(origin).host !== req.get('host')) return res.status(403).end();
+    } catch {
+      return res.status(403).end();
+    }
+  }
+  if (!activeSession(req.get('cookie'))) {
+    return req.path.startsWith('/api/') ? res.status(401).json({ error: '请先登录' }) : res.redirect('/login.html');
+  }
+  next();
+});
+app.post('/api/logout', (req, res) => {
+  const id = /(?:^|;\s*)eval_session=([0-9a-f-]{36})(?:;|$)/.exec(req.get('cookie') || '')?.[1];
+  sessions.delete(id);
+  res.setHeader('Set-Cookie', 'eval_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+  res.json({ success: true });
+});
 app.use(express.static('public'));
 
 // 确保上传目录存在
@@ -2148,6 +2201,10 @@ app.post('/api/scenario-runs/:id/stop', (req, res) => {
 });
 
 // Socket.IO连接处理
+io.use((socket, next) => {
+  if (!accessToken || activeSession(socket.handshake.headers.cookie)) return next();
+  next(new Error('请先登录'));
+});
 io.on('connection', (socket) => {
   console.log('用户连接:', socket.id);
   

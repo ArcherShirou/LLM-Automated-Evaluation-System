@@ -10,7 +10,7 @@
 <body class="bg-light">
   <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <div><h1>场景评测</h1><p class="text-muted mb-0">模拟患者、待测接诊助手和轨迹评分器组成多轮对话。</p></div>
+      <div><h1>场景评测</h1><p class="text-muted mb-0">模拟用户、待测助手、环境动作和轨迹评分器组成多轮评测。</p></div>
       <a href="/" class="btn btn-outline-secondary">返回任务列表</a>
     </div>
     <div class="alert alert-info">内置场景均为合成数据。结果仅用于模型行为评测，不用于真实患者诊疗或临床认证。</div>
@@ -21,7 +21,7 @@
         <div class="col-md-3"><button id="startButton" class="btn btn-primary w-100">运行场景</button></div>
       </div>
       <p id="scenarioDescription" class="mt-3 mb-0 text-muted"></p>
-      <p class="small text-muted mt-2 mb-0">待测模型由服务端 CANDIDATE_BASE_URL 和 CANDIDATE_MODEL 指定；每轮患者回复和最终评分都会调用模拟/评分模型。</p>
+      <p class="small text-muted mt-2 mb-0">待测模型由服务端 CANDIDATE_BASE_URL 和 CANDIDATE_MODEL 指定；每轮模拟用户回复和最终评分都会调用模拟/评分模型。客服场景中的订单查询和退款是沙盒动作，不接入真实业务。</p>
     </div></section>
     <section id="runSection" class="card" hidden><div class="card-body">
       <div class="d-flex justify-content-between align-items-center"><h2 class="h4 mb-0">运行记录</h2><button id="stopButton" class="btn btn-outline-danger btn-sm" hidden>停止</button></div>

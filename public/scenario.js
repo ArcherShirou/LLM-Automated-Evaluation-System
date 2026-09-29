@@ -21,7 +21,8 @@ function renderRun(run) {
   for (const item of run.trace || []) {
     const li = document.createElement('li');
     li.className = 'list-group-item';
-    const role = { patient: '患者', doctor: '待测助手', event: '场景事件' }[item.role] || item.role;
+    const role = { patient: run.counterpartyLabel || '患者', doctor: '待测助手',
+      event: '场景事件', environment: '环境动作结果' }[item.role] || item.role;
     li.textContent = `${role}（第 ${item.turn} 轮）：${item.text}`;
     list.appendChild(li);
   }
@@ -31,7 +32,7 @@ function renderRun(run) {
   scoreSection.hidden = !run.result;
   if (run.result) {
     document.getElementById('scoreSummary').textContent =
-      `暂定分数 ${run.result.score}；关键检查点${run.result.critical_passed ? '通过' : '未通过'}。${run.result.needsHumanReview ? ' 评分器与证据规则有分歧，请人工复核。' : ''}`;
+      `暂定分数 ${run.result.score}；关键检查点${run.result.critical_passed ? '通过' : '未通过'}。${run.result.environmentState ? `退款${run.result.environmentState.refund_issued ? '已提交' : '未提交'}。` : ''}${run.result.needsHumanReview ? ' 评分器与证据规则有分歧，请人工复核。' : ''}`;
     const checks = document.getElementById('checkList');
     checks.replaceChildren();
     for (const check of run.result.checks) {

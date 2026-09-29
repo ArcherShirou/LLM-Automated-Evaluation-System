@@ -31,7 +31,7 @@ function renderRun(run) {
   scoreSection.hidden = !run.result;
   if (run.result) {
     document.getElementById('scoreSummary').textContent =
-      `总分 ${run.result.score}；关键检查点${run.result.critical_passed ? '通过' : '未通过'}。`;
+      `暂定分数 ${run.result.score}；关键检查点${run.result.critical_passed ? '通过' : '未通过'}。${run.result.needsHumanReview ? ' 评分器与证据规则有分歧，请人工复核。' : ''}`;
     const checks = document.getElementById('checkList');
     checks.replaceChildren();
     for (const check of run.result.checks) {

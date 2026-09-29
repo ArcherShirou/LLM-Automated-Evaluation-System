@@ -153,7 +153,7 @@ function displayFileInfo(file, fileKey) {
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <i class="fas fa-file-excel text-success me-2"></i>
-                <strong>${file.name}</strong>
+                <strong>${escapeHtml(file.name)}</strong>
                 <small class="text-muted">(${fileSize} MB)</small>
             </div>
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile('${fileKey}')">
@@ -177,7 +177,7 @@ function updateSelectedFileDisplay(fileKey) {
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <i class="fas fa-file-excel text-success me-2"></i>
-                    <strong>${selectedFiles[fileKey].name}</strong>
+                    <strong>${escapeHtml(selectedFiles[fileKey].name)}</strong>
                     <small class="text-muted">(已完成评估)</small>
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile('${fileKey}')">

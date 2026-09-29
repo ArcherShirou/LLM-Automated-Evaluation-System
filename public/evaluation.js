@@ -1,3 +1,9 @@
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+}
+
 // 评测页面JavaScript逻辑
 let socket;
 let currentTask = null;
@@ -403,11 +409,11 @@ function createFileConfigCard(file, type, title, hasScore = false) {
             <div class="row">
                 <div class="col-md-6">
                     <label class="form-label">原文件名</label>
-                    <input type="text" class="form-control" value="${file.name}" readonly>
+                    <input type="text" class="form-control" value="${escapeHtml(file.name)}" readonly>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">模型名</label>
-                    <input type="text" class="form-control" id="${type}FileName" value="${file.name}" placeholder="输入模型名称">
+                    <input type="text" class="form-control" id="${type}FileName" value="${escapeHtml(file.name)}" placeholder="输入模型名称">
                 </div>
             </div>
             <div class="row mt-3">
@@ -604,7 +610,7 @@ function createOverallRanking(baseStats, compareStats) {
                         return `
                             <tr class="${rankClass}">
                                 <td><strong>${index + 1}</strong></td>
-                                <td>${model.name}</td>
+                                <td>${escapeHtml(model.name)}</td>
                                 <td><strong>${model.score.toFixed(3)}</strong></td>
                                 <td>${diff === 0 ? '-' : '-' + diff.toFixed(3)}</td>
                             </tr>
@@ -667,8 +673,8 @@ function createParentClassRanking(baseStats, compareStats) {
                     <tr>
                         <th>排名</th>
                         <th>父类</th>
-                        <th>${baseModelName}</th>
-                        <th>${compareModelName}</th>
+                        <th>${escapeHtml(baseModelName)}</th>
+                        <th>${escapeHtml(compareModelName)}</th>
                         <th>差异</th>
                     </tr>
                 </thead>
@@ -678,7 +684,7 @@ function createParentClassRanking(baseStats, compareStats) {
                         return `
                             <tr>
                                 <td><strong>${index + 1}</strong></td>
-                                <td>${item.category}</td>
+                                <td>${escapeHtml(item.category)}</td>
                                 <td>${item.baseScore.toFixed(3)}</td>
                                 <td>${item.compareScore.toFixed(3)}</td>
                                 <td class="${diffClass}"><strong>${item.diff > 0 ? '+' : ''}${item.diff.toFixed(3)}</strong></td>
@@ -733,7 +739,7 @@ function createSubClassRanking(baseStats, compareStats) {
                             } else if (currentTask.results && currentTask.results[0] && currentTask.results[0].fileName) {
                                 baseModelName = currentTask.results[0].fileName.replace(/\.[^/.]+$/, "");
                             }
-                            return baseModelName;
+                            return escapeHtml(baseModelName);
                         })()}</th>
                         <th>${(() => {
                             let compareModelName = '对比模型';
@@ -742,7 +748,7 @@ function createSubClassRanking(baseStats, compareStats) {
                             } else if (currentTask.results && currentTask.results[1] && currentTask.results[1].fileName) {
                                 compareModelName = currentTask.results[1].fileName.replace(/\.[^/.]+$/, "");
                             }
-                            return compareModelName;
+                            return escapeHtml(compareModelName);
                         })()}</th>
                         <th>差异</th>
                     </tr>
@@ -753,7 +759,7 @@ function createSubClassRanking(baseStats, compareStats) {
                         return `
                             <tr>
                                 <td><strong>${index + 1}</strong></td>
-                                <td>${item.category}</td>
+                                <td>${escapeHtml(item.category)}</td>
                                 <td>${item.baseScore.toFixed(3)}</td>
                                 <td>${item.compareScore.toFixed(3)}</td>
                                 <td class="${diffClass}"><strong>${item.diff > 0 ? '+' : ''}${item.diff.toFixed(3)}</strong></td>
@@ -1593,7 +1599,7 @@ function createResultCard(result) {
     
     card.innerHTML = `
         <div class="card-header">
-            <h6 class="mb-0">${displayName} (${result.type === 'base' ? 'Base模型' : '对比模型'})</h6>
+            <h6 class="mb-0">${escapeHtml(displayName)} (${result.type === 'base' ? 'Base模型' : '对比模型'})</h6>
         </div>
         <div class="card-body">
             <div class="row">
@@ -1680,7 +1686,7 @@ function createNewComparisonLayout(baseResult, compareResult, statistics) {
                             <div class="score-comparison">
                                 <div class="model-score base-model">
                                     <div class="model-badge base-badge">
-                                        <i class="fas fa-robot"></i> ${baseModelName}
+                                        <i class="fas fa-robot"></i> ${escapeHtml(baseModelName)}
                                     </div>
                                     <div class="score-value base-score">${(baseStats.overall?.average_score || 0).toFixed(3)}</div>
                                     <div class="score-label">平均分</div>
@@ -1692,7 +1698,7 @@ function createNewComparisonLayout(baseResult, compareResult, statistics) {
                                 </div>
                                 <div class="model-score compare-model">
                                     <div class="model-badge compare-badge">
-                                        <i class="fas fa-robot"></i> ${compareModelName}
+                                        <i class="fas fa-robot"></i> ${escapeHtml(compareModelName)}
                                     </div>
                                     <div class="score-value compare-score">${(compareStats.overall?.average_score || 0).toFixed(3)}</div>
                                     <div class="score-label">平均分</div>
@@ -1812,7 +1818,7 @@ function createStatisticsCard(statistics) {
             
             parentClassTable += `
                 <tr>
-                    <td>${parentClass}</td>
+                    <td>${escapeHtml(parentClass)}</td>
                     <td>${baseAvg.toFixed(3)}</td>
                     <td>${compareAvg.toFixed(3)}</td>
                     <td class="${diffClass}">${diff > 0 ? '+' : ''}${diff.toFixed(3)}</td>
@@ -1858,7 +1864,7 @@ function createStatisticsCard(statistics) {
             
             subClassTable += `
                 <tr>
-                    <td>${subClass}</td>
+                    <td>${escapeHtml(subClass)}</td>
                     <td>${baseAvg.toFixed(3)}</td>
                     <td>${compareAvg.toFixed(3)}</td>
                     <td class="${diffClass}">${diff > 0 ? '+' : ''}${diff.toFixed(3)}</td>
@@ -1937,7 +1943,7 @@ function showAlert(message, type = 'info') {
     const alertId = 'alert-' + Date.now();
     const alertHtml = `
         <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
+            ${escapeHtml(message)}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     `;

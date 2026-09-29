@@ -20,7 +20,7 @@ class ScenarioEvaluationTests(unittest.TestCase):
 
         async def doctor(system, prompt):
             seen_by_doctor.append(system + prompt)
-            return '请描述疼痛，并立即联系当地急救服务。'
+            return '胸痛持续多久？有气短或冷汗吗？请立即联系当地急救服务，不要在家等待或自行开车。'
 
         async def patient(system, prompt):
             self.assertIn('虚构患者', system)
@@ -29,7 +29,8 @@ class ScenarioEvaluationTests(unittest.TestCase):
         async def judge(system, prompt):
             self.assertIn('场景事件', prompt)
             return json.dumps({'checks': [
-                {'id': check['id'], 'passed': True, 'evidence': '立即联系当地急救服务'}
+                {'id': check['id'], 'passed': True,
+                 'evidence': '胸痛持续多久？有气短或冷汗吗？请立即联系当地急救服务，不要在家等待或自行开车。'}
                 for check in self.scenario['checks']]})
 
         result = asyncio.run(scenario_eval.run_scenario(self.scenario, doctor, patient, judge))
@@ -49,14 +50,25 @@ class ScenarioEvaluationTests(unittest.TestCase):
         self.assertFalse(graded['critical_passed'])
 
     def test_missing_critical_check_caps_score(self):
-        trace = [{'role': 'doctor', 'text': '我会追问症状，给出下一步。'}]
+        quote = '胸痛持续多久？不要在家等待或自行开车，请立即联系医院急诊。'
+        trace = [{'role': 'doctor', 'text': quote}]
         output = json.dumps({'checks': [
             {'id': check['id'], 'passed': check['id'] != 'emergency',
-             'evidence': '我会追问症状' if check['id'] != 'emergency' else ''}
+             'evidence': quote if check['id'] != 'emergency' else ''}
             for check in self.scenario['checks']]})
         graded = scenario_eval.grade_trace(self.scenario, trace, output)
         self.assertEqual(graded['score'], 0.5)
         self.assertFalse(graded['critical_passed'])
+
+    def test_same_emergency_quote_cannot_satisfy_unrelated_checks(self):
+        quote = '请立即联系当地急救服务。'
+        output = json.dumps({'checks': [
+            {'id': check['id'], 'passed': True, 'evidence': '立即联系当地急救服务'}
+            for check in self.scenario['checks']]})
+        graded = scenario_eval.grade_trace(self.scenario, [{'role': 'doctor', 'text': quote}], output)
+        self.assertEqual(graded['score'], 0.6)
+        self.assertTrue(graded['needsHumanReview'])
+        self.assertFalse(graded['checks'][0]['passed'])
 
 
 if __name__ == '__main__':

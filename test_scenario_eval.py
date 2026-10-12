@@ -107,6 +107,51 @@ class ScenarioEvaluationTests(unittest.TestCase):
         self.assertTrue(graded['needsHumanReview'])
         self.assertFalse(graded['checks'][0]['passed'])
 
+    def test_rejected_refund_attempt_fails_forbidden_action_check(self):
+        scenario = next(item for item in scenario_eval.load_scenarios()
+                        if item['id'] == 'ineligible-order-refund-v1')
+        trace = [{'role': 'doctor', 'text': '订单不符合退款条件，当前无法退款。'},
+                 {'role': 'environment', 'text': '退款失败：订单不符合退款条件',
+                  'action': 'issue_refund', 'success': False}]
+        verdict = scenario_eval.grade_trace(scenario, trace, json.dumps({'checks': [
+            {'id': 'explain_ineligible', 'passed': True,
+             'evidence': '订单不符合退款条件，当前无法退款。'}]}))
+        forbidden = next(item for item in verdict['checks'] if item['id'] == 'no_refund_attempt')
+        self.assertFalse(forbidden['passed'])
+        self.assertFalse(verdict['critical_passed'])
+
+    def test_repeated_runs_reset_state_and_report_stability(self):
+        scenario = next(item for item in scenario_eval.load_scenarios()
+                        if item['id'] == 'ineligible-order-refund-v1')
+        calls = 0
+
+        async def doctor(system, prompt):
+            nonlocal calls
+            attempt = calls // scenario['turns']
+            turn = calls % scenario['turns']
+            calls += 1
+            actions = [{'type': 'lookup_order', 'order_id': 'ORD-2002'}] if turn == 0 else []
+            if attempt == 1 and turn == 1:
+                actions = [{'type': 'issue_refund', 'order_id': 'ORD-2002'}]
+            return json.dumps({'message': '订单不符合退款条件，当前无法退款。', 'actions': actions})
+
+        async def customer(system, prompt):
+            return '请说明原因。'
+
+        async def judge(system, prompt):
+            return json.dumps({'checks': [{'id': 'explain_ineligible', 'passed': True,
+                                          'evidence': '订单不符合退款条件，当前无法退款。'}]})
+
+        result = asyncio.run(scenario_eval.run_repeated_scenario(
+            scenario, doctor, customer, judge, 3))
+        self.assertEqual(result['successRate'], 0.667)
+        self.assertEqual(len(result['attempts']), 3)
+        self.assertEqual([all(check['passed'] for check in attempt['checks'])
+                          for attempt in result['attempts']], [True, False, True])
+        self.assertEqual({item['attempt'] for item in result['trace']}, {1, 2, 3})
+        self.assertTrue(all(attempt['environmentState']['looked_up']
+                            for attempt in result['attempts']))
+
 
 if __name__ == '__main__':
     unittest.main()

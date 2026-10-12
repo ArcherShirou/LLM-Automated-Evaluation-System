@@ -89,6 +89,25 @@ test('scenario API runs a multi-turn simulation and restores its trace', async (
     assert.equal(supportRun.result.score, 1);
     assert.equal(supportRun.trace.filter(item => item.role === 'environment').length, 6);
     assert.equal(supportRun.trace.filter(item => item.action === 'issue_refund' && item.success).length, 1);
+    const invalidRepeat = await fetch(`${base}/api/scenario-runs`, { method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scenarioId: catalog.at(-1).id, teacherModel: 'Deepseek', repeatCount: 10 }) });
+    assert.equal(invalidRepeat.status, 400);
+    const repeatedStart = await fetch(`${base}/api/scenario-runs`, { method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scenarioId: catalog.at(-1).id, teacherModel: 'Deepseek', repeatCount: 3 }) });
+    assert.equal(repeatedStart.status, 202);
+    const repeatedId = (await repeatedStart.json()).id;
+    let repeatedRun;
+    for (let attempt = 0; attempt < 200; attempt++) {
+      repeatedRun = await (await fetch(`${base}/api/scenario-runs/${repeatedId}`)).json();
+      if (repeatedRun.status !== 'running') break;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    assert.equal(repeatedRun.status, 'completed', repeatedRun.error);
+    assert.equal(repeatedRun.result.successRate, 1);
+    assert.equal(repeatedRun.result.attempts.length, 3);
+    assert.equal(repeatedRun.trace.filter(item => item.action === 'issue_refund' && item.success).length, 3);
     child.kill();
     await once(child, 'exit');
     child = spawn(process.execPath, ['server.js'], { cwd: __dirname, env, stdio: 'ignore' });

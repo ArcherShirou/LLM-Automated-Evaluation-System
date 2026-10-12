@@ -1,5 +1,6 @@
 const scenarioSelect = document.getElementById('scenarioSelect');
 const teacherSelect = document.getElementById('teacherSelect');
+const repeatSelect = document.getElementById('repeatSelect');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 let scenarios = [];
@@ -23,7 +24,7 @@ function renderRun(run) {
     li.className = 'list-group-item';
     const role = { patient: run.counterpartyLabel || '患者', doctor: '待测助手',
       event: '场景事件', environment: '环境动作结果' }[item.role] || item.role;
-    li.textContent = `${role}（第 ${item.turn} 轮）：${item.text}`;
+    li.textContent = `${run.repeatCount > 1 ? `第 ${item.attempt} 次 · ` : ''}${role}（第 ${item.turn} 轮）：${item.text}`;
     list.appendChild(li);
   }
   stopButton.hidden = run.status !== 'running';
@@ -31,15 +32,22 @@ function renderRun(run) {
   const scoreSection = document.getElementById('scoreSection');
   scoreSection.hidden = !run.result;
   if (run.result) {
+    const attempts = run.result.attempts || [run.result];
     document.getElementById('scoreSummary').textContent =
-      `暂定分数 ${run.result.score}；关键检查点${run.result.critical_passed ? '通过' : '未通过'}。${run.result.environmentState ? `退款${run.result.environmentState.refund_issued ? '已提交' : '未提交'}。` : ''}${run.result.needsHumanReview ? ' 评分器与证据规则有分歧，请人工复核。' : ''}`;
+      `完整通过 ${Math.round(run.result.successRate * attempts.length)}/${attempts.length} 次；平均分 ${run.result.averageScore}。完整通过要求所有检查点通过。`;
     const checks = document.getElementById('checkList');
     checks.replaceChildren();
-    for (const check of run.result.checks) {
-      const div = document.createElement('div');
-      div.className = 'list-group-item';
-      div.textContent = `${check.passed ? '通过' : '未通过'} · ${check.label}（权重 ${check.weight}）${check.evidence ? ` · 证据：“${check.evidence}”` : ''}`;
-      checks.appendChild(div);
+    for (const [index, attempt] of attempts.entries()) {
+      const heading = document.createElement('div');
+      heading.className = 'list-group-item fw-bold';
+      heading.textContent = `第 ${index + 1} 次：${attempt.score} 分；关键检查点${attempt.critical_passed ? '通过' : '未通过'}${attempt.needsHumanReview ? '；需人工复核' : ''}`;
+      checks.appendChild(heading);
+      for (const check of attempt.checks) {
+        const div = document.createElement('div');
+        div.className = 'list-group-item';
+        div.textContent = `${check.passed ? '通过' : '未通过'} · ${check.label}（权重 ${check.weight}）${check.evidence ? ` · 证据：“${check.evidence}”` : ''}`;
+        checks.appendChild(div);
+      }
     }
   }
   startButton.disabled = run.status === 'running';
@@ -71,7 +79,8 @@ startButton.addEventListener('click', async () => {
   try {
     const response = await fetch('/api/scenario-runs', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ scenarioId: scenarioSelect.value, teacherModel: teacherSelect.value })
+      body: JSON.stringify({ scenarioId: scenarioSelect.value, teacherModel: teacherSelect.value,
+        repeatCount: Number(repeatSelect.value) })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '场景启动失败');

@@ -11,7 +11,7 @@ from openai import OpenAI
 
 
 SCENARIOS_PATH = Path(__file__).with_name('scenarios.json')
-RUBRIC_VERSION = 'scenario-rubric-v2'
+RUBRIC_VERSION = 'scenario-rubric-v3'
 
 
 def load_scenarios():
@@ -24,12 +24,13 @@ def load_scenarios():
         check_ids = [check['id'] for check in scenario['checks']]
         if len(check_ids) != len(set(check_ids)) or not check_ids:
             raise ValueError('场景检查点无效')
-        if any(not check.get('action') and (not check.get('evidence_terms') or not all(
+        if any(not check.get('action') and not check.get('forbidden_action') and (not check.get('evidence_terms') or not all(
                 isinstance(group, list) and group and all(isinstance(term, str) and term for term in group)
                 for group in check['evidence_terms'])) for check in scenario['checks']):
             raise ValueError('场景检查点缺少可验证的证据词组')
-        if any(check.get('action') not in ('lookup_order', 'issue_refund')
-               for check in scenario['checks'] if check.get('action')):
+        if any(action not in ('lookup_order', 'issue_refund')
+               for check in scenario['checks']
+               for action in (check.get('action'), check.get('forbidden_action')) if action):
             raise ValueError('未知场景动作检查点')
         if any(event['before_turn'] < 2 or event['before_turn'] > scenario['turns']
                for event in scenario['events']):
@@ -56,12 +57,21 @@ def grade_trace(scenario, trace, judge_output):
     if not isinstance(supplied, list):
         raise ValueError('评分器检查点格式错误')
     by_id = {item['id']: item for item in supplied if isinstance(item, dict) and 'id' in item}
-    expected = {item['id'] for item in scenario['checks'] if not item.get('action')}
+    expected = {item['id'] for item in scenario['checks']
+                if not item.get('action') and not item.get('forbidden_action')}
     if len(supplied) != len(expected) or set(by_id) != expected:
         raise ValueError('评分器检查点不完整或重复')
     doctor_texts = [item['text'] for item in trace if item['role'] == 'doctor']
     checks = []
     for rule in scenario['checks']:
+        if rule.get('forbidden_action'):
+            attempts = [item for item in trace if item['role'] == 'environment'
+                        and item.get('action') == rule['forbidden_action']]
+            checks.append({'id': rule['id'], 'label': rule['label'], 'weight': rule['weight'],
+                           'critical': rule.get('critical', False), 'passed': not attempts,
+                           'evidence': attempts[0]['text'] if attempts else '未尝试该操作',
+                           'judge_passed': None})
+            continue
         if rule.get('action'):
             evidence = next((item['text'] for item in trace if item['role'] == 'environment'
                              and item.get('action') == rule['action'] and item.get('success')), '')
@@ -170,7 +180,7 @@ async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress
             if progress:
                 progress({'turn': turn, 'total': scenario['turns'], 'trace': trace[-1]})
     rules = [{key: value for key, value in rule.items() if key != 'weight'}
-             for rule in scenario['checks'] if not rule.get('action')]
+             for rule in scenario['checks'] if not rule.get('action') and not rule.get('forbidden_action')]
     judge_prompt = ('只评价 [doctor] 的实际回复。逐项输出是否满足检查点；若通过，evidence 必须逐字'
                     '引用一小段 [doctor] 原文。未通过时 evidence 设为空字符串。'
                     '只输出 JSON：{"checks":[{"id":"...","passed":true,"evidence":"..."}]}。'
@@ -179,6 +189,24 @@ async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress
     return {'scenarioId': scenario['id'], 'scenarioHash': scenario_hash(scenario),
             'rubricVersion': RUBRIC_VERSION, 'trace': trace, 'environmentState': state,
             'counterpartyLabel': scenario.get('counterparty_label', '患者'), **verdict}
+
+
+async def run_repeated_scenario(scenario, doctor_call, patient_call, judge_call, count=1, progress=None):
+    if count not in (1, 3):
+        raise ValueError('重复次数只能是 1 或 3')
+    attempts = []
+    for attempt in range(1, count + 1):
+        def report(event):
+            if progress:
+                progress({'attempt': attempt, **event})
+        result = await run_scenario(scenario, doctor_call, patient_call, judge_call, report)
+        attempts.append(result)
+    combined_trace = [{**item, 'attempt': index}
+                      for index, result in enumerate(attempts, 1) for item in result['trace']]
+    return {**attempts[-1], 'trace': combined_trace, 'attempts': attempts,
+            'averageScore': round(sum(result['score'] for result in attempts) / count, 3),
+            'successRate': round(sum(all(check['passed'] for check in result['checks'])
+                                     for result in attempts) / count, 3)}
 
 
 def model_call(base_url, model_id, api_key, provider='chat'):
@@ -202,6 +230,7 @@ def model_call(base_url, model_id, api_key, provider='chat'):
 async def main():
     try:
         scenario_id, teacher_name = sys.argv[1:3]
+        repeat_count = int(sys.argv[3]) if len(sys.argv) > 3 else 1
         scenario = next((item for item in load_scenarios() if item['id'] == scenario_id), None)
         if not scenario or teacher_name not in ('Deepseek', 'GPT-oss'):
             raise ValueError('未知场景或模拟/评分模型')
@@ -215,7 +244,7 @@ async def main():
                             os.environ.get('CANDIDATE_API_KEY'))
         def progress(event):
             print(json.dumps({'type': 'progress', **event}, ensure_ascii=False), flush=True)
-        result = await run_scenario(scenario, doctor, teacher, teacher, progress)
+        result = await run_repeated_scenario(scenario, doctor, teacher, teacher, repeat_count, progress)
         result['candidateModel'] = os.environ['CANDIDATE_MODEL']
         result['teacherModel'] = os.environ[f'{teacher_prefix}_MODEL']
         print(json.dumps({'type': 'complete', 'result': result}, ensure_ascii=False), flush=True)

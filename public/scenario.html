@@ -10,18 +10,20 @@
 <body class="bg-light">
   <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <div><h1>场景评测</h1><p class="text-muted mb-0">模拟用户、待测助手、环境动作和轨迹评分器组成多轮评测。</p></div>
+      <div><h1>场景与 Agent 评测</h1><p class="text-muted mb-0">查看待测助手的回复、工具调用、环境结果和检查点评分。</p></div>
       <a href="/" class="btn btn-outline-secondary">返回任务列表</a>
     </div>
     <div class="alert alert-info">内置场景均为合成数据。结果仅用于模型行为评测，不用于真实患者诊疗或临床认证。</div>
     <section class="card mb-4"><div class="card-body">
       <div class="row g-3 align-items-end">
-        <div class="col-md-6"><label class="form-label" for="scenarioSelect">场景</label><select id="scenarioSelect" class="form-select"></select></div>
-        <div class="col-md-3"><label class="form-label" for="teacherSelect">模拟患者和评分器</label><select id="teacherSelect" class="form-select"><option>Deepseek</option><option>GPT-oss</option></select></div>
-        <div class="col-md-3"><button id="startButton" class="btn btn-primary w-100">运行场景</button></div>
+        <div class="col-md-3"><label class="form-label" for="scenarioSelect">场景</label><select id="scenarioSelect" class="form-select"></select></div>
+        <div class="col-md-2"><label class="form-label" for="modeSelect">评测方式</label><select id="modeSelect" class="form-select"><option value="scenario">对话场景</option><option value="agent">Agent 工具调用</option></select></div>
+        <div class="col-md-3"><label class="form-label" for="teacherSelect">模拟用户和评分器</label><select id="teacherSelect" class="form-select"><option>Deepseek</option><option>GPT-oss</option></select></div>
+        <div class="col-md-2"><label class="form-label" for="repeatSelect">重复次数</label><select id="repeatSelect" class="form-select"><option value="1">1 次</option><option value="3">3 次</option></select></div>
+        <div class="col-md-2"><button id="startButton" class="btn btn-primary w-100">开始评测</button></div>
       </div>
       <p id="scenarioDescription" class="mt-3 mb-0 text-muted"></p>
-      <p class="small text-muted mt-2 mb-0">待测模型由服务端 CANDIDATE_BASE_URL 和 CANDIDATE_MODEL 指定；每轮模拟用户回复和最终评分都会调用模拟/评分模型。客服场景中的订单查询和退款是沙盒动作，不接入真实业务。</p>
+      <p id="modeDescription" class="small text-muted mt-2 mb-0"></p>
     </div></section>
     <section id="runSection" class="card" hidden><div class="card-body">
       <div class="d-flex justify-content-between align-items-center"><h2 class="h4 mb-0">运行记录</h2><button id="stopButton" class="btn btn-outline-danger btn-sm" hidden>停止</button></div>

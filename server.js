@@ -1849,13 +1849,20 @@ function saveScenarioRun(run) {
 }
 
 app.get('/api/scenarios', (req, res) => {
-  res.json(scenarioCatalog.map(({ patient, checks, environment, ...publicInfo }) => publicInfo));
+  res.json(scenarioCatalog.map(({ patient, checks, environment, agent_environment,
+                                  agent_checks, ...publicInfo }) =>
+    ({ ...publicInfo, agentEnabled: Boolean(environment || agent_environment) })));
 });
 
 app.post('/api/scenario-runs', (req, res) => {
-  const { scenarioId, teacherModel } = req.body || {};
+  const { scenarioId, teacherModel, repeatCount = 1, mode = 'scenario' } = req.body || {};
   const scenario = scenarioCatalog.find(item => item.id === scenarioId);
   if (!scenario) return res.status(400).json({ error: '未知场景' });
+  if (![1, 3].includes(repeatCount)) return res.status(400).json({ error: '重复次数只能是 1 或 3' });
+  if (!['scenario', 'agent'].includes(mode) ||
+      (mode === 'agent' && !scenario.environment && !scenario.agent_environment)) {
+    return res.status(400).json({ error: '该场景没有 Agent 沙盒工具' });
+  }
   if (!['Deepseek', 'GPT-oss'].includes(teacherModel)) {
     return res.status(400).json({ error: '未知模拟/评分模型' });
   }
@@ -1867,11 +1874,11 @@ app.post('/api/scenario-runs', (req, res) => {
   if (scenarioProcesses.size >= 2) return res.status(429).json({ error: '最多同时运行 2 个场景' });
   const run = { id: randomUUID(), scenarioId, scenarioTitle: scenario.title,
     counterpartyLabel: scenario.counterparty_label || '患者',
-    status: 'running', teacherModel, candidateModel: process.env.CANDIDATE_MODEL,
+    status: 'running', mode, teacherModel, repeatCount, candidateModel: process.env.CANDIDATE_MODEL,
     startedAt: new Date().toISOString(), trace: [] };
   saveScenarioRun(run);
   const child = spawn(process.env.PYTHON || 'python3',
-    ['scenario_eval.py', scenarioId, teacherModel],
+    ['scenario_eval.py', scenarioId, teacherModel, String(repeatCount), mode],
     { cwd: __dirname, env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
       stdio: ['ignore', 'pipe', 'pipe'] });
   let output = '';
@@ -1900,7 +1907,7 @@ app.post('/api/scenario-runs', (req, res) => {
       try {
         const event = JSON.parse(line);
         if (event.type === 'progress' && event.trace) {
-          run.trace.push(event.trace);
+          run.trace.push({ ...event.trace, attempt: event.attempt });
           saveScenarioRun(run);
         } else if (event.type === 'complete') {
           run.result = event.result;
@@ -1923,7 +1930,7 @@ app.post('/api/scenario-runs', (req, res) => {
   const timer = setTimeout(() => {
     child.kill();
     finish('failed', '场景运行超过 8 分钟');
-  }, 8 * 60 * 1000);
+  }, 8 * repeatCount * 60 * 1000);
   scenarioProcesses.set(run.id, { child, stop: () => finish('stopped') });
   res.status(202).json({ id: run.id, status: run.status });
 });

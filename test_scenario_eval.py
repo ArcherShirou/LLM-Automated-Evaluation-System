@@ -15,6 +15,117 @@ class ScenarioEvaluationTests(unittest.TestCase):
         self.assertNotIn('checks', visible)
         self.assertEqual(visible['id'], self.scenario['id'])
         self.assertNotIn('environment', scenario_eval.public_scenarios()[-1])
+        self.assertTrue(scenario_eval.public_scenarios()[-1]['agentEnabled'])
+        self.assertTrue(scenario_eval.public_scenarios()[0]['agentEnabled'])
+        self.assertNotIn('agent_environment', scenario_eval.public_scenarios()[0])
+        self.assertNotIn('agent_checks', scenario_eval.public_scenarios()[0])
+
+    def test_medical_agents_use_sandbox_tools_before_final_reply(self):
+        cases = [
+            ('chest-pain-triage-v1', ['get_patient_details', 'record_emergency_referral'],
+             '胸痛持续多久？现在有气短和冷汗。请立即联系当地急救服务，不要在家等待或自行开车。',
+             'referral_recorded'),
+            ('follow-up-report-v1', ['lookup_report', 'request_follow_up'],
+             '没有报告原文无法判断结果。请提供报告具体指标，联系医院获取并预约复诊。如果症状加重请及时就医。',
+             'follow_up_requested')]
+        for scenario_id, actions, final_text, state_key in cases:
+            scenario = next(item for item in scenario_eval.load_scenarios()
+                            if item['id'] == scenario_id)
+
+            async def agent(messages, tools):
+                self.assertEqual([item['function']['name'] for item in tools], actions)
+                tool_results = [item for item in messages if item['role'] == 'tool']
+                if not tool_results:
+                    self.assertNotIn('气短和冷汗', str(messages))
+                if len(tool_results) == 2:
+                    return {'content': final_text, 'tool_calls': []}
+                return {'content': None, 'tool_calls': [{'id': f'call_{len(tool_results)}',
+                        'type': 'function', 'function': {'name': actions[len(tool_results)],
+                        'arguments': '{}'}}]}
+
+            async def judge(system, prompt):
+                return json.dumps({'checks': [
+                    {'id': rule['id'], 'passed': True, 'evidence': final_text}
+                    for rule in scenario['checks']]})
+
+            result = asyncio.run(scenario_eval.run_agent_scenario(scenario, agent, None, judge))
+            self.assertEqual(result['score'], 1, scenario_id)
+            self.assertTrue(result['environmentState'][state_key])
+            self.assertEqual([item['action'] for item in result['trace']
+                              if item['role'] == 'tool_call'], actions)
+
+    def test_agent_calls_real_tools_and_scores_final_state(self):
+        scenario = scenario_eval.load_scenarios()[-1]
+
+        async def agent(messages, tools):
+            self.assertEqual([tool['function']['name'] for tool in tools],
+                             ['lookup_order', 'issue_refund'])
+            results = [item for item in messages if item['role'] == 'tool']
+            if not results:
+                name = 'lookup_order'
+            elif len(results) == 1:
+                self.assertIn('符合退款条件：是', results[0]['content'])
+                name = 'issue_refund'
+            else:
+                return {'content': '商品损坏很抱歉。退款已提交，后续处理进度会通知您。',
+                        'tool_calls': []}
+            return {'content': None, 'tool_calls': [{'id': f'call_{len(results)}',
+                    'type': 'function', 'function': {'name': name,
+                    'arguments': json.dumps({'order_id': 'ORD-1001'})}}]}
+
+        async def judge(system, prompt):
+            return json.dumps({'checks': [
+                {'id': 'acknowledge_damage', 'passed': True, 'evidence': '商品损坏很抱歉'},
+                {'id': 'next_step', 'passed': True, 'evidence': '退款已提交，后续处理进度会通知您'}]})
+
+        result = asyncio.run(scenario_eval.run_agent_scenario(scenario, agent, None, judge))
+        self.assertTrue(result['completed'])
+        self.assertEqual(result['score'], 1)
+        self.assertTrue(result['environmentState']['refund_issued'])
+        self.assertEqual([item['action'] for item in result['trace']
+                          if item['role'] == 'tool_call'], ['lookup_order', 'issue_refund'])
+
+    def test_agent_rejected_refund_attempt_is_a_critical_failure(self):
+        scenario = next(item for item in scenario_eval.load_scenarios()
+                        if item['id'] == 'ineligible-order-refund-v1')
+
+        async def agent(messages, tools):
+            count = sum(item['role'] == 'tool' for item in messages)
+            if count == 2:
+                return {'content': '订单不符合退款条件，当前无法退款。', 'tool_calls': []}
+            name = 'lookup_order' if count == 0 else 'issue_refund'
+            return {'content': '', 'tool_calls': [{'id': f'call_{count}',
+                    'type': 'function', 'function': {'name': name,
+                    'arguments': json.dumps({'order_id': 'ORD-2002'})}}]}
+
+        async def judge(system, prompt):
+            return json.dumps({'checks': [{'id': 'explain_ineligible', 'passed': True,
+                                          'evidence': '订单不符合退款条件，当前无法退款。'}]})
+
+        result = asyncio.run(scenario_eval.run_agent_scenario(scenario, agent, None, judge))
+        self.assertFalse(result['critical_passed'])
+        self.assertFalse(result['environmentState']['refund_issued'])
+        self.assertFalse(next(item for item in result['checks']
+                              if item['id'] == 'no_refund_attempt')['passed'])
+
+    def test_agent_that_never_finishes_fails_completion_check(self):
+        scenario = scenario_eval.load_scenarios()[0]
+
+        async def agent(messages, tools):
+            count = sum(item['role'] == 'tool' for item in messages)
+            return {'content': '请立即联系当地急救服务，不要在家等待或自行开车。',
+                    'tool_calls': [{'id': f'call_{count}', 'type': 'function',
+                                    'function': {'name': 'get_patient_details', 'arguments': '{}'}}]}
+
+        async def judge(system, prompt):
+            return json.dumps({'checks': [{'id': check['id'], 'passed': False, 'evidence': ''}
+                                          for check in scenario['checks']]})
+
+        result = asyncio.run(scenario_eval.run_agent_scenario(scenario, agent, None, judge))
+        self.assertFalse(result['completed'])
+        self.assertFalse(result['critical_passed'])
+        self.assertFalse(next(item for item in result['checks']
+                              if item['id'] == 'agent_finished')['passed'])
 
     def test_environment_actions_change_state_and_are_scored_without_judge(self):
         scenario = scenario_eval.load_scenarios()[-1]

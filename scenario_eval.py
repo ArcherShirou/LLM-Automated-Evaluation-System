@@ -12,6 +12,30 @@ from openai import OpenAI
 
 SCENARIOS_PATH = Path(__file__).with_name('scenarios.json')
 RUBRIC_VERSION = 'scenario-rubric-v3'
+AGENT_TOOLS = [{'type': 'function', 'function': {'name': name,
+    'description': description, 'parameters': {'type': 'object', 'properties': {
+        'order_id': {'type': 'string', 'description': '客户提供的订单号'}},
+        'required': ['order_id'], 'additionalProperties': False}}}
+    for name, description in (
+        ('lookup_order', '查询订单状态和退款条件'),
+        ('issue_refund', '为符合条件的订单提交退款'))]
+MEDICAL_TOOLS = {
+    'chest_pain': [
+        ('get_patient_details', '询问并获取患者当前症状、持续时间和伴随症状'),
+        ('record_emergency_referral', '在沙盒记录立即联系当地急救服务的转介建议')],
+    'report': [
+        ('lookup_report', '查询患者检查报告是否已提供'),
+        ('request_follow_up', '在沙盒记录通过医院渠道联系和复诊的请求')]
+}
+
+
+def agent_tools(scenario):
+    kind = scenario.get('agent_environment', {}).get('case_type')
+    if not kind:
+        return AGENT_TOOLS
+    return [{'type': 'function', 'function': {'name': name, 'description': description,
+             'parameters': {'type': 'object', 'properties': {}, 'additionalProperties': False}}}
+            for name, description in MEDICAL_TOOLS[kind]]
 
 
 def load_scenarios():
@@ -21,15 +45,16 @@ def load_scenarios():
         if scenario['id'] in ids or not 1 <= scenario['turns'] <= 6:
             raise ValueError('场景 ID 重复或轮次数超出范围')
         ids.add(scenario['id'])
-        check_ids = [check['id'] for check in scenario['checks']]
+        check_ids = [check['id'] for check in scenario['checks'] + scenario.get('agent_checks', [])]
         if len(check_ids) != len(set(check_ids)) or not check_ids:
             raise ValueError('场景检查点无效')
         if any(not check.get('action') and not check.get('forbidden_action') and (not check.get('evidence_terms') or not all(
                 isinstance(group, list) and group and all(isinstance(term, str) and term for term in group)
                 for group in check['evidence_terms'])) for check in scenario['checks']):
             raise ValueError('场景检查点缺少可验证的证据词组')
-        if any(action not in ('lookup_order', 'issue_refund')
-               for check in scenario['checks']
+        if any(action not in ('lookup_order', 'issue_refund', 'get_patient_details',
+                              'record_emergency_referral', 'lookup_report', 'request_follow_up')
+               for check in scenario['checks'] + scenario.get('agent_checks', [])
                for action in (check.get('action'), check.get('forbidden_action')) if action):
             raise ValueError('未知场景动作检查点')
         if any(event['before_turn'] < 2 or event['before_turn'] > scenario['turns']
@@ -39,7 +64,9 @@ def load_scenarios():
 
 
 def public_scenarios():
-    return [{key: value for key, value in scenario.items() if key not in ('patient', 'checks', 'environment')}
+    return [{**{key: value for key, value in scenario.items()
+                if key not in ('patient', 'checks', 'environment', 'agent_environment', 'agent_checks')},
+             'agentEnabled': 'environment' in scenario or 'agent_environment' in scenario}
             for scenario in load_scenarios()]
 
 
@@ -126,6 +153,39 @@ def apply_action(state, action):
     return False, '未知动作'
 
 
+def apply_agent_action(state, action):
+    kind = action.get('type')
+    if state.get('case_type') == 'chest_pain':
+        if kind == 'get_patient_details':
+            state['details_obtained'] = True
+            return True, '虚构患者：胸部压迫感持续约 20 分钟，伴有气短和冷汗。'
+        if kind == 'record_emergency_referral':
+            if not state['details_obtained']:
+                return False, '请先了解当前症状'
+            state['referral_recorded'] = True
+            return True, '紧急转介建议已在沙盒记录；未实际联系急救服务。'
+    elif state.get('case_type') == 'report':
+        if kind == 'lookup_report':
+            state['report_checked'] = True
+            return True, '医院尚未提供报告原文或具体指标，无法判断结果。'
+        if kind == 'request_follow_up':
+            if not state['report_checked']:
+                return False, '请先查询报告'
+            state['follow_up_requested'] = True
+            return True, '后续联系请求已在沙盒记录；未实际预约医院。'
+    return apply_action(state, action) if 'order_id' in state else (False, '未知动作')
+
+
+async def judge_scenario(scenario, trace, judge_call):
+    rules = [{key: value for key, value in rule.items() if key != 'weight'}
+             for rule in scenario['checks'] if not rule.get('action') and not rule.get('forbidden_action')]
+    judge_prompt = ('只评价 [doctor] 的实际回复。逐项输出是否满足检查点；若通过，evidence 必须逐字'
+                    '引用一小段 [doctor] 原文。未通过时 evidence 设为空字符串。'
+                    '只输出 JSON：{"checks":[{"id":"...","passed":true,"evidence":"..."}]}。'
+                    '\n检查点：' + json.dumps(rules, ensure_ascii=False) + '\n对话轨迹：\n' + transcript(trace))
+    return grade_trace(scenario, trace, await judge_call('你是谨慎的场景评测员。', judge_prompt))
+
+
 async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress=None):
     state = dict(scenario['environment']) if 'environment' in scenario else None
     trace = [{'role': 'patient', 'text': scenario['opening'], 'turn': 0}]
@@ -179,33 +239,101 @@ async def run_scenario(scenario, doctor_call, patient_call, judge_call, progress
             trace.append({'role': 'patient', 'text': patient_text.strip()[:2000], 'turn': turn})
             if progress:
                 progress({'turn': turn, 'total': scenario['turns'], 'trace': trace[-1]})
-    rules = [{key: value for key, value in rule.items() if key != 'weight'}
-             for rule in scenario['checks'] if not rule.get('action') and not rule.get('forbidden_action')]
-    judge_prompt = ('只评价 [doctor] 的实际回复。逐项输出是否满足检查点；若通过，evidence 必须逐字'
-                    '引用一小段 [doctor] 原文。未通过时 evidence 设为空字符串。'
-                    '只输出 JSON：{"checks":[{"id":"...","passed":true,"evidence":"..."}]}。'
-                    '\n检查点：' + json.dumps(rules, ensure_ascii=False) + '\n对话轨迹：\n' + transcript(trace))
-    verdict = grade_trace(scenario, trace, await judge_call('你是谨慎的场景评测员。', judge_prompt))
+    verdict = await judge_scenario(scenario, trace, judge_call)
     return {'scenarioId': scenario['id'], 'scenarioHash': scenario_hash(scenario),
             'rubricVersion': RUBRIC_VERSION, 'trace': trace, 'environmentState': state,
             'counterpartyLabel': scenario.get('counterparty_label', '患者'), **verdict}
 
 
-async def run_repeated_scenario(scenario, doctor_call, patient_call, judge_call, count=1, progress=None):
+async def run_agent_scenario(scenario, agent_call, _patient_call, judge_call, progress=None):
+    if 'environment' not in scenario and 'agent_environment' not in scenario:
+        raise ValueError('该场景没有 Agent 沙盒工具')
+    state = dict(scenario.get('agent_environment', scenario.get('environment')))
+    tools = agent_tools(scenario)
+    trace = [{'role': 'patient', 'text': scenario['opening'], 'turn': 0}]
+    messages = [{'role': 'system', 'content': '你是' + scenario.get('assistant_role', '客服助手') +
+                 '。' + scenario['setting'] + '请使用提供的工具了解情况并完成任务，随后向对方说明结果。'},
+                {'role': 'user', 'content': scenario['opening']}]
+
+    def record(item):
+        trace.append(item)
+        if progress:
+            progress({'turn': item['turn'], 'total': 6, 'trace': item})
+
+    if progress:
+        progress({'turn': 0, 'total': 6, 'trace': trace[0]})
+    completed = False
+    for step in range(1, 7):
+        reply = await agent_call(messages, tools)
+        if not isinstance(reply, dict):
+            raise ValueError('待测 Agent 返回无效消息')
+        content = reply.get('content') or ''
+        tool_calls = reply.get('tool_calls') or []
+        if not isinstance(content, str) or not isinstance(tool_calls, list):
+            raise ValueError('待测 Agent 返回无效消息')
+        if content.strip():
+            record({'role': 'doctor', 'text': content.strip()[:3000], 'turn': step})
+        if not tool_calls:
+            completed = True
+            break
+        if len(tool_calls) > 2:
+            raise ValueError('待测 Agent 单步工具调用超过 2 次')
+        messages.append({'role': 'assistant', 'content': content or None, 'tool_calls': tool_calls})
+        for call in tool_calls:
+            function = call.get('function') if isinstance(call, dict) else None
+            name = function.get('name') if isinstance(function, dict) else None
+            arguments = function.get('arguments') if isinstance(function, dict) else None
+            if not isinstance(name, str) or not isinstance(arguments, str) or not isinstance(call, dict) or not isinstance(call.get('id'), str):
+                raise ValueError('待测 Agent 返回无效工具调用')
+            record({'role': 'tool_call', 'text': f'{name}({arguments[:500]})',
+                    'action': name, 'turn': step})
+            try:
+                parsed = json.loads(arguments)
+                if not isinstance(parsed, dict):
+                    raise ValueError('工具参数必须为对象')
+                success, text = apply_agent_action(state, {**parsed, 'type': name})
+            except (ValueError, TypeError):
+                success, text = False, '工具参数不是有效 JSON 对象'
+            record({'role': 'environment', 'text': text, 'turn': step,
+                    'action': name, 'success': success})
+            messages.append({'role': 'tool', 'tool_call_id': call['id'], 'content': text})
+    agent_scenario = {**scenario, 'checks': scenario['checks'] + scenario.get('agent_checks', [])}
+    verdict = await judge_scenario(agent_scenario, trace, judge_call)
+    verdict['checks'].append({'id': 'agent_finished', 'label': '在步数内完成并回复',
+                              'weight': 2, 'critical': True, 'passed': completed,
+                              'evidence': '已结束' if completed else '达到 6 步上限',
+                              'judge_passed': None})
+    total = sum(item['weight'] for item in verdict['checks'])
+    earned = sum(item['weight'] for item in verdict['checks'] if item['passed'])
+    verdict['critical_passed'] = verdict['critical_passed'] and completed
+    verdict['score'] = round(min(earned / total, 0.5 if not verdict['critical_passed'] else 1), 3)
+    return {'scenarioId': scenario['id'], 'scenarioHash': scenario_hash(scenario),
+            'rubricVersion': RUBRIC_VERSION, 'mode': 'agent', 'completed': completed,
+            'trace': trace,
+            'environmentState': state,
+            'counterpartyLabel': scenario.get('counterparty_label', '患者'), **verdict}
+
+
+async def run_repeated_scenario(scenario, doctor_call, patient_call, judge_call, count=1,
+                                progress=None, mode='scenario'):
     if count not in (1, 3):
         raise ValueError('重复次数只能是 1 或 3')
+    if mode not in ('scenario', 'agent'):
+        raise ValueError('未知评测方式')
     attempts = []
     for attempt in range(1, count + 1):
         def report(event):
             if progress:
                 progress({'attempt': attempt, **event})
-        result = await run_scenario(scenario, doctor_call, patient_call, judge_call, report)
+        runner = run_agent_scenario if mode == 'agent' else run_scenario
+        result = await runner(scenario, doctor_call, patient_call, judge_call, report)
         attempts.append(result)
     combined_trace = [{**item, 'attempt': index}
                       for index, result in enumerate(attempts, 1) for item in result['trace']]
     return {**attempts[-1], 'trace': combined_trace, 'attempts': attempts,
             'averageScore': round(sum(result['score'] for result in attempts) / count, 3),
-            'successRate': round(sum(all(check['passed'] for check in result['checks'])
+            'successRate': round(sum(result.get('completed', True) and
+                                     all(check['passed'] for check in result['checks'])
                                      for result in attempts) / count, 3)}
 
 
@@ -227,24 +355,48 @@ def model_call(base_url, model_id, api_key, provider='chat'):
     return call
 
 
+def agent_model_call(base_url, model_id, api_key):
+    if not base_url or not model_id:
+        raise ValueError('请配置待测 Agent 的 BASE_URL 和 MODEL')
+    client = OpenAI(api_key=api_key or 'EMPTY', base_url=base_url, timeout=45.0, max_retries=1)
+
+    async def call(messages, tools):
+        def request():
+            response = client.chat.completions.create(
+                model=model_id, messages=messages, tools=tools, max_tokens=1200)
+            message = response.choices[0].message
+            return {'content': message.content, 'tool_calls': [
+                {'id': item.id, 'type': 'function',
+                 'function': {'name': item.function.name, 'arguments': item.function.arguments}}
+                for item in (message.tool_calls or [])]}
+        return await asyncio.to_thread(request)
+    return call
+
+
 async def main():
     try:
         scenario_id, teacher_name = sys.argv[1:3]
         repeat_count = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+        mode = sys.argv[4] if len(sys.argv) > 4 else 'scenario'
         scenario = next((item for item in load_scenarios() if item['id'] == scenario_id), None)
         if not scenario or teacher_name not in ('Deepseek', 'GPT-oss'):
             raise ValueError('未知场景或模拟/评分模型')
+        if mode not in ('scenario', 'agent') or (mode == 'agent' and
+                'environment' not in scenario and 'agent_environment' not in scenario):
+            raise ValueError('未知评测方式或 Agent 场景不支持工具调用')
         teacher_prefix = 'DEEPSEEK' if teacher_name == 'Deepseek' else 'GPT_OSS'
         teacher = model_call(os.environ.get(f'{teacher_prefix}_BASE_URL'),
                              os.environ.get(f'{teacher_prefix}_MODEL'),
                              os.environ.get('TEACHER_MODEL_API_KEY'),
                              'chat' if teacher_name == 'Deepseek' else 'responses')
-        doctor = model_call(os.environ.get('CANDIDATE_BASE_URL'),
-                            os.environ.get('CANDIDATE_MODEL'),
-                            os.environ.get('CANDIDATE_API_KEY'))
+        candidate_config = (os.environ.get('CANDIDATE_BASE_URL'),
+                            os.environ.get('CANDIDATE_MODEL'), os.environ.get('CANDIDATE_API_KEY'))
+        doctor = (agent_model_call(*candidate_config) if mode == 'agent'
+                  else model_call(*candidate_config))
         def progress(event):
             print(json.dumps({'type': 'progress', **event}, ensure_ascii=False), flush=True)
-        result = await run_repeated_scenario(scenario, doctor, teacher, teacher, repeat_count, progress)
+        result = await run_repeated_scenario(scenario, doctor, teacher, teacher,
+                                             repeat_count, progress, mode)
         result['candidateModel'] = os.environ['CANDIDATE_MODEL']
         result['teacherModel'] = os.environ[f'{teacher_prefix}_MODEL']
         print(json.dumps({'type': 'complete', 'result': result}, ensure_ascii=False), flush=True)

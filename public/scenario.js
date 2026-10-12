@@ -1,4 +1,5 @@
 const scenarioSelect = document.getElementById('scenarioSelect');
+const modeSelect = document.getElementById('modeSelect');
 const teacherSelect = document.getElementById('teacherSelect');
 const repeatSelect = document.getElementById('repeatSelect');
 const startButton = document.getElementById('startButton');
@@ -9,8 +10,15 @@ let pollTimer = null;
 
 function showScenario() {
   const scenario = scenarios.find(item => item.id === scenarioSelect.value);
+  const agentAvailable = Boolean(scenario && scenario.agentEnabled);
+  const agentOption = modeSelect.querySelector('option[value="agent"]');
+  agentOption.disabled = !agentAvailable;
+  if (!agentAvailable && modeSelect.value === 'agent') modeSelect.value = 'scenario';
   document.getElementById('scenarioDescription').textContent = scenario
     ? `${scenario.setting} 开场：${scenario.opening}` : '';
+  document.getElementById('modeDescription').textContent = modeSelect.value === 'agent'
+    ? '待测 Agent 自行选择并调用工具；最多 6 步，每步最多 2 次。医疗转介、复诊与退款均只写入独立沙盒。'
+    : '待测助手、模拟用户进行多轮对话；客服场景可通过 JSON 申报沙盒动作。';
 }
 
 function renderRun(run) {
@@ -23,7 +31,7 @@ function renderRun(run) {
     const li = document.createElement('li');
     li.className = 'list-group-item';
     const role = { patient: run.counterpartyLabel || '患者', doctor: '待测助手',
-      event: '场景事件', environment: '环境动作结果' }[item.role] || item.role;
+      event: '场景事件', tool_call: 'Agent 工具请求', environment: '环境动作结果' }[item.role] || item.role;
     li.textContent = `${run.repeatCount > 1 ? `第 ${item.attempt} 次 · ` : ''}${role}（第 ${item.turn} 轮）：${item.text}`;
     list.appendChild(li);
   }
@@ -40,7 +48,7 @@ function renderRun(run) {
     for (const [index, attempt] of attempts.entries()) {
       const heading = document.createElement('div');
       heading.className = 'list-group-item fw-bold';
-      heading.textContent = `第 ${index + 1} 次：${attempt.score} 分；关键检查点${attempt.critical_passed ? '通过' : '未通过'}${attempt.needsHumanReview ? '；需人工复核' : ''}`;
+      heading.textContent = `第 ${index + 1} 次：${attempt.score} 分；关键检查点${attempt.critical_passed ? '通过' : '未通过'}${attempt.completed === false ? '；未在步数内完成' : ''}${attempt.needsHumanReview ? '；需人工复核' : ''}`;
       checks.appendChild(heading);
       for (const check of attempt.checks) {
         const div = document.createElement('div');
@@ -79,7 +87,8 @@ startButton.addEventListener('click', async () => {
   try {
     const response = await fetch('/api/scenario-runs', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ scenarioId: scenarioSelect.value, teacherModel: teacherSelect.value,
+      body: JSON.stringify({ scenarioId: scenarioSelect.value, mode: modeSelect.value,
+        teacherModel: teacherSelect.value,
         repeatCount: Number(repeatSelect.value) })
     });
     const data = await response.json();
@@ -102,6 +111,7 @@ stopButton.addEventListener('click', async () => {
 });
 
 scenarioSelect.addEventListener('change', showScenario);
+modeSelect.addEventListener('change', showScenario);
 
 (async () => {
   try {
